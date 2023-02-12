@@ -14,14 +14,14 @@ func (hl *Net) IsPlaceStable(p *Place) bool {
 		// the fact that a pattern cannot be empty and that there can be at most
 		// one IN or OUT edge to p from any transition in hl.
 		var pin, pout string
-		for _, a := range t.Arcs {
-			if a.Place == p {
-				switch a.Kind {
-				case IN:
-					pin = a.Pattern.String()
-				case OUT:
-					pout = a.Pattern.String()
-				}
+		for _, a := range t.Ins {
+			if a.Place == hl.PPosition[p.Name] {
+				pin = a.Pattern.String()
+			}
+		}
+		for _, a := range t.Ins {
+			if a.Place == hl.PPosition[p.Name] {
+				pout = a.Pattern.String()
 			}
 		}
 		if pin != pout {
@@ -30,8 +30,3 @@ func (hl *Net) IsPlaceStable(p *Place) bool {
 	}
 	return true
 }
-
-// // IsArcSat returns whether
-// func (hl *Net) IsArcSat(e Arcs, env pnml.Env) bool {
-// 	return false
-// }

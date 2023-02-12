@@ -103,8 +103,6 @@ func main() {
 		return
 	}
 
-	p.SetFES(false)
-
 	hl, err := hlnet.Build(p)
 	if err != nil {
 		hlnetLogger.Println("Error decoding PNML file:", err)
@@ -115,6 +113,7 @@ func main() {
 	if *flagstat {
 		elapsed := time.Since(start)
 		fmt.Fprintf(os.Stdout, "net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
+		fmt.Fprintf(os.Stdout, hl.String())
 		return
 	}
 }

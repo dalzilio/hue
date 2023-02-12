@@ -12,7 +12,7 @@ import (
 // ----------------------------------------------------------------------
 
 // Expression is the interface that wraps the type of PNML expression (we only
-// consier symmetric nets).
+// consider symmetric nets).
 //
 // AddEnv is used to accumulate the free variables in the Expression to an
 // existing environment. It can be used to add the free variables of an

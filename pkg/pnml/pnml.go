@@ -17,9 +17,6 @@ func (e *Net) Next(i int, val *Value) *Value {
 	name := e.Identity[val.Head]
 	typ := e.types[name]
 	pos := e.position[name] + i
-	if e.FES && (pos < 0 || pos >= len(typ.Elem)) {
-		return nil
-	}
 	for {
 		if pos >= 0 {
 			break
@@ -28,17 +25,6 @@ func (e *Net) Next(i int, val *Value) *Value {
 	}
 	return e.order[typ.Elem[pos%len(typ.Elem)]]
 }
-
-// // All returns the set of constant in the type with ID name as a slice of
-// // Expressions.
-// func (e *Net) All(name string) []Expression {
-// 	typ := e.types[name].Elem
-// 	res := make([]Expression, len(typ))
-// 	for k, v := range typ {
-// 		res[k] = Constant(v)
-// 	}
-// 	return res
-// }
 
 // ----------------------------------------------------------------------
 

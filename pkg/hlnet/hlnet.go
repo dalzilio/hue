@@ -5,19 +5,23 @@ package hlnet
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
 // Net is the concrete type of symmetric nets.
 type Net struct {
-	Name   string
-	Places map[string]*Place
-	Trans  map[string]*Transition
+	Name      string
+	PPosition map[string]int // gives the index of a place in Places
+	TPosition map[string]int // gives the index of a transition in Trans
+	Places    []*Place
+	Trans     []*Transition
 }
 
 // Place is the concrete type of symmetric nets places.
 type Place struct {
+	Name   string
 	Init   pnml.Expression
 	Type   string
 	Stable bool
@@ -25,16 +29,17 @@ type Place struct {
 
 // Transition is the concrete type of symmetric nets transitions.
 type Transition struct {
+	Name string
 	Cond pnml.Operation
 	Env  pnml.Env
-	Arcs []*Arcs
+	Ins  []*Arcs
+	Outs []*Arcs
 }
 
 // Arcs is the concrete type of symmetric nets arcs.
 type Arcs struct {
-	Kind    ARC
 	Pattern pnml.Expression
-	Place   *Place
+	Place   int
 }
 
 // ----------------------------------------------------------------------
@@ -54,12 +59,33 @@ func Build(n *pnml.Net) (*Net, error) {
 
 	var net = Net{Name: n.Name}
 
-	net.Places = make(map[string]*Place)
+	// We build the list of places in lexicographic order by first sorting the
+	// Places in the PNML page.
+	pnames := make([]string, len(n.Page.Places))
+	for k, p := range n.Page.Places {
+		pnames[k] = p.ID
+	}
+	sort.Strings(pnames)
+	net.PPosition = make(map[string]int, len(pnames))
+	for k, name := range pnames {
+		net.PPosition[name] = k
+	}
+	net.Places = make([]*Place, len(pnames))
 	for _, p := range n.Page.Places {
-		net.Places[p.ID] = &Place{Init: p.InitialMarking, Type: p.Type.ID}
+		net.Places[net.PPosition[p.ID]] = &Place{Name: p.ID, Init: p.InitialMarking, Type: p.Type.ID}
 	}
 
-	net.Trans = make(map[string]*Transition)
+	// Next we do the same with transitions.
+	tnames := make([]string, len(n.Page.Trans))
+	for k, p := range n.Page.Trans {
+		tnames[k] = p.ID
+	}
+	sort.Strings(tnames)
+	net.TPosition = make(map[string]int, len(tnames))
+	for k, name := range tnames {
+		net.TPosition[name] = k
+	}
+	net.Trans = make([]*Transition, len(tnames))
 	for _, t := range n.Page.Trans {
 		env := make(pnml.Env)
 		var cond pnml.Operation
@@ -74,7 +100,7 @@ func Build(n *pnml.Net) (*Net, error) {
 				return nil, fmt.Errorf("variable \"%s\" used in condition of transition %s was never declared", varname, t.ID)
 			}
 		}
-		net.Trans[t.ID] = &Transition{Cond: cond, Env: env}
+		net.Trans[net.TPosition[t.ID]] = &Transition{Name: t.ID, Cond: cond, Env: env}
 	}
 
 	for _, a := range n.Page.Arcs {
@@ -89,23 +115,21 @@ func Build(n *pnml.Net) (*Net, error) {
 				return nil, fmt.Errorf("variable \"%s\" used in pattern of arc from %s to %s was never declared", varname, a.Source, a.Target)
 			}
 		}
-		if p, ok := net.Places[a.Source]; ok {
-			// arc source is a place, target is a transition. The edge is of
-			// kind IN. We add the variables in the pattern to env.
-			t := net.Trans[a.Target]
+		if p, ok := net.PPosition[a.Source]; ok {
+			// arc source is a place, target is a transition. The edge is an
+			// input arc (Ins). We add the variables in the pattern to env.
+			t := net.Trans[net.TPosition[a.Target]]
 			e.Pattern.AddEnv(t.Env)
 			e.Place = p
-			e.Kind = IN
-			t.Arcs = append(t.Arcs, &e)
+			t.Ins = append(t.Ins, &e)
 		}
-		if p, ok := net.Places[a.Target]; ok {
-			// arc source is a transition, target is a place. The edge is of
-			// kind OUT.
-			t := net.Trans[a.Source]
+		if p, ok := net.PPosition[a.Target]; ok {
+			// arc source is a transition, target is a place. The edge is an
+			// output arc.
+			t := net.Trans[net.TPosition[a.Source]]
 			e.Pattern.AddEnv(t.Env)
 			e.Place = p
-			e.Kind = OUT
-			t.Arcs = append(t.Arcs, &e)
+			t.Outs = append(t.Outs, &e)
 		}
 	}
 

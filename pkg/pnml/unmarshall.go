@@ -39,26 +39,12 @@ type Net struct {
 	World map[string][]*Value
 	// vdot is the Value for the dot constant
 	vdot *Value
-	// VERBOSE guides the level of information in the outputs
-	VERBOSE VERB
 	// MCC tells us whether we should allow duplicate transitions on conditions.
 	MCC bool
-	// FES tells us whether we should use the FiniteEnumeration semantics (the
-	// successor/predecessor of a constant in a finite enumeration may be an
-	// unvalid value).
-	FES bool
 	// PrintProperties tells us whether we want to  output associations betweeen
 	// places and their colored equivalent. Same for transitions. This is used when
 	// checking properties.
 	PrintProperties bool
-}
-
-// ----------------------------------------------------------------------
-
-// SetVerbose sets the value of the VERBOSE setting. true means more information on
-// the output.
-func (net *Net) SetVerbose(b VERB) {
-	net.VERBOSE = b
 }
 
 // ----------------------------------------------------------------------
@@ -75,14 +61,6 @@ func (net *Net) SetProperties() {
 // expected behavior of PNML unfolding.
 func (net *Net) SetMCC(b bool) {
 	net.MCC = b
-}
-
-// ----------------------------------------------------------------------
-
-// SetFES sets the value of the FES setting. true means we try to emulate the
-// expected behavior of successor/predecessor with an overflow/underflow semantics.
-func (net *Net) SetFES(b bool) {
-	net.FES = b
 }
 
 // ----------------------------------------------------------------------
