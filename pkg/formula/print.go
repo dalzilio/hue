@@ -8,7 +8,7 @@ import "fmt"
 
 func (p *Query) String() string {
 	s := fmt.Sprintf("Property %s :\n", p.ID)
-	if p.Verdict {
+	if p.IsEF {
 		s += fmt.Sprintf("EF %v\n", p.Formula)
 	} else {
 		s += fmt.Sprintf("AG %v\n", p.Formula)

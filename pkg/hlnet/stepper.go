@@ -3,8 +3,6 @@
 // the LICENSE file.
 package hlnet
 
-import "github.com/dalzilio/hue/pkg/set"
-
 // Stepper is the type of marked hlnet, that is a pair consisting of a
 // high-level net and its current marking
 type Stepper struct {
@@ -15,48 +13,49 @@ type Stepper struct {
 
 // NewStepper returns a fresh Stepper starting with the initial marking of n
 func NewStepper(n *Net) *Stepper {
-	m0 := make(Marking, len(n.Places))
+	m0 := Marking{COL: make([]PMarking, len(n.Places))}
 	lpn := 0
 	for k, v := range n.Places {
-		m0[k] = v.Init
+		m0.COL[k] = v.Init
+		m0.PT[v.Name] = v.Init.Sum()
 		if len(v.Name) > lpn {
 			lpn = len(v.Name)
 		}
 	}
-	return &Stepper{
+	s := &Stepper{
 		Net:     n,
 		Marking: m0,
 		lpn:     lpn,
 	}
+	s.ComputeEnabled()
+	return s
 }
 
 func (s *Stepper) String() string {
-	return s.printMarkingAligned(s.Marking, s.lpn, 80)
+	return s.printMarkingAligned(s.Marking, s.lpn, 90)
 }
 
 // Enabled returns the set of transition (a slice of ordered indexes in n.Trans)
 // which are enabled at the current marking
-func (s *Stepper) Enabled() set.Set {
-	enabled := set.Set{}
-	// for i := range s.Trans {
-	// 	// if s.condition(s.Marking, i) {
-	// 	// 	enabled = append(enabled, i)
-	// 	// }
-	// }
-	return enabled
+func (s *Stepper) ComputeEnabled() {
+	// reset the enabled list of the current marking
+	for tname := range s.Enabled {
+		s.Enabled[tname] = false
+	}
+	for _, t := range s.Trans {
+		if s.CheckCondition(t) {
+			s.Enabled[t.Name] = true
+		}
+	}
 }
 
-// // condition checks the (marking) condition of the given transition.
-// func (net *Net) condition(m Marking, i int) bool {
-// 	for _, v := range net.cond[i] {
-// 		if m.get(v.value) < v.mult {
-// 			return false
-// 		}
-// 	}
-// 	for _, v := range net.inhibcond[i] {
-// 		if m.get(v.value) >= v.mult {
-// 			return false
-// 		}
-// 	}
-// 	return true
-// }
+// CheckCondition checks the (marking) condition of the given transition.
+func (s *Stepper) CheckCondition(t Transition) bool {
+	for _, v := range net.cond[i] {
+		if m.get(v.value) < v.mult {
+			return false
+		}
+	}
+
+	return true
+}

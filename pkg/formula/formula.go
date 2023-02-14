@@ -6,13 +6,14 @@ package formula
 
 import "fmt"
 
-// Query is the type of reachability queries we need to check. When Verdict is
-// true the query is (EF phi), meaning we report  true if we can reach a state
-// where phi is true. Conversely, when Verdict is false, the query is (AG phi),
-// meaning we report false if (not phi) is reachable.
+// Query is the type of reachability queries we need to check. When IsEF is true
+// the query is (EF phi), meaning we report  true if we can reach a state where
+// phi is true. Conversely, when IsEF is false, the query is (AG phi), meaning
+// we report false if (not phi) is reachable.
 type Query struct {
-	ID      string
-	Verdict bool
+	ID             string
+	IsEF           bool
+	IsReachability bool
 	Formula
 }
 
@@ -132,32 +133,34 @@ func (f IntegerConstant) String() string {
 	return fmt.Sprintf("%d", f)
 }
 
-// ----------------------------------------------------------------------
+// The following elements are not used in practice
 
-// IntegerSum defines the sum between two or more integer expressions. We
-// assume, but do not check beforehand, that all the Formula in IntegerSum are
-// integer expressions.
-type IntegerSum []Formula
+// // ----------------------------------------------------------------------
 
-func (f IntegerSum) String() string {
-	s := f[0].String()
-	for k := 1; k < len(f); k++ {
-		s += "," + f[k].String()
-	}
-	return "sum(" + s + ")"
-}
+// // IntegerSum defines the sum between two or more integer expressions. We
+// // assume, but do not check beforehand, that all the Formula in IntegerSum are
+// // integer expressions.
+// type IntegerSum []Formula
 
-// ----------------------------------------------------------------------
+// func (f IntegerSum) String() string {
+// 	s := f[0].String()
+// 	for k := 1; k < len(f); k++ {
+// 		s += "," + f[k].String()
+// 	}
+// 	return "sum(" + s + ")"
+// }
 
-// IntegerDifference defines the difference between two or more integer
-// expressions. We assume, but do not check beforehand, that all the Formula in
-// IntegerDifference are integer expressions.
-type IntegerDifference []Formula
+// // ----------------------------------------------------------------------
 
-func (f IntegerDifference) String() string {
-	s := f[0].String()
-	for k := 1; k < len(f); k++ {
-		s += "," + f[k].String()
-	}
-	return "diff(" + s + ")"
-}
+// // IntegerDifference defines the difference between two or more integer
+// // expressions. We assume, but do not check beforehand, that all the Formula in
+// // IntegerDifference are integer expressions.
+// type IntegerDifference []Formula
+
+// func (f IntegerDifference) String() string {
+// 	s := f[0].String()
+// 	for k := 1; k < len(f); k++ {
+// 		s += "," + f[k].String()
+// 	}
+// 	return "diff(" + s + ")"
+// }

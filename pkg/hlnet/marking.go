@@ -12,8 +12,15 @@ import (
 )
 
 // Marking is the type of High-Level Nets (hlnet) markings. It is a slice
-// containing the PMarking of each places in the same order than in PLaces
-type Marking []PMarking
+// containing the PMarking of each places in the same order than in Places. We
+// also use hashmaps to have the "compound" marking for each place
+// (tokens-count) and the list of enabled transitions (for is-fireable), which
+// helps simplify the evaluation of formulas.
+type Marking struct {
+	COL     []PMarking
+	PT      map[string]int
+	Enabled map[string]bool
+}
 
 // Atom is a pair of a multiplicity and a colored value.
 type Atom struct {
@@ -35,12 +42,13 @@ type PMarking []Atom
 // ----------------------------------------------------------------------
 
 // EvaluateGround evaluates a ground expression, that is an expression with no
-// free variables, into a PMarking
+// free variables, into a PMarking. This is useful for computing the initial
+// marking.
 func (net *Net) EvaluateGround(expr pnml.Expression) PMarking {
 	if expr == nil {
 		return PMarking{}
 	}
-	vals, mults := expr.Match(net.Net, nil)
+	vals, mults := expr.Eval(net.Net)
 	res := make(PMarking, len(vals))
 	for k, v := range vals {
 		res[k] = Atom{v, mults[k]}
@@ -60,10 +68,18 @@ func (net *Net) PrintPMarking(pm PMarking) string {
 	return s
 }
 
+func (pm PMarking) Sum() int {
+	s := 0
+	for _, v := range pm {
+		s += v.Mult
+	}
+	return s
+}
+
 func (net *Net) PrintMarking(m Marking) string {
 	s := ""
 	for k, v := range net.Places {
-		s += fmt.Sprintf("%s : %s\n", v.Name, net.PrintPMarking(m[k]))
+		s += fmt.Sprintf("%s : %s\n", v.Name, net.PrintPMarking(m.COL[k]))
 	}
 	return s
 }
@@ -71,7 +87,7 @@ func (net *Net) PrintMarking(m Marking) string {
 func (net *Net) printMarkingAligned(m Marking, left int, trunc int) string {
 	s := ""
 	for k, v := range net.Places {
-		mm := []rune(net.PrintPMarking(m[k]))
+		mm := []rune(net.PrintPMarking(m.COL[k]))
 		if len(mm) > trunc {
 			mm = mm[:trunc]
 			mm = append(mm, []rune("...")...)

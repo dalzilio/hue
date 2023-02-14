@@ -7,6 +7,7 @@ package pnml
 import (
 	"fmt"
 	"log"
+	"sort"
 	"strconv"
 )
 
@@ -17,16 +18,17 @@ import (
 //
 // AddEnv is used to accumulate the free variables in the Expression to an
 // existing environment. It can be used to add the free variables of an
-// expression to an alreay existing environment. It creates a hashmap containing
-// the names of all the variables, each associated with the nil *Value.
+// expression to an alreay existing environment. It creates a (sorted) slice
+// containing the names of all the variables.
 //
-// Match return the set of constant values that match an Expression, also called
-// a pattern,  together with their multiplicities. The method returns two slices
-// that have equal length.
+// Eval return the set of constant values that match a ground Expression (an
+// expression without free variables, such as the ones used to define the
+// initial marking), together with their multiplicities. The method returns two
+// slices that have equal length.
 type Expression interface {
 	String() string
-	AddEnv(Env)
-	Match(*Net, Env) ([]*Value, []int)
+	AddEnv(Env) Env
+	Eval(*Net) ([]*Value, []int)
 }
 
 // ----------------------------------------------------------------------
@@ -70,9 +72,9 @@ func (p All) String() string {
 	return "<ALL:" + string(p) + ">"
 }
 
-func (p All) AddEnv(env Env) {}
+func (p All) AddEnv(env Env) Env { return env }
 
-func (p All) Match(net *Net, env Env) ([]*Value, []int) {
+func (p All) Eval(net *Net) ([]*Value, []int) {
 	f := net.World[string(p)]
 	m := make([]int, len(f))
 	for i := range f {
@@ -90,15 +92,15 @@ func (p Add) String() string {
 	return multstring(p, "", " + ", "")
 }
 
-func (p Add) AddEnv(env Env) {
-	multaddEnv(p, env)
+func (p Add) AddEnv(env Env) Env {
+	return multaddEnv(p, env)
 }
 
-func (p Add) Match(net *Net, env Env) ([]*Value, []int) {
+func (p Add) Eval(net *Net) ([]*Value, []int) {
 	var res []*Value
 	var mult []int
 	for i := range p {
-		f, m := p[i].Match(net, env)
+		f, m := p[i].Eval(net)
 		res = append(res, f...)
 		mult = append(mult, m...)
 	}
@@ -115,17 +117,17 @@ func (p Subtract) String() string {
 	return multstring(p, "", " - ", "")
 }
 
-func (p Subtract) AddEnv(env Env) {
-	multaddEnv(p, env)
+func (p Subtract) AddEnv(env Env) Env {
+	return multaddEnv(p, env)
 }
 
-func (p Subtract) Match(net *Net, env Env) ([]*Value, []int) {
-	fa, ma := p[0].Match(net, env)
+func (p Subtract) Eval(net *Net) ([]*Value, []int) {
+	fa, ma := p[0].Eval(net)
 	if fa == nil || len(p) == 1 {
 		return fa, ma
 	}
 	for i := 1; i < len(p); i++ {
-		fb, mb := p[i].Match(net, env)
+		fb, mb := p[i].Eval(net)
 		if fb == nil {
 			continue
 		}
@@ -163,14 +165,14 @@ func (p Tuple) String() string {
 	return multstring(p, "(", ", ", ")")
 }
 
-func (p Tuple) AddEnv(env Env) {
-	multaddEnv(p, env)
+func (p Tuple) AddEnv(env Env) Env {
+	return multaddEnv(p, env)
 }
 
-func (p Tuple) Match(net *Net, env Env) ([]*Value, []int) {
+func (p Tuple) Eval(net *Net) ([]*Value, []int) {
 	res := []*Value{nil}
 	for i := len(p) - 1; i >= 0; i-- {
-		f, _ := p[i].Match(net, env)
+		f, _ := p[i].Eval(net)
 		foo := []*Value{}
 		for _, v1 := range f {
 			for _, v2 := range res {
@@ -221,12 +223,12 @@ func (p Operation) String() string {
 	return multstring(p.Elem, "(", p.Op.String(), ")")
 }
 
-func (p Operation) AddEnv(env Env) {
-	multaddEnv(p.Elem, env)
+func (p Operation) AddEnv(env Env) Env {
+	return multaddEnv(p.Elem, env)
 }
 
-func (p Operation) Match(net *Net, env Env) ([]*Value, []int) {
-	panic("Match not authorized on Operation")
+func (p Operation) Eval(net *Net) ([]*Value, []int) {
+	panic("Eval not authorized on Operation")
 }
 
 // OK returns whether the condition evaluates to true.
@@ -249,8 +251,8 @@ func (p Operation) OK(net *Net, env Env) bool {
 		}
 		return false
 	default:
-		v1, _ := p.Elem[0].Match(net, env)
-		v2, _ := p.Elem[1].Match(net, env)
+		v1, _ := p.Elem[0].Eval(net)
+		v2, _ := p.Elem[1].Eval(net)
 		if len(v1) == 0 || len(v2) == 0 {
 			return false
 		}
@@ -270,9 +272,9 @@ func (p Constant) String() string {
 	return string(p)
 }
 
-func (p Constant) AddEnv(env Env) {}
+func (p Constant) AddEnv(env Env) Env { return env }
 
-func (p Constant) Match(net *Net, env Env) ([]*Value, []int) {
+func (p Constant) Eval(net *Net) ([]*Value, []int) {
 	pval, found := net.order[string(p)]
 	if !found {
 		f, wfound := net.World[string(p)]
@@ -305,9 +307,9 @@ func (p FIRConstant) String() string {
 	return strconv.Itoa(p.value)
 }
 
-func (p FIRConstant) AddEnv(env Env) {}
+func (p FIRConstant) AddEnv(env Env) Env { return env }
 
-func (p FIRConstant) Match(net *Net, env Env) ([]*Value, []int) {
+func (p FIRConstant) Eval(net *Net) ([]*Value, []int) {
 	return []*Value{net.order[p.stringify()]}, []int{1}
 }
 
@@ -320,12 +322,12 @@ func (p Var) String() string {
 	return string(p)
 }
 
-func (p Var) AddEnv(env Env) {
-	env[string(p)] = nil
+func (p Var) AddEnv(env Env) Env {
+	return insertEnv(env, p)
 }
 
-func (p Var) Match(net *Net, env Env) ([]*Value, []int) {
-	return []*Value{env[string(p)]}, []int{1}
+func (p Var) Eval(net *Net) ([]*Value, []int) {
+	panic("Eval not authorized on Var")
 }
 
 // ----------------------------------------------------------------------
@@ -337,9 +339,9 @@ func (p Dot) String() string {
 	return "o"
 }
 
-func (p Dot) AddEnv(env Env) {}
+func (p Dot) AddEnv(env Env) Env { return env }
 
-func (p Dot) Match(net *Net, env Env) ([]*Value, []int) {
+func (p Dot) Eval(net *Net) ([]*Value, []int) {
 	return []*Value{net.vdot}, []int{1}
 }
 
@@ -361,17 +363,18 @@ func (p Successor) String() string {
 	return string(p.Var) + mod
 }
 
-func (p Successor) AddEnv(env Env) {
-	env[string(p.Var)] = nil
+func (p Successor) AddEnv(env Env) Env {
+	return insertEnv(env, p.Var)
 }
 
-func (p Successor) Match(net *Net, env Env) ([]*Value, []int) {
-	c := env[string(p.Var)]
-	res := net.Next(p.Incr, c)
-	if res == nil {
-		return nil, nil
-	}
-	return []*Value{res}, []int{1}
+func (p Successor) Eval(net *Net) ([]*Value, []int) {
+	panic("Eval not authorized on Successor")
+	// c := env[string(p.Var)]
+	// res := net.Next(p.Incr, c)
+	// if res == nil {
+	// 	return nil, nil
+	// }
+	// return []*Value{res}, []int{1}
 }
 
 // ----------------------------------------------------------------------
@@ -387,12 +390,12 @@ func (p Numberof) String() string {
 	return strconv.Itoa(p.Mult) + "'" + p.Expression.String()
 }
 
-func (p Numberof) AddEnv(env Env) {
-	p.Expression.AddEnv(env)
+func (p Numberof) AddEnv(env Env) Env {
+	return p.Expression.AddEnv(env)
 }
 
-func (p Numberof) Match(net *Net, env Env) ([]*Value, []int) {
-	f, m := p.Expression.Match(net, env)
+func (p Numberof) Eval(net *Net) ([]*Value, []int) {
+	f, m := p.Expression.Eval(net)
 	for i := range f {
 		m[i] = p.Mult
 	}
@@ -416,10 +419,26 @@ func multstring(ee []Expression, start, delim, end string) string {
 	return s + end
 }
 
-func multaddEnv(ee []Expression, env Env) {
+func multaddEnv(ee []Expression, env Env) Env {
 	for _, v := range ee {
-		v.AddEnv(env)
+		env = v.AddEnv(env)
 	}
+	return env
+}
+
+func insertEnv(env Env, x Var) Env {
+	i := sort.SearchStrings(env, string(x))
+	if i == len(env) {
+		return append(env, string(x))
+	}
+	if env[i] == string(x) {
+		// x is already in the Env
+		return env
+	}
+	// otherwise we shift the necessary data
+	env = append(env[:i+1], env[i:]...)
+	env[i] = string(x)
+	return env
 }
 
 // ----------------------------------------------------------------------

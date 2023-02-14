@@ -38,6 +38,7 @@ type Transition struct {
 // Arcs is the concrete type of symmetric nets arcs.
 type Arcs struct {
 	Pattern pnml.Expression
+	Env     pnml.Env
 	Place   int
 }
 
@@ -82,15 +83,15 @@ func Build(n *pnml.Net) (*Net, error) {
 	}
 	net.Trans = make([]*Transition, len(tnames))
 	for _, t := range n.Page.Trans {
-		env := make(pnml.Env)
+		env := pnml.Env{}
 		var cond pnml.Operation
 		if t.Condition == nil {
 			cond = pnml.Operation{Op: pnml.NIL}
 		} else {
 			cond = t.Condition.(pnml.Operation)
 		}
-		cond.AddEnv(env)
-		for varname := range env {
+		env = cond.AddEnv(env)
+		for _, varname := range env {
 			if _, ok := n.TypeEnvt[varname]; !ok {
 				return nil, fmt.Errorf("variable \"%s\" used in condition of transition %s was never declared", varname, t.ID)
 			}
@@ -103,9 +104,8 @@ func Build(n *pnml.Net) (*Net, error) {
 		if e.Pattern == nil {
 			e.Pattern = pnml.Operation{Op: pnml.NIL}
 		}
-		env := make(pnml.Env)
-		e.Pattern.AddEnv(env)
-		for varname := range env {
+		e.Env = e.Pattern.AddEnv(pnml.Env{})
+		for _, varname := range e.Env {
 			if _, ok := n.TypeEnvt[varname]; !ok {
 				return nil, fmt.Errorf("variable \"%s\" used in pattern of arc from %s to %s was never declared", varname, a.Source, a.Target)
 			}
@@ -114,7 +114,7 @@ func Build(n *pnml.Net) (*Net, error) {
 			// arc source is a place, target is a transition. The edge is an
 			// input arc (Ins). We add the variables in the pattern to env.
 			t := net.Trans[net.TPosition[a.Target]]
-			e.Pattern.AddEnv(t.Env)
+			t.Env = e.Pattern.AddEnv(t.Env)
 			e.Place = p
 			t.Ins = append(t.Ins, &e)
 		}
@@ -122,7 +122,7 @@ func Build(n *pnml.Net) (*Net, error) {
 			// arc source is a transition, target is a place. The edge is an
 			// output arc.
 			t := net.Trans[net.TPosition[a.Source]]
-			e.Pattern.AddEnv(t.Env)
+			t.Env = e.Pattern.AddEnv(t.Env)
 			e.Place = p
 			t.Outs = append(t.Outs, &e)
 		}

@@ -203,13 +203,13 @@ func (d *Decoder) Build() ([]Query, error) {
 			if err != nil {
 				return nil, fmt.Errorf(" decoding XML input in EF query %d : %s", k, err)
 			}
-			res[k] = Query{ID: p.Id, Verdict: true, Formula: Simplify(ff)}
+			res[k] = Query{ID: p.Id, IsEF: true, Formula: Simplify(ff)}
 		} else {
 			ff, err := parseFormula(p.AG.InnerXML)
 			if err != nil {
 				return nil, fmt.Errorf(" decoding XML input in AG query %d : %s", k, err)
 			}
-			res[k] = Query{ID: p.Id, Verdict: false, Formula: Simplify(ff)}
+			res[k] = Query{ID: p.Id, IsEF: false, Formula: Simplify(ff)}
 		}
 	}
 
