@@ -12,19 +12,18 @@ import (
 
 // Net is the concrete type of symmetric nets.
 type Net struct {
-	Name      string
+	*pnml.Net                // the PNML net that was used to build the hlnet
 	PPosition map[string]int // gives the index of a place in Places
-	TPosition map[string]int // gives the index of a transition in Trans
 	Places    []*Place
+	TPosition map[string]int // gives the index of a transition in Trans
 	Trans     []*Transition
 }
 
 // Place is the concrete type of symmetric nets places.
 type Place struct {
-	Name   string
-	Init   pnml.Expression
-	Type   string
-	Stable bool
+	Name string
+	Init PMarking
+	Type string
 }
 
 // Transition is the concrete type of symmetric nets transitions.
@@ -44,20 +43,12 @@ type Arcs struct {
 
 // ----------------------------------------------------------------------
 
-func pInit(p pnml.Expression) string {
-	if p == nil {
-		return "-"
-	}
-	return p.String()
-}
-
-// ----------------------------------------------------------------------
-
 // Build returns an hlnet from a PNML net. This structure is easier to deal
 // with.
 func Build(n *pnml.Net) (*Net, error) {
-
-	var net = Net{Name: n.Name}
+	// We embed the PNML net into the hlnet in order to get access to type and
+	// value information
+	var net = Net{Net: n}
 
 	// We build the list of places in lexicographic order by first sorting the
 	// Places in the PNML page.
@@ -72,7 +63,11 @@ func Build(n *pnml.Net) (*Net, error) {
 	}
 	net.Places = make([]*Place, len(pnames))
 	for _, p := range n.Page.Places {
-		net.Places[net.PPosition[p.ID]] = &Place{Name: p.ID, Init: p.InitialMarking, Type: p.Type.ID}
+		net.Places[net.PPosition[p.ID]] = &Place{
+			Name: p.ID,
+			Init: net.EvaluateGround(p.InitialMarking),
+			Type: p.Type.ID,
+		}
 	}
 
 	// Next we do the same with transitions.
@@ -96,7 +91,7 @@ func Build(n *pnml.Net) (*Net, error) {
 		}
 		cond.AddEnv(env)
 		for varname := range env {
-			if _, ok := n.Env[varname]; !ok {
+			if _, ok := n.TypeEnvt[varname]; !ok {
 				return nil, fmt.Errorf("variable \"%s\" used in condition of transition %s was never declared", varname, t.ID)
 			}
 		}
@@ -111,7 +106,7 @@ func Build(n *pnml.Net) (*Net, error) {
 		env := make(pnml.Env)
 		e.Pattern.AddEnv(env)
 		for varname := range env {
-			if _, ok := n.Env[varname]; !ok {
+			if _, ok := n.TypeEnvt[varname]; !ok {
 				return nil, fmt.Errorf("variable \"%s\" used in pattern of arc from %s to %s was never declared", varname, a.Source, a.Target)
 			}
 		}
@@ -130,18 +125,6 @@ func Build(n *pnml.Net) (*Net, error) {
 			e.Pattern.AddEnv(t.Env)
 			e.Place = p
 			t.Outs = append(t.Outs, &e)
-		}
-	}
-
-	// if there are less than 200 places (we chose an arbitrary value) we try to
-	// find "stable places", that is a place p such that, for every transition
-	// t, there is an edge t--exp-->p if and only if there is an edge
-	// p--exp-->t. When a place is stable we know that the tokens in place p
-	// (the possible pairs p x val) are exactly the same than in the initial
-	// marking.
-	if len(net.Places) < 200 {
-		for _, p := range net.Places {
-			p.Stable = net.IsPlaceStable(p)
 		}
 	}
 

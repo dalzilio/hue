@@ -1,6 +1,7 @@
 // Copyright 2023. Silvano DAL ZILIO (LAAS-CNRS). All rights reserved. Use of
 // this source code is governed by the GNU Affero license that can be found in
 // the LICENSE file.
+
 package pnml
 
 import (
@@ -20,15 +21,17 @@ type Value struct {
 
 // ----------------------------------------------------------------------
 
-// func CompareValues(vi, vj *Value) bool {
-// 	if vi == nil {
-// 		return vj == nil
-// 	}
-// 	if vi.Head == vj.Head {
-// 		return CompareValues(vi.Tail, vj.Tail)
-// 	}
-// 	return vi.Head < vj.Head
-// }
+// ValueIsLess reports if vi is before vj in comparaison order. We assume, and
+// do not test, that vi and vj are both of the same type.
+func ValueIsLess(vi, vj *Value) bool {
+	if vi == nil {
+		return vj == nil
+	}
+	if vi.Head == vj.Head {
+		return ValueIsLess(vi.Tail, vj.Tail)
+	}
+	return vi.Head < vj.Head
+}
 
 // ----------------------------------------------------------------------
 
@@ -37,12 +40,12 @@ func (net *Net) PrintValue(val *Value) string {
 	if val.Tail == nil {
 		return net.printHeadValue(val.Head)
 	}
-	c := fmt.Sprintf("(%s, ", net.printHeadValue(val.Head))
+	c := fmt.Sprintf("(%s", net.printHeadValue(val.Head))
 	return net.printTupleValue(c, val.Tail)
 }
 
 func (net *Net) printHeadValue(i int) string {
-	return net.Identity[i]
+	return net.identity[i]
 }
 
 func (net *Net) printTupleValue(s string, val *Value) string {
@@ -66,10 +69,10 @@ func (net *Net) enumprod(elem []string) []*Value {
 	for _, a := range head {
 		for _, b := range tail {
 			val := Value{Head: a.Head, Tail: b}
-			pval, ok := net.unique[val]
+			pval, ok := net.Unique[val]
 			if !ok {
 				pval = &val
-				net.unique[val] = &val
+				net.Unique[val] = &val
 			}
 			list = append(list, pval)
 		}

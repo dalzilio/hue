@@ -8,18 +8,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
-	"time"
 
-	"github.com/dalzilio/hue/pkg/hlnet"
-	"github.com/dalzilio/hue/pkg/pnml"
-
+	"github.com/dalzilio/hue/pkg/formula"
 	flag "github.com/spf13/pflag"
 )
-
-// hlnetLogger is the main destination for logging information during the
-// computation.
-var hlnetLogger *log.Logger
 
 // builddate stores the compilation date for the executable, in %Y%m%d format.
 // Set in the Makefile with the result of:
@@ -35,8 +27,9 @@ var gitversion string = "v0"
 
 func main() {
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
-	var flagstat = flag.BoolP("stat", "s", false, "print statistics information")
+	// var flagstat = flag.BoolP("stat", "s", false, "print statistics information")
 	var flagversion = flag.Bool("version", false, "print version number and generation date of twina")
+	var flagff = flag.BoolP("formula-file", "f", false, "path to a reachability formula file")
 
 	flag.CommandLine.SortFlags = false
 
@@ -50,7 +43,7 @@ func main() {
 	}
 
 	flag.Parse()
-	N := len(flag.Args())
+	// N := len(flag.Args())
 
 	if *flaghelp {
 		flag.Usage()
@@ -61,59 +54,86 @@ func main() {
 		fmt.Printf("hue version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
 	}
 
-	switch {
-	case N != 1:
-		fmt.Println("should have exactly one pnml file")
-		flag.Usage()
-		os.Exit(1)
-	}
-
-	filename := flag.Arg(0)
+	// switch {
+	// case N != 1 && !*flagff:
+	// 	fmt.Println("should have exactly one pnml file")
+	// 	flag.Usage()
+	// 	os.Exit(1)
+	// case N != 2 && *flagff:
+	// 	fmt.Println("should have exactly one pnml file and one XML formula file")
+	// 	flag.Usage()
+	// 	os.Exit(1)
+	// }
 
 	// we capture panics
 	defer func() {
 		if r := recover(); r != nil {
-			hlnetLogger.Println("Error in generation: cannot compute")
+			log.Fatal("Error in generation: cannot compute")
 			os.Exit(1)
 		}
 	}()
 
-	start := time.Now()
+	// filename := flag.Arg(0)
 
-	if filepath.Ext(filename) != ".pnml" {
-		hlnetLogger.Println("Wrong file extension!")
-		os.Exit(1)
-		return
+	if *flagff {
+		formulafile := flag.Arg(0)
+		xmlFile, err := os.Open(formulafile)
+		if err != nil {
+			log.Fatal("Error opening file:", err)
+			os.Exit(1)
+			return
+		}
+		defer xmlFile.Close()
+		decoder := formula.NewDecoder(xmlFile)
+		queries, err := decoder.Build()
+		if err != nil {
+			log.Fatal("Error decoding Formula file:", err)
+			os.Exit(1)
+			return
+		}
+		fmt.Fprintf(os.Stdout, "# %d formulas\n", len(queries))
+		fmt.Fprint(os.Stdout, formula.PrintQueries(queries))
 	}
 
-	xmlFile, err := os.Open(filename)
-	if err != nil {
-		hlnetLogger.Println("Error opening file:", err)
-		os.Exit(1)
-		return
-	}
-	defer xmlFile.Close()
+	// start := time.Now()
 
-	decoder := pnml.NewDecoder(xmlFile)
-	var p = new(pnml.Net)
-	err = decoder.Build(p)
-	if err != nil {
-		hlnetLogger.Println("Error decoding PNML file:", err)
-		os.Exit(1)
-		return
-	}
+	// if filepath.Ext(filename) != ".pnml" {
+	// 	hlnetLogger.Println("Wrong file extension!")
+	// 	os.Exit(1)
+	// 	return
+	// }
 
-	hl, err := hlnet.Build(p)
-	if err != nil {
-		hlnetLogger.Println("Error decoding PNML file:", err)
-		os.Exit(1)
-		return
-	}
+	// xmlFile, err := os.Open(filename)
+	// if err != nil {
+	// 	hlnetLogger.Println("Error opening file:", err)
+	// 	os.Exit(1)
+	// 	return
+	// }
+	// defer xmlFile.Close()
 
-	if *flagstat {
-		elapsed := time.Since(start)
-		fmt.Fprintf(os.Stdout, "net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
-		fmt.Fprintf(os.Stdout, hl.String())
-		return
-	}
+	// decoder := pnml.NewDecoder(xmlFile)
+	// var p = new(pnml.Net)
+	// err = decoder.Build(p)
+	// if err != nil {
+	// 	hlnetLogger.Println("Error decoding PNML file:", err)
+	// 	os.Exit(1)
+	// 	return
+	// }
+
+	// hl, err := hlnet.Build(p)
+	// if err != nil {
+	// 	hlnetLogger.Println("Error decoding PNML file:", err)
+	// 	os.Exit(1)
+	// 	return
+	// }
+
+	// s := hlnet.NewStepper(hl)
+
+	// if *flagstat {
+	// 	elapsed := time.Since(start)
+	// 	fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
+	// 	fmt.Fprintf(os.Stdout, "%s\n", hl)
+	// 	fmt.Fprintf(os.Stdout, "%s\n", s)
+	// 	return
+	// }
 }

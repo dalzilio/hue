@@ -1,6 +1,7 @@
 // Copyright 2023. Silvano DAL ZILIO (LAAS-CNRS). All rights reserved. Use of
 // this source code is governed by the GNU Affero license that can be found in
 // the LICENSE file.
+
 package pnml
 
 // ----------------------------------------------------------------------
@@ -16,8 +17,8 @@ type Net struct {
 	Name        string      `xml:"name>text"`
 	Page        Page        `xml:"page"`
 	Declaration Declaration `xml:"declaration>structure>declarations"`
-	// Env is an association between a variable name and its type name, found in declaration
-	Env map[string]string
+	// TypeEnvt is an association between a variable name and its type name, found in declaration
+	TypeEnvt map[string]string
 	// types gives the type (declaration) corresponding to a given constant.
 	// This is only used for FENUM and CENUM (for computing predecessors and
 	// successors)
@@ -30,37 +31,15 @@ type Net struct {
 	// order associates a unique Value to every Constant; it is used for
 	// encoding Constants into Values
 	order map[string]*Value
-	// Identity associates a string to a constant index. This is only useful for printing
+	// identity associates a string to a constant index. This is only useful for printing
 	// debugging information
-	Identity []string
-	// unique associates a unique representant for each Value
-	unique map[Value]*Value
+	identity []string
+	// Unique associates a Unique representant for each Value
+	Unique map[Value]*Value
 	// World associates a type (name) with a list of all its possible values
 	World map[string][]*Value
 	// vdot is the Value for the dot constant
 	vdot *Value
-	// MCC tells us whether we should allow duplicate transitions on conditions.
-	MCC bool
-	// PrintProperties tells us whether we want to  output associations betweeen
-	// places and their colored equivalent. Same for transitions. This is used when
-	// checking properties.
-	PrintProperties bool
-}
-
-// ----------------------------------------------------------------------
-
-// SetProperties sets the value of the PrintProperties setting to true (it is
-// false by default).
-func (net *Net) SetProperties() {
-	net.PrintProperties = true
-}
-
-// ----------------------------------------------------------------------
-
-// SetMCC sets the value of the MCC setting. true means we try to emulate the
-// expected behavior of PNML unfolding.
-func (net *Net) SetMCC(b bool) {
-	net.MCC = b
 }
 
 // ----------------------------------------------------------------------

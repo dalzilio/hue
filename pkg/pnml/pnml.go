@@ -1,6 +1,7 @@
 // Copyright 2023. Silvano DAL ZILIO (LAAS-CNRS). All rights reserved. Use of
 // this source code is governed by the GNU Affero license that can be found in
 // the LICENSE file.
+
 package pnml
 
 import (
@@ -14,7 +15,7 @@ import (
 // Next gives the ith successor (i can be negative) of the constant with id
 // name.
 func (e *Net) Next(i int, val *Value) *Value {
-	name := e.Identity[val.Head]
+	name := e.identity[val.Head]
 	typ := e.types[name]
 	pos := e.position[name] + i
 	for {
@@ -57,19 +58,19 @@ func (d *Decoder) Build(net *Net) error {
 	net.Declaration = pnml.Net.Declaration
 
 	// we allocate the enumerators and other useful maps
-	net.Env = make(map[string]string)
+	net.TypeEnvt = make(map[string]string)
 	net.types = make(map[string]*TypeDecl)
 	net.ranges = make(map[IntRange]*TypeDecl)
 	net.position = make(map[string]int)
 	net.order = make(map[string]*Value)
-	net.Identity = make([]string, 1)
-	net.unique = make(map[Value]*Value)
+	net.identity = make([]string, 1)
+	net.Unique = make(map[Value]*Value)
 	net.World = make(map[string][]*Value)
 
 	// we allocate the constant for dot
 	net.vdot = &Value{Head: 0}
-	net.Identity[0] = "o"
-	net.unique[Value{Head: 0}] = net.vdot
+	net.identity[0] = "o"
+	net.Unique[Value{Head: 0}] = net.vdot
 	ccount := 1
 
 	// we make a pass through the constant definitions
@@ -90,12 +91,12 @@ func (d *Decoder) Build(net *Net) error {
 					fir.value = v.FIntRan.Start + i
 					c := fir.stringify()
 					v.Elem[i] = c
-					net.Identity = append(net.Identity, c)
+					net.identity = append(net.identity, c)
 					net.position[c] = i
 					val := Value{Head: ccount}
 					ccount++
 					net.order[c] = &val
-					net.unique[val] = &val
+					net.Unique[val] = &val
 					list[i] = &val
 					net.types[c] = v
 				}
@@ -132,8 +133,8 @@ func (d *Decoder) Build(net *Net) error {
 				ccount++
 				net.types[c] = v
 				net.order[c] = &val
-				net.Identity = append(net.Identity, c)
-				net.unique[val] = &val
+				net.identity = append(net.identity, c)
+				net.Unique[val] = &val
 				list[i] = &val
 			}
 			net.World[v.ID] = list
@@ -147,7 +148,7 @@ func (d *Decoder) Build(net *Net) error {
 	}
 
 	for _, v := range net.Declaration.Vars {
-		net.Env[v.ID] = v.Type.ID
+		net.TypeEnvt[v.ID] = v.Type.ID
 	}
 
 	// we associate the list of partition element to their identifiers

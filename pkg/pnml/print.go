@@ -8,7 +8,8 @@ import "fmt"
 // ----------------------------------------------------------------------
 
 func (net Net) String() string {
-	s := "# net " + net.Name
+	// s := "# net " + net.Name
+	s := ""
 	for _, v := range net.Declaration.Sorts {
 		s += "\n# type: " + v.String()
 	}
@@ -21,21 +22,22 @@ func (net Net) String() string {
 	for _, v := range net.Declaration.Vars {
 		s += "\n# var  " + v.ID + " : " + v.Type.ID
 	}
-	// we also add a note (node)to display the info in ndr
-	s += "\nnt n0 1 {net " + net.Name
-	for _, v := range net.Declaration.Sorts {
-		s += "\\\\ntype " + v.String()
-	}
-	for _, v := range net.Declaration.Partitions {
-		s += "\\\\npartition " + v.ID + " : " + v.Type.ID
-		for _, p := range v.Partitions {
-			s += "\\\\n +-- " + p.ID + " : " + p.Elem[0].ID + " ... " + p.Elem[len(p.Elem)-1].ID
-		}
-	}
-	for _, v := range net.Declaration.Vars {
-		s += "\\\\nvar  " + v.ID + " : " + v.Type.ID
-	}
-	return s + "}\n"
+	// // we also add a note (node)to display the info in ndr
+	// s += "\nnt n0 1 {net " + net.Name
+	// for _, v := range net.Declaration.Sorts {
+	// 	s += "\\\\ntype " + v.String()
+	// }
+	// for _, v := range net.Declaration.Partitions {
+	// 	s += "\\\\npartition " + v.ID + " : " + v.Type.ID
+	// 	for _, p := range v.Partitions {
+	// 		s += "\\\\n +-- " + p.ID + " : " + p.Elem[0].ID + " ... " + p.Elem[len(p.Elem)-1].ID
+	// 	}
+	// }
+	// for _, v := range net.Declaration.Vars {
+	// 	s += "\\\\nvar  " + v.ID + " : " + v.Type.ID
+	// }
+	// return s + "}\n"
+	return s
 }
 
 // ----------------------------------------------------------------------
