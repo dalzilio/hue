@@ -23,12 +23,11 @@ import (
 //
 // Eval return the set of constant values that match a ground Expression (an
 // expression without free variables, such as the ones used to define the
-// initial marking), together with their multiplicities. The method returns two
-// slices that have equal length.
+// initial marking), together with their multiplicities.
 type Expression interface {
 	String() string
 	AddEnv(Env) Env
-	Eval(*Net) ([]*Value, []int)
+	Eval(*Net) []Atom
 }
 
 // ----------------------------------------------------------------------
@@ -74,13 +73,13 @@ func (p All) String() string {
 
 func (p All) AddEnv(env Env) Env { return env }
 
-func (p All) Eval(net *Net) ([]*Value, []int) {
+func (p All) Eval(net *Net) []Atom {
 	f := net.World[string(p)]
-	m := make([]int, len(f))
+	m := make([]Atom, len(f))
 	for i := range f {
-		m[i] = 1
+		m[i] = Atom{f[i], 1}
 	}
-	return f, m
+	return m
 }
 
 // ----------------------------------------------------------------------
@@ -96,15 +95,12 @@ func (p Add) AddEnv(env Env) Env {
 	return multaddEnv(p, env)
 }
 
-func (p Add) Eval(net *Net) ([]*Value, []int) {
-	var res []*Value
-	var mult []int
+func (p Add) Eval(net *Net) []Atom {
+	var res []Atom
 	for i := range p {
-		f, m := p[i].Eval(net)
-		res = append(res, f...)
-		mult = append(mult, m...)
+		res = append(res, p[i].Eval(net)...)
 	}
-	return res, mult
+	return res
 }
 
 // ----------------------------------------------------------------------
@@ -121,39 +117,37 @@ func (p Subtract) AddEnv(env Env) Env {
 	return multaddEnv(p, env)
 }
 
-func (p Subtract) Eval(net *Net) ([]*Value, []int) {
-	fa, ma := p[0].Eval(net)
-	if fa == nil || len(p) == 1 {
-		return fa, ma
+func (p Subtract) Eval(net *Net) []Atom {
+	ma := p[0].Eval(net)
+	if ma == nil || len(p) == 1 {
+		return ma
 	}
 	for i := 1; i < len(p); i++ {
-		fb, mb := p[i].Eval(net)
-		if fb == nil {
+		mb := p[i].Eval(net)
+		if mb == nil {
 			continue
 		}
-		fa, ma = subtract(fa, ma, fb, mb)
+		ma = subtract(ma, mb)
 	}
-	return fa, ma
+	return ma
 }
 
 // subtract computes multiset difference, taking into account multiplicities
-func subtract(fa []*Value, ma []int, fb []*Value, mb []int) ([]*Value, []int) {
-	var f []*Value
-	var m []int
+func subtract(ma []Atom, mb []Atom) []Atom {
+	var res []Atom
 OUTER:
-	for i, a := range fa {
-		for j, b := range fb {
-			if a == b {
-				if ma[i]-mb[j] <= 0 {
+	for _, a := range ma {
+		for _, b := range mb {
+			if a.Value == b.Value {
+				if a.Mult-b.Mult <= 0 {
 					continue OUTER
 				}
-				ma[i] = ma[i] - mb[j]
+				a.Mult = a.Mult - b.Mult
 			}
 		}
-		f = append(f, a)
-		m = append(m, ma[i])
+		res = append(res, Atom{a.Value, a.Mult})
 	}
-	return f, m
+	return res
 }
 
 // ----------------------------------------------------------------------
@@ -169,23 +163,19 @@ func (p Tuple) AddEnv(env Env) Env {
 	return multaddEnv(p, env)
 }
 
-func (p Tuple) Eval(net *Net) ([]*Value, []int) {
-	res := []*Value{nil}
+func (p Tuple) Eval(net *Net) []Atom {
+	res := []Atom{{nil, 1}}
 	for i := len(p) - 1; i >= 0; i-- {
-		f, _ := p[i].Eval(net)
-		foo := []*Value{}
-		for _, v1 := range f {
+		fi := p[i].Eval(net)
+		fr := []Atom{}
+		for _, v1 := range fi {
 			for _, v2 := range res {
-				foo = append(foo, net.Unique[Value{Head: v1.Head, Tail: v2}])
+				fr = append(fr, Atom{net.Unique[Value{Head: v1.Value.Head, Tail: v2.Value}], 1})
 			}
 		}
-		res = foo
+		res = fr
 	}
-	mres := []int{}
-	for i := 0; i < len(res); i++ {
-		mres = append(mres, 1)
-	}
-	return res, mres
+	return res
 }
 
 // ----------------------------------------------------------------------
@@ -227,7 +217,7 @@ func (p Operation) AddEnv(env Env) Env {
 	return multaddEnv(p.Elem, env)
 }
 
-func (p Operation) Eval(net *Net) ([]*Value, []int) {
+func (p Operation) Eval(net *Net) []Atom {
 	panic("Eval not authorized on Operation")
 }
 
@@ -251,15 +241,15 @@ func (p Operation) OK(net *Net, env Env) bool {
 		}
 		return false
 	default:
-		v1, _ := p.Elem[0].Eval(net)
-		v2, _ := p.Elem[1].Eval(net)
+		v1 := p.Elem[0].Eval(net)
+		v2 := p.Elem[1].Eval(net)
 		if len(v1) == 0 || len(v2) == 0 {
 			return false
 		}
 		if len(v1) > 1 || len(v2) > 1 {
 			panic("problem in conditional, too many results")
 		}
-		return net.compareExp(v1[0], v2[0], p.Op)
+		return net.compareExp(v1[0].Value, v2[0].Value, p.Op)
 	}
 }
 
@@ -274,20 +264,20 @@ func (p Constant) String() string {
 
 func (p Constant) AddEnv(env Env) Env { return env }
 
-func (p Constant) Eval(net *Net) ([]*Value, []int) {
+func (p Constant) Eval(net *Net) []Atom {
 	pval, found := net.order[string(p)]
 	if !found {
 		f, wfound := net.World[string(p)]
 		if !wfound {
 			log.Fatalf("identifier %s is not a constant or a known type", string(p))
 		}
-		m := make([]int, len(f))
+		m := make([]Atom, len(f))
 		for i := range f {
-			m[i] = 1
+			m[i] = Atom{f[i], 1}
 		}
-		return f, m
+		return m
 	}
-	return []*Value{pval}, []int{1}
+	return []Atom{{pval, 1}}
 }
 
 // ----------------------------------------------------------------------
@@ -309,8 +299,8 @@ func (p FIRConstant) String() string {
 
 func (p FIRConstant) AddEnv(env Env) Env { return env }
 
-func (p FIRConstant) Eval(net *Net) ([]*Value, []int) {
-	return []*Value{net.order[p.stringify()]}, []int{1}
+func (p FIRConstant) Eval(net *Net) []Atom {
+	return []Atom{{net.order[p.stringify()], 1}}
 }
 
 // ----------------------------------------------------------------------
@@ -326,7 +316,7 @@ func (p Var) AddEnv(env Env) Env {
 	return insertEnv(env, p)
 }
 
-func (p Var) Eval(net *Net) ([]*Value, []int) {
+func (p Var) Eval(net *Net) []Atom {
 	panic("Eval not authorized on Var")
 }
 
@@ -341,8 +331,8 @@ func (p Dot) String() string {
 
 func (p Dot) AddEnv(env Env) Env { return env }
 
-func (p Dot) Eval(net *Net) ([]*Value, []int) {
-	return []*Value{net.vdot}, []int{1}
+func (p Dot) Eval(net *Net) []Atom {
+	return []Atom{{net.vdot, 1}}
 }
 
 // ----------------------------------------------------------------------
@@ -367,7 +357,7 @@ func (p Successor) AddEnv(env Env) Env {
 	return insertEnv(env, p.Var)
 }
 
-func (p Successor) Eval(net *Net) ([]*Value, []int) {
+func (p Successor) Eval(net *Net) []Atom {
 	panic("Eval not authorized on Successor")
 	// c := env[string(p.Var)]
 	// res := net.Next(p.Incr, c)
@@ -394,12 +384,12 @@ func (p Numberof) AddEnv(env Env) Env {
 	return p.Expression.AddEnv(env)
 }
 
-func (p Numberof) Eval(net *Net) ([]*Value, []int) {
-	f, m := p.Expression.Eval(net)
-	for i := range f {
-		m[i] = p.Mult
+func (p Numberof) Eval(net *Net) []Atom {
+	m := p.Expression.Eval(net)
+	for i := range m {
+		m[i].Mult = p.Mult
 	}
-	return f, m
+	return m
 }
 
 // ----------------------------------------------------------------------

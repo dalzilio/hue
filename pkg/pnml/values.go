@@ -19,6 +19,35 @@ type Value struct {
 	Tail *Value
 }
 
+// Atom is a pair of a multiplicity and a colored value.
+type Atom struct {
+	*Value
+	Mult int
+}
+
+// Hue is a slice of Atoms meant to represent the possible value in a colored
+// place
+type Hue []Atom
+
+func (pm Hue) Sum() int {
+	s := 0
+	for _, v := range pm {
+		s += v.Mult
+	}
+	return s
+}
+
+func (net *Net) PrintHue(pm Hue) string {
+	if len(pm) == 0 {
+		return "-"
+	}
+	s := ""
+	for _, v := range pm {
+		s += fmt.Sprintf("%d'%s ", v.Mult, net.PrintValue(v.Value))
+	}
+	return s
+}
+
 // ----------------------------------------------------------------------
 
 // ValueIsLess reports if vi is before vj in comparaison order. We assume, and

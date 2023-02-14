@@ -33,7 +33,7 @@ func (net Net) String() string {
 func (net Net) Tina() string {
 	s := fmt.Sprintf("net {%s}\n", net.Name)
 	for _, v := range net.Places {
-		if is := net.PrintPMarking(v.Init); is != "-" {
+		if is := net.PrintHue(v.Init); is != "-" {
 			s += fmt.Sprintf("pl {%s} : {%s} (1)\n", v.Name, is)
 		} else {
 			s += fmt.Sprintf("pl {%s}\n", v.Name)

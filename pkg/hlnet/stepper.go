@@ -3,6 +3,8 @@
 // the LICENSE file.
 package hlnet
 
+import "github.com/dalzilio/hue/pkg/pnml"
+
 // Stepper is the type of marked hlnet, that is a pair consisting of a
 // high-level net and its current marking
 type Stepper struct {
@@ -13,7 +15,7 @@ type Stepper struct {
 
 // NewStepper returns a fresh Stepper starting with the initial marking of n
 func NewStepper(n *Net) *Stepper {
-	m0 := Marking{COL: make([]PMarking, len(n.Places))}
+	m0 := Marking{COL: make([]pnml.Hue, len(n.Places))}
 	lpn := 0
 	for k, v := range n.Places {
 		m0.COL[k] = v.Init
@@ -50,12 +52,12 @@ func (s *Stepper) ComputeEnabled() {
 }
 
 // CheckCondition checks the (marking) condition of the given transition.
-func (s *Stepper) CheckCondition(t Transition) bool {
-	for _, v := range net.cond[i] {
-		if m.get(v.value) < v.mult {
-			return false
-		}
-	}
+func (s *Stepper) CheckCondition(t *Transition) bool {
+	// for _, v := range net.cond[i] {
+	// 	if m.get(v.value) < v.mult {
+	// 		return false
+	// 	}
+	// }
 
 	return true
 }

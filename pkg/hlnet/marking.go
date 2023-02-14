@@ -5,7 +5,6 @@ package hlnet
 
 import (
 	"fmt"
-	"sort"
 	"strings"
 
 	"github.com/dalzilio/hue/pkg/pnml"
@@ -17,69 +16,17 @@ import (
 // (tokens-count) and the list of enabled transitions (for is-fireable), which
 // helps simplify the evaluation of formulas.
 type Marking struct {
-	COL     []PMarking
+	COL     []pnml.Hue
 	PT      map[string]int
 	Enabled map[string]bool
 }
 
-// Atom is a pair of a multiplicity and a colored value.
-type Atom struct {
-	Value *pnml.Value
-	Mult  int
-}
-
-// PMarking is the possible marking of a single place. It is a multiset of Atom,
-// with the following conventions:
-//
-// - Items are of the form {key, multiplicity} and we cannot have twice the same
-// key ;
-//
-// - Items with weight 0 do not appear in multisets (default weight) ;
-//
-// - Items are ordered in increasing order of keys.
-type PMarking []Atom
-
 // ----------------------------------------------------------------------
-
-// EvaluateGround evaluates a ground expression, that is an expression with no
-// free variables, into a PMarking. This is useful for computing the initial
-// marking.
-func (net *Net) EvaluateGround(expr pnml.Expression) PMarking {
-	if expr == nil {
-		return PMarking{}
-	}
-	vals, mults := expr.Eval(net.Net)
-	res := make(PMarking, len(vals))
-	for k, v := range vals {
-		res[k] = Atom{v, mults[k]}
-	}
-	sort.Slice(res, func(i, j int) bool { return pnml.ValueIsLess(res[i].Value, res[j].Value) })
-	return res
-}
-
-func (net *Net) PrintPMarking(pm PMarking) string {
-	if len(pm) == 0 {
-		return "-"
-	}
-	s := ""
-	for _, v := range pm {
-		s += fmt.Sprintf("%d'%s ", v.Mult, net.PrintValue(v.Value))
-	}
-	return s
-}
-
-func (pm PMarking) Sum() int {
-	s := 0
-	for _, v := range pm {
-		s += v.Mult
-	}
-	return s
-}
 
 func (net *Net) PrintMarking(m Marking) string {
 	s := ""
 	for k, v := range net.Places {
-		s += fmt.Sprintf("%s : %s\n", v.Name, net.PrintPMarking(m.COL[k]))
+		s += fmt.Sprintf("%s : %s\n", v.Name, net.PrintHue(m.COL[k]))
 	}
 	return s
 }
@@ -87,7 +34,7 @@ func (net *Net) PrintMarking(m Marking) string {
 func (net *Net) printMarkingAligned(m Marking, left int, trunc int) string {
 	s := ""
 	for k, v := range net.Places {
-		mm := []rune(net.PrintPMarking(m.COL[k]))
+		mm := []rune(net.PrintHue(m.COL[k]))
 		if len(mm) > trunc {
 			mm = mm[:trunc]
 			mm = append(mm, []rune("...")...)

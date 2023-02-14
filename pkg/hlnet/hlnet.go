@@ -22,7 +22,7 @@ type Net struct {
 // Place is the concrete type of symmetric nets places.
 type Place struct {
 	Name string
-	Init PMarking
+	Init pnml.Hue
 	Type string
 }
 
@@ -66,7 +66,7 @@ func Build(n *pnml.Net) (*Net, error) {
 	for _, p := range n.Page.Places {
 		net.Places[net.PPosition[p.ID]] = &Place{
 			Name: p.ID,
-			Init: net.EvaluateGround(p.InitialMarking),
+			Init: p.InitialMarking.Eval(net.Net),
 			Type: p.Type.ID,
 		}
 	}
