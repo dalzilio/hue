@@ -76,9 +76,37 @@ func Simplify(f Formula) Formula {
 			if sfl == 0 {
 				return BooleanConstant(true)
 			}
+		case TokensCount:
+			switch sfr := sfr.(type) {
+			case TokensCount:
+				//  Simplify(a <= a) = True
+				if stringSlicesEqual(sfl, sfr) {
+					return BooleanConstant(true)
+				}
+			default:
+				break
+			}
 		}
 		return IntegerLe{Left: sfl, Right: sfr}
 	default:
 		return f
 	}
+}
+
+func stringSlicesEqual(a1, a2 []string) bool {
+	if len(a1) != len(a2) {
+		return false
+	}
+	if a1 == nil {
+		return a2 == nil
+	}
+	if a2 == nil {
+		return false
+	}
+	for k := range a1 {
+		if a1[k] != a2[k] {
+			return false
+		}
+	}
+	return true
 }

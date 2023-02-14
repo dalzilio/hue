@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"sort"
 )
 
 // ----------------------------------------------------------------------
@@ -168,6 +169,7 @@ func parseElement(decoder *xml.Decoder) (Formula, error) {
 			if err != nil {
 				return nil, err
 			}
+			sort.Strings(tr.TrList)
 			return IsFireable(tr.TrList), nil
 		case "tokens-count":
 			var pl Places
@@ -175,6 +177,7 @@ func parseElement(decoder *xml.Decoder) (Formula, error) {
 			if err != nil {
 				return nil, err
 			}
+			sort.Strings(pl.PlList)
 			return TokensCount(pl.PlList), nil
 		default:
 			return nil, errors.New("malformed XML: unexpected Token <" + se.Name.Local + ">")
