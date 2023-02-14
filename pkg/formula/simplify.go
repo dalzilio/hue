@@ -39,6 +39,9 @@ func Simplify(f Formula) Formula {
 		if len(sfa) == 0 {
 			return BooleanConstant(false)
 		}
+		if len(sfa) == 1 {
+			return sfa[0]
+		}
 		return Disjunction(sfa)
 	case Conjunction:
 		sfa := []Formula{}
@@ -59,6 +62,9 @@ func Simplify(f Formula) Formula {
 		}
 		if len(sfa) == 0 {
 			return BooleanConstant(true)
+		}
+		if len(sfa) == 1 {
+			return sfa[0]
 		}
 		return Conjunction(sfa)
 	case IntegerLe:
