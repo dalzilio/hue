@@ -95,12 +95,14 @@ func (f IntegerLe) String() string {
 type IsFireable []string
 
 func (f IsFireable) String() string {
+	if len(f) == 1 {
+		return f[0]
+	}
 	s := f[0]
 	for k := 1; k < len(f); k++ {
-		s += "," + f[k]
+		s += " " + f[k]
 	}
-	// return "\"" + s + "\"?"
-	return "fire_" + s
+	return "(or " + s + ")"
 }
 
 // ----------------------------------------------------------------------
@@ -110,11 +112,14 @@ func (f IsFireable) String() string {
 type TokensCount []string
 
 func (f TokensCount) String() string {
+	if len(f) == 1 {
+		return f[0]
+	}
 	s := f[0]
 	for k := 1; k < len(f); k++ {
 		s += " " + f[k]
 	}
-	return "(+ " + s + " 0)"
+	return "(+ " + s + ")"
 }
 
 // ----------------------------------------------------------------------
