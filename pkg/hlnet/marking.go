@@ -13,9 +13,9 @@ import (
 
 // Marking is the type of High-Level Nets (hlnet) markings. It is a slice
 // containing the PMarking of each places in the same order than in Places. We
-// also use hashmaps to have the "compound" marking for each place
-// (tokens-count) and the list of enabled transitions (for is-fireable), which
-// helps simplify the evaluation of formulas.
+// also use hashmaps to have the "compound" marking for each place (useful for
+// computing tokens-count) and the list of enabled transitions (for
+// is-fireable), which helps simplify the evaluation of formulas.
 type Marking struct {
 	COL     []pnml.Hue
 	PT      map[string]int

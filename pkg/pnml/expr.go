@@ -16,6 +16,10 @@ import (
 // Expression is the interface that wraps the type of PNML expression (we only
 // consider symmetric nets).
 //
+// We assume that Add-expressions (like a + b) are always top-level and that
+// <all> and <subtract> expressions cannot occur in the condition of an input
+// arc.
+//
 // AddEnv is used to accumulate the free variables in the Expression to an
 // existing environment. It can be used to add the free variables of an
 // expression to an alreay existing environment. It creates a (sorted) slice
@@ -24,10 +28,16 @@ import (
 // Eval return the set of constant values that match a ground Expression (an
 // expression without free variables, such as the ones used to define the
 // initial marking), together with their multiplicities.
+//
+// Iterate creates a network of separate go routine that will send values
+// matching the expression over a given channel. The routine can signal that it
+// has no more matches and the iteration can be reset. The VEnv is used to check
+// that we respect previous choices that were already made by other iterators.
 type Expression interface {
 	String() string
 	AddEnv(Env) Env
 	Eval(*Net) []Atom
+	// Iterate(itchan)
 }
 
 // ----------------------------------------------------------------------
@@ -82,6 +92,10 @@ func (p All) Eval(net *Net) []Atom {
 	return m
 }
 
+func (p All) Iterate(ch itchan) {
+	panic("try to apply IterTest to an <All> expression")
+}
+
 // ----------------------------------------------------------------------
 
 // Add is the type of add expressions.
@@ -101,6 +115,10 @@ func (p Add) Eval(net *Net) []Atom {
 		res = append(res, p[i].Eval(net)...)
 	}
 	return res
+}
+
+func (p Add) Iterate(ch itchan) {
+	panic("try to apply IterTest to an <Add> expression")
 }
 
 // ----------------------------------------------------------------------
@@ -130,6 +148,10 @@ func (p Subtract) Eval(net *Net) []Atom {
 		ma = subtract(ma, mb)
 	}
 	return ma
+}
+
+func (p Subtract) Iterate(ch itchan) {
+	panic("try to apply Iterate to a <Subtract> expression")
 }
 
 // subtract computes multiset difference, taking into account multiplicities
@@ -429,6 +451,19 @@ func insertEnv(env Env, x Var) Env {
 	env = append(env[:i+1], env[i:]...)
 	env[i] = string(x)
 	return env
+}
+
+// SplitAdds takes an expression and splits the top-level Add operator, if any.
+func SplitAdds(e Expression) []Expression {
+	if e == nil {
+		return []Expression{}
+	}
+	switch e := e.(type) {
+	case Add:
+		return e
+	default:
+		return []Expression{e}
+	}
 }
 
 // ----------------------------------------------------------------------

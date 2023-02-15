@@ -57,11 +57,16 @@ func (s *Stepper) ComputeEnabled() {
 
 // CheckCondition checks the (marking) condition of the given transition.
 func (s *Stepper) CheckCondition(t *Transition) bool {
-	// for _, v := range net.cond[i] {
-	// 	if m.get(v.value) < v.mult {
-	// 		return false
-	// 	}
+	// // We collect the conditions and the marking of the places for the input arcs.
+	// inse := []pnml.Expression{}
+	// insm := []pnml.Hue{}
+	// for _, a := range t.Ins {
+	// 	inse = append(inse, a.Pattern)
+	// 	insm = append(insm, s.COL[a.Place])
 	// }
-
-	return true
+	// // we initalize a mapping between var names in the transition environment
+	// // and their values
+	// assoc := make(map[string]pnml.Atom)
+	// return pnml.ExistMatch(inse, insm, assoc, t.Cond)
+	return false
 }

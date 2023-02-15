@@ -138,7 +138,7 @@ type RawXML struct {
 type Transition struct {
 	ID        string `xml:"id,attr"`
 	XML       RawXML `xml:"condition>structure"`
-	Condition Expression
+	Condition Operation
 }
 
 // ----------------------------------------------------------------------

@@ -7,7 +7,7 @@ package formula
 import "fmt"
 
 func (p *Query) String() string {
-	s := fmt.Sprintf("Property %s :\n", p.ID)
+	s := fmt.Sprintf("Property %s\n", p.ID)
 	if p.IsEF {
 		s += fmt.Sprintf("EF %v\n", p.Formula)
 	} else {

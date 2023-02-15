@@ -36,7 +36,8 @@ func main() {
 	var flagshowqueries = flag.Bool("show-queries", false, "print queries on standard output")
 	var flaghidetrivial = flag.Bool("hide-trivial", false, "hide results for trivial queries")
 	var flaghideundef = flag.Bool("hide-undef", false, "hide queries with UNDEF result")
-	var flagreach = flag.BoolP("reach", "r", false, "check ReachabilityCardinality.xml file")
+	var flagreach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
+	var flagfire = flag.BoolP("fireability", "f", false, "check ReachabilityFireability.xml file")
 
 	flag.CommandLine.SortFlags = false
 
@@ -50,6 +51,7 @@ func main() {
 	}
 
 	flag.Parse()
+	needformulas := *flagfire || *flagreach
 	N := len(flag.Args())
 
 	if *flaghelp {
@@ -126,10 +128,14 @@ func main() {
 		fmt.Fprintf(os.Stdout, "%s\n", s)
 	}
 
-	queries := []formula.Query{}
+	if needformulas {
+		if *flagreach {
+			xmlFile, err = os.Open(filepath.Join(dirname, "ReachabilityCardinality.xml"))
+		}
+		if *flagfire {
+			xmlFile, err = os.Open(filepath.Join(dirname, "ReachabilityFireability.xml"))
+		}
 
-	if *flagreach {
-		xmlFile, err := os.Open(filepath.Join(dirname, "ReachabilityCardinality.xml"))
 		if err != nil {
 			log.Fatal("Error opening file:", err)
 			os.Exit(1)
@@ -137,25 +143,22 @@ func main() {
 		}
 		defer xmlFile.Close()
 		decoder := formula.NewDecoder(xmlFile)
-		queries, err = decoder.Build()
+		queries, err := decoder.Build()
 		if err != nil {
 			log.Fatal("Error decoding Formula file:", err)
 			os.Exit(1)
 			return
 		}
-	}
-
-	if *flagreach {
 		for _, q := range queries {
 			v := hlnet.Evaluate(q, s.Marking)
 			if !*flaghideundef || (*flaghideundef && (v != hlnet.UNDEF)) {
 				if !*flaghidetrivial || (*flaghidetrivial && !q.IsTrivial()) {
 					if *flagshowqueries {
 						fmt.Fprint(os.Stdout, q.String())
-						fmt.Fprintf(os.Stdout, "%s : %s \n", q.ID, v)
+						fmt.Fprintf(os.Stdout, "VERDICT\t%s\n", v)
 						fmt.Println("----------------------------------")
 					} else {
-						fmt.Fprintf(os.Stdout, "%s : %s \n", q.ID, v)
+						fmt.Fprintf(os.Stdout, "FORMULA %s %s\n", q.ID, v)
 					}
 				}
 			}

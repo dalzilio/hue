@@ -35,9 +35,11 @@ type Transition struct {
 	Outs []*Arcs
 }
 
-// Arcs is the concrete type of symmetric nets arcs.
+// Arcs is the concrete type of symmetric nets arcs. We split the condition on
+// arcs to remove top-level <Add> expressions. This will help when we try to
+// unify patterns with the values found in a place.
 type Arcs struct {
-	Pattern pnml.Expression
+	Pattern []pnml.Expression
 	Env     pnml.Env
 	Place   int
 }
@@ -90,12 +92,7 @@ func Build(n *pnml.Net) (*Net, error) {
 	net.Trans = make([]*Transition, len(tnames))
 	for _, t := range n.Page.Trans {
 		env := pnml.Env{}
-		var cond pnml.Operation
-		if t.Condition == nil {
-			cond = pnml.Operation{Op: pnml.NIL}
-		} else {
-			cond = t.Condition.(pnml.Operation)
-		}
+		cond := t.Condition
 		env = cond.AddEnv(env)
 		for _, varname := range env {
 			if _, ok := n.TypeEnvt[varname]; !ok {
@@ -106,11 +103,8 @@ func Build(n *pnml.Net) (*Net, error) {
 	}
 
 	for _, a := range n.Page.Arcs {
-		e := Arcs{Pattern: a.Pattern}
-		if e.Pattern == nil {
-			e.Pattern = pnml.Operation{Op: pnml.NIL}
-		}
-		e.Env = e.Pattern.AddEnv(pnml.Env{})
+		e := Arcs{Pattern: pnml.SplitAdds(a.Pattern)}
+		e.Env = a.Pattern.AddEnv(pnml.Env{})
 		for _, varname := range e.Env {
 			if _, ok := n.TypeEnvt[varname]; !ok {
 				return nil, fmt.Errorf("variable \"%s\" used in pattern of arc from %s to %s was never declared", varname, a.Source, a.Target)
@@ -120,7 +114,7 @@ func Build(n *pnml.Net) (*Net, error) {
 			// arc source is a place, target is a transition. The edge is an
 			// input arc (Ins). We add the variables in the pattern to env.
 			t := net.Trans[net.TPosition[a.Target]]
-			t.Env = e.Pattern.AddEnv(t.Env)
+			t.Env = a.Pattern.AddEnv(t.Env)
 			e.Place = p
 			t.Ins = append(t.Ins, &e)
 		}
@@ -128,7 +122,7 @@ func Build(n *pnml.Net) (*Net, error) {
 			// arc source is a transition, target is a place. The edge is an
 			// output arc.
 			t := net.Trans[net.TPosition[a.Source]]
-			t.Env = e.Pattern.AddEnv(t.Env)
+			t.Env = a.Pattern.AddEnv(t.Env)
 			e.Place = p
 			t.Outs = append(t.Outs, &e)
 		}
