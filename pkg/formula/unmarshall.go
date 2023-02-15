@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"sort"
+	"strconv"
 )
 
 // ----------------------------------------------------------------------
@@ -60,7 +61,7 @@ type Transitions struct {
 }
 
 type Constant struct {
-	Value int `xml:"integer−constant"`
+	Value []byte `xml:",innerxml"`
 }
 
 // ----------------------------------------------------------------------
@@ -162,7 +163,11 @@ func parseElement(decoder *xml.Decoder) (Formula, error) {
 			if err != nil {
 				return nil, err
 			}
-			return IntegerConstant(cst.Value), nil
+			v, err := strconv.Atoi(string(cst.Value))
+			if err != nil {
+				return nil, err
+			}
+			return IntegerConstant(v), nil
 		case "is-fireable":
 			var tr Transitions
 			err := decoder.DecodeElement(&tr, &se)
@@ -203,7 +208,7 @@ func (d *Decoder) Build() ([]Query, error) {
 			if err != nil {
 				return nil, fmt.Errorf(" decoding XML input in EF query %d : %s", k, err)
 			}
-			res[k] = Query{ID: p.Id, IsEF: true, Formula: Simplify(ff)}
+			res[k] = Query{ID: p.Id, IsEF: true, Formula: (ff)} // ADD Simplify !!!!!!
 		} else {
 			ff, err := parseFormula(p.AG.InnerXML)
 			if err != nil {
