@@ -33,7 +33,9 @@ func main() {
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
 	var flagstat = flag.BoolP("stat", "s", false, "print statistics information")
 	var flagversion = flag.Bool("version", false, "print version number and generation date of hwalk")
-	var flagverbose = flag.Bool("verbose", false, "print more information on the standard output")
+	var flagshowqueries = flag.Bool("show-queries", false, "print queries on standard output")
+	var flaghidetrivial = flag.Bool("hide-trivial", false, "hide results for trivial queries")
+	var flaghideundef = flag.Bool("hide-undef", false, "hide queries with UNDEF result")
 	var flagreach = flag.BoolP("reach", "r", false, "check ReachabilityCardinality.xml file")
 
 	flag.CommandLine.SortFlags = false
@@ -66,13 +68,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	// // we capture panics
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		log.Fatal("Error in generation: cannot compute")
-	// 		os.Exit(1)
-	// 	}
-	// }()
+	// we capture panics
+	defer func() {
+		if r := recover(); r != nil {
+			log.Fatal("Error in generation: cannot compute")
+			os.Exit(1)
+		}
+	}()
 
 	start := time.Now()
 
@@ -145,10 +147,17 @@ func main() {
 
 	if *flagreach {
 		for _, q := range queries {
-			if *flagverbose || !q.IsTrivial() {
-				fmt.Fprint(os.Stdout, q.String())
-				fmt.Fprintf(os.Stdout, "%s : %s \n", q.ID, hlnet.Evaluate(q, s.Marking))
-				fmt.Println("----------------------------------")
+			v := hlnet.Evaluate(q, s.Marking)
+			if !*flaghideundef || (*flaghideundef && (v != hlnet.UNDEF)) {
+				if !*flaghidetrivial || (*flaghidetrivial && !q.IsTrivial()) {
+					if *flagshowqueries {
+						fmt.Fprint(os.Stdout, q.String())
+						fmt.Fprintf(os.Stdout, "%s : %s \n", q.ID, v)
+						fmt.Println("----------------------------------")
+					} else {
+						fmt.Fprintf(os.Stdout, "%s : %s \n", q.ID, v)
+					}
+				}
 			}
 		}
 	}
