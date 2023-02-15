@@ -8,8 +8,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/dalzilio/hue/pkg/formula"
+	"github.com/dalzilio/hue/pkg/hlnet"
+	"github.com/dalzilio/hue/pkg/pnml"
 	flag "github.com/spf13/pflag"
 )
 
@@ -27,14 +31,15 @@ var gitversion string = "v0"
 
 func main() {
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
-	// var flagstat = flag.BoolP("stat", "s", false, "print statistics information")
-	var flagversion = flag.Bool("version", false, "print version number and generation date of twina")
-	var flagff = flag.BoolP("formula-file", "f", false, "path to a reachability formula file")
+	var flagstat = flag.BoolP("stat", "s", false, "print statistics information")
+	var flagversion = flag.Bool("version", false, "print version number and generation date of hwalk")
+	var flagverbose = flag.Bool("verbose", false, "print more information on the standard output")
+	var flagreach = flag.BoolP("reach", "r", false, "check ReachabilityCardinality.xml file")
 
 	flag.CommandLine.SortFlags = false
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "hue version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
+		fmt.Fprintf(os.Stderr, "hwalk version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nfiles:\n")
@@ -43,7 +48,7 @@ func main() {
 	}
 
 	flag.Parse()
-	// N := len(flag.Args())
+	N := len(flag.Args())
 
 	if *flaghelp {
 		flag.Usage()
@@ -54,30 +59,75 @@ func main() {
 		fmt.Printf("hue version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
 	}
 
-	// switch {
-	// case N != 1 && !*flagff:
-	// 	fmt.Println("should have exactly one pnml file")
-	// 	flag.Usage()
-	// 	os.Exit(1)
-	// case N != 2 && *flagff:
-	// 	fmt.Println("should have exactly one pnml file and one XML formula file")
-	// 	flag.Usage()
-	// 	os.Exit(1)
-	// }
+	switch {
+	case N != 1:
+		fmt.Println("should have exactly one MCC folder parameter")
+		flag.Usage()
+		os.Exit(1)
+	}
 
-	// we capture panics
-	defer func() {
-		if r := recover(); r != nil {
-			log.Fatal("Error in generation: cannot compute")
-			os.Exit(1)
-		}
-	}()
+	// // we capture panics
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		log.Fatal("Error in generation: cannot compute")
+	// 		os.Exit(1)
+	// 	}
+	// }()
 
-	// filename := flag.Arg(0)
+	start := time.Now()
 
-	if *flagff {
-		formulafile := flag.Arg(0)
-		xmlFile, err := os.Open(formulafile)
+	// we check the XML directory exists
+	dirname := flag.Arg(0)
+	xmlDirInfo, err := os.Stat(dirname)
+	if err != nil {
+		log.Println("Error with directory:", err)
+		os.Exit(1)
+		return
+	}
+	if !xmlDirInfo.IsDir() {
+		log.Printf("Path %s is not a directory\n", dirname)
+		os.Exit(1)
+		return
+	}
+
+	// we try to open the model.xml file from it
+	xmlFile, err := os.Open(filepath.Join(dirname, "model.pnml"))
+	if err != nil {
+		log.Println("Error opening file:", err)
+		os.Exit(1)
+		return
+	}
+	defer xmlFile.Close()
+
+	decoder := pnml.NewDecoder(xmlFile)
+	var p = new(pnml.Net)
+	err = decoder.Build(p)
+	if err != nil {
+		log.Println("Error decoding PNML file:", err)
+		os.Exit(1)
+		return
+	}
+
+	hl, err := hlnet.Build(p)
+	if err != nil {
+		log.Println("Error decoding PNML file:", err)
+		os.Exit(1)
+		return
+	}
+
+	s := hlnet.NewStepper(hl)
+
+	if *flagstat {
+		elapsed := time.Since(start)
+		fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
+		fmt.Fprintf(os.Stdout, "%s\n", hl)
+		fmt.Fprintf(os.Stdout, "%s\n", s)
+	}
+
+	queries := []formula.Query{}
+
+	if *flagreach {
+		xmlFile, err := os.Open(filepath.Join(dirname, "ReachabilityCardinality.xml"))
 		if err != nil {
 			log.Fatal("Error opening file:", err)
 			os.Exit(1)
@@ -85,55 +135,21 @@ func main() {
 		}
 		defer xmlFile.Close()
 		decoder := formula.NewDecoder(xmlFile)
-		queries, err := decoder.Build()
+		queries, err = decoder.Build()
 		if err != nil {
 			log.Fatal("Error decoding Formula file:", err)
 			os.Exit(1)
 			return
 		}
-		fmt.Fprintf(os.Stdout, "# %d formulas\n", len(queries))
-		fmt.Fprint(os.Stdout, formula.PrintQueries(queries))
 	}
 
-	// start := time.Now()
-
-	// if filepath.Ext(filename) != ".pnml" {
-	// 	hlnetLogger.Println("Wrong file extension!")
-	// 	os.Exit(1)
-	// 	return
-	// }
-
-	// xmlFile, err := os.Open(filename)
-	// if err != nil {
-	// 	hlnetLogger.Println("Error opening file:", err)
-	// 	os.Exit(1)
-	// 	return
-	// }
-	// defer xmlFile.Close()
-
-	// decoder := pnml.NewDecoder(xmlFile)
-	// var p = new(pnml.Net)
-	// err = decoder.Build(p)
-	// if err != nil {
-	// 	hlnetLogger.Println("Error decoding PNML file:", err)
-	// 	os.Exit(1)
-	// 	return
-	// }
-
-	// hl, err := hlnet.Build(p)
-	// if err != nil {
-	// 	hlnetLogger.Println("Error decoding PNML file:", err)
-	// 	os.Exit(1)
-	// 	return
-	// }
-
-	// s := hlnet.NewStepper(hl)
-
-	// if *flagstat {
-	// 	elapsed := time.Since(start)
-	// 	fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
-	// 	fmt.Fprintf(os.Stdout, "%s\n", hl)
-	// 	fmt.Fprintf(os.Stdout, "%s\n", s)
-	// 	return
-	// }
+	if *flagreach {
+		for _, q := range queries {
+			if *flagverbose || !q.IsTrivial() {
+				fmt.Fprint(os.Stdout, q.String())
+				fmt.Fprintf(os.Stdout, "%s : %s \n", q.ID, hlnet.Evaluate(q, s.Marking))
+				fmt.Println("----------------------------------")
+			}
+		}
+	}
 }

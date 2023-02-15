@@ -15,7 +15,11 @@ type Stepper struct {
 
 // NewStepper returns a fresh Stepper starting with the initial marking of n
 func NewStepper(n *Net) *Stepper {
-	m0 := Marking{COL: make([]pnml.Hue, len(n.Places))}
+	m0 := Marking{
+		COL:     make([]pnml.Hue, len(n.Places)),
+		PT:      make(map[string]int),
+		Enabled: make(map[string]bool),
+	}
 	lpn := 0
 	for k, v := range n.Places {
 		m0.COL[k] = v.Init

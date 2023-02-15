@@ -64,9 +64,15 @@ func Build(n *pnml.Net) (*Net, error) {
 	}
 	net.Places = make([]*Place, len(pnames))
 	for _, p := range n.Page.Places {
+		var h pnml.Hue
+		if p.InitialMarking == nil {
+			h = pnml.Hue{}
+		} else {
+			h = p.InitialMarking.Eval(net.Net)
+		}
 		net.Places[net.PPosition[p.ID]] = &Place{
 			Name: p.ID,
-			Init: p.InitialMarking.Eval(net.Net),
+			Init: h,
 			Type: p.Type.ID,
 		}
 	}

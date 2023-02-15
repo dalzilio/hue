@@ -4,6 +4,17 @@
 
 package formula
 
+// IsTrivial returns true if the query is a Boolean constant.
+func (q Query) IsTrivial() bool {
+	switch q.Formula.(type) {
+	case BooleanConstant:
+		return true
+	default:
+		return false
+	}
+}
+
+// Simplify performs basic simplifications on formulas.
 func Simplify(f Formula) Formula {
 	switch f := f.(type) {
 	case Negation:

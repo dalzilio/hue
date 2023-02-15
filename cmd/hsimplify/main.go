@@ -28,7 +28,7 @@ var gitversion string = "v0"
 
 func main() {
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
-	var flagversion = flag.Bool("version", false, "print version number and generation date of twina")
+	var flagversion = flag.Bool("version", false, "print version number and generation date of hsimplify")
 
 	flag.CommandLine.SortFlags = false
 
