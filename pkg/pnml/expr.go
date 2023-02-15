@@ -29,15 +29,16 @@ import (
 // expression without free variables, such as the ones used to define the
 // initial marking), together with their multiplicities.
 //
-// Iterate creates a network of separate go routine that will send values
-// matching the expression over a given channel. The routine can signal that it
-// has no more matches and the iteration can be reset. The VEnv is used to check
-// that we respect previous choices that were already made by other iterators.
+// Unify report if a pattern expression matches a given *Value. For this we can
+// use the VEnv to check that we respect previously unified variables. We can
+// also update the VEnv by adding new associations. A return value of 0 means no
+// match; otherwise it is the number of "copies" of the value that we need to
+// match
 type Expression interface {
 	String() string
 	AddEnv(Env) Env
 	Eval(*Net) []Atom
-	// Iterate(itchan)
+	Unify(*Net, *Value, VEnv) int
 }
 
 // ----------------------------------------------------------------------
@@ -69,7 +70,8 @@ func (net *Net) compareExp(p1, p2 *Value, op OP) bool {
 		}
 		return p1.Head >= p2.Head
 	}
-	panic("not reachable in compareExp")
+	log.Panic("not reachable in compareExp")
+	panic("")
 }
 
 // ----------------------------------------------------------------------
@@ -92,8 +94,9 @@ func (p All) Eval(net *Net) []Atom {
 	return m
 }
 
-func (p All) Iterate(ch itchan) {
-	panic("try to apply IterTest to an <All> expression")
+func (p All) Unify(net *Net, v *Value, venv VEnv) int {
+	log.Panic("try to apply Unify to an <All> expression")
+	panic("")
 }
 
 // ----------------------------------------------------------------------
@@ -117,8 +120,9 @@ func (p Add) Eval(net *Net) []Atom {
 	return res
 }
 
-func (p Add) Iterate(ch itchan) {
-	panic("try to apply IterTest to an <Add> expression")
+func (p Add) Unify(net *Net, v *Value, venv VEnv) int {
+	log.Panic("try to apply Unify to an <Add> expression")
+	panic("")
 }
 
 // ----------------------------------------------------------------------
@@ -150,8 +154,9 @@ func (p Subtract) Eval(net *Net) []Atom {
 	return ma
 }
 
-func (p Subtract) Iterate(ch itchan) {
-	panic("try to apply Iterate to a <Subtract> expression")
+func (p Subtract) Unify(net *Net, v *Value, venv VEnv) int {
+	log.Panic("try to apply Unify to a <Subtract> expression")
+	panic("")
 }
 
 // subtract computes multiset difference, taking into account multiplicities
@@ -200,6 +205,39 @@ func (p Tuple) Eval(net *Net) []Atom {
 	return res
 }
 
+func (p Tuple) Unify(net *Net, v *Value, venv VEnv) int {
+	// v should be a tuple of size equal to p. We cannot detect this without
+	// starting to explore v. We can also safely assume that the tuple is of
+	// size at least 2 and that tuples only contain constants. We never have
+	// tuples inside of tuples.
+	if v.Tail == nil {
+		log.Panic("matching tuple expression with non-tuple value in Unify")
+	}
+	// We make a deep copy of venv since we may need to backtrack some
+	// modifications. The multiplicty should always be 1 in this case.
+	venv2 := venv.duplicate()
+	vv := v
+	for _, e := range p {
+		if vv == nil {
+			log.Panic("matching tuple value is shorter than tuple expression in Unify")
+		}
+		mult := e.Unify(net, net.Unique[Value{Head: vv.Head}], venv)
+		if mult == 0 {
+			// unification fails.
+			venv.copy(venv2)
+			return 0
+		}
+		if mult != 1 {
+			log.Panic("matching multiplicity different from 1 during unification of tuple")
+		}
+		vv = v.Tail
+	}
+	if vv != nil {
+		log.Panic("matching tuple value is longer than tuple expression in Unify")
+	}
+	return 1
+}
+
 // ----------------------------------------------------------------------
 
 // Operation is the type of expressions that apply an operation to a slice of
@@ -240,7 +278,13 @@ func (p Operation) AddEnv(env Env) Env {
 }
 
 func (p Operation) Eval(net *Net) []Atom {
-	panic("Eval not authorized on Operation")
+	log.Panic("Eval not authorized on Operation")
+	panic("")
+}
+
+func (p Operation) Unify(net *Net, v *Value, venv VEnv) int {
+	log.Panic("try to apply Unify to an <Operation> expression")
+	panic("")
 }
 
 // OK returns whether the condition evaluates to true.
@@ -269,7 +313,7 @@ func (p Operation) OK(net *Net, env Env) bool {
 			return false
 		}
 		if len(v1) > 1 || len(v2) > 1 {
-			panic("problem in conditional, too many results")
+			log.Panic("problem in conditional, too many results")
 		}
 		return net.compareExp(v1[0].Value, v2[0].Value, p.Op)
 	}
@@ -289,17 +333,30 @@ func (p Constant) AddEnv(env Env) Env { return env }
 func (p Constant) Eval(net *Net) []Atom {
 	pval, found := net.order[string(p)]
 	if !found {
-		f, wfound := net.World[string(p)]
-		if !wfound {
-			log.Fatalf("identifier %s is not a constant or a known type", string(p))
-		}
-		m := make([]Atom, len(f))
-		for i := range f {
-			m[i] = Atom{f[i], 1}
-		}
-		return m
+		log.Panicf("identifier %s is not a constant", string(p))
+		// f, wfound := net.World[string(p)]
+		// if !wfound {
+		// 	log.Panicf("identifier %s is not a constant or a known type", string(p))
+		// }
+		// m := make([]Atom, len(f))
+		// for i := range f {
+		// 	m[i] = Atom{f[i], 1}
+		// }
+		// return m
 	}
 	return []Atom{{pval, 1}}
+}
+
+func (p Constant) Unify(net *Net, v *Value, venv VEnv) int {
+	// The two values should be equal. We do not expect to find a type constant in
+	pval, found := net.order[string(p)]
+	if !found {
+		log.Panic("bad identifier " + string(p) + " in constant unification")
+	}
+	if pval.Head == v.Head {
+		return 1
+	}
+	return 0
 }
 
 // ----------------------------------------------------------------------
@@ -325,6 +382,18 @@ func (p FIRConstant) Eval(net *Net) []Atom {
 	return []Atom{{net.order[p.stringify()], 1}}
 }
 
+func (p FIRConstant) Unify(net *Net, v *Value, venv VEnv) int {
+	// The two values should be equal. We do not expect to find a type constant in
+	pval, found := net.order[p.stringify()]
+	if !found {
+		log.Panic("FIRconstant " + p.stringify() + " not found in net.order")
+	}
+	if pval.Head == v.Head {
+		return 1
+	}
+	return 0
+}
+
 // ----------------------------------------------------------------------
 
 // Var is the type of variables.
@@ -339,7 +408,26 @@ func (p Var) AddEnv(env Env) Env {
 }
 
 func (p Var) Eval(net *Net) []Atom {
-	panic("Eval not authorized on Var")
+	log.Panic("Eval not authorized on Var")
+	panic("")
+}
+
+func (p Var) Unify(net *Net, v *Value, venv VEnv) int {
+	// We expect that value v is a constant (and not a tuple)
+	if v.Tail != nil {
+		log.Panic("value is not atomic in unification of Var")
+	}
+	vv, ok := venv[string(p)]
+	// if variable p is not set in venv, we add it
+	if !ok {
+		venv[string(p)] = vv
+		return 1
+	}
+	// otherwise we need to check that the values are the same
+	if vv.Head == v.Head {
+		return 1
+	}
+	return 0
 }
 
 // ----------------------------------------------------------------------
@@ -355,6 +443,13 @@ func (p Dot) AddEnv(env Env) Env { return env }
 
 func (p Dot) Eval(net *Net) []Atom {
 	return []Atom{{net.vdot, 1}}
+}
+
+func (p Dot) Unify(net *Net, v *Value, venv VEnv) int {
+	if v.Head == 0 && v.Tail == nil {
+		return 1
+	}
+	return 0
 }
 
 // ----------------------------------------------------------------------
@@ -380,13 +475,19 @@ func (p Successor) AddEnv(env Env) Env {
 }
 
 func (p Successor) Eval(net *Net) []Atom {
-	panic("Eval not authorized on Successor")
+	log.Panic("Eval not authorized on Successor")
+	panic("")
 	// c := env[string(p.Var)]
 	// res := net.Next(p.Incr, c)
 	// if res == nil {
 	// 	return nil, nil
 	// }
 	// return []*Value{res}, []int{1}
+}
+
+func (p Successor) Unify(net *Net, v *Value, venv VEnv) int {
+	log.Panic("try to apply Unify to a <Successor> expression")
+	panic("")
 }
 
 // ----------------------------------------------------------------------
@@ -412,6 +513,13 @@ func (p Numberof) Eval(net *Net) []Atom {
 		m[i].Mult = p.Mult
 	}
 	return m
+}
+
+func (p Numberof) Unify(net *Net, v *Value, venv VEnv) int {
+	if p.Expression.Unify(net, v, venv) == 1 {
+		return p.Mult
+	}
+	return 0
 }
 
 // ----------------------------------------------------------------------

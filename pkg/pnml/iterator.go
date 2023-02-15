@@ -4,12 +4,6 @@
 
 package pnml
 
-type iterand struct {
-	positions []int
-}
-
-type itchan chan iterand
-
 // // We collect the conditions and the marking of the places for the input arcs.
 // inse := []pnml.Expression{}
 // insm := []pnml.Hue{}
