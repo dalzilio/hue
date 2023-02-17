@@ -4,6 +4,11 @@
 
 package pnml
 
+import (
+	"errors"
+	"sort"
+)
+
 // iterator is a structure which allows us to iterate through all the possible
 // valid associations between variables (in a transition Env) and values (in the
 // marking of places). We need to keep track of one position for each "split"
@@ -33,13 +38,16 @@ type arcIterator struct {
 // NewIterator initialize a slice of Iterators for a transition. Pats and pl are
 // two slices of equal length; pats is the list of "split" arc patterns and pl
 // gives the index to the related input places.
-func NewIterator(net *Net, env Env, cond Operation, pats [][]Expression, pl []int) Iterator {
+func NewIterator(net *Net, env Env, cond Operation, pats [][]Expression, pl []int) (Iterator, error) {
 	iter := Iterator{
 		Net:       net,
 		Env:       env,
 		Operation: cond,
 	}
 	iter.arcs = make([]*arcIterator, len(pats))
+	// We need to test that all the variables in env are in the input arcs;
+	// otherwise we may miss constraints during the unification.
+	insEnv := make(Env, 0)
 	for k := range pats {
 		iter.arcs[k] = &arcIterator{
 			exps:     pats[k],
@@ -50,8 +58,26 @@ func NewIterator(net *Net, env Env, cond Operation, pats [][]Expression, pl []in
 			idx:      0,
 			finished: false,
 		}
+		for _, p := range pats[k] {
+			insEnv = p.AddEnv(insEnv)
+		}
 	}
-	return iter
+	if !stringListIncludes(insEnv, cond.AddEnv(nil)) {
+		return iter, errors.New("not enough variables in input arcs patterns")
+	}
+	return iter, nil
+}
+
+// returns true if all the strings in sl2 are also in sl1. WARNING: We sort the
+// input strings.
+func stringListIncludes(sl1, sl2 []string) bool {
+	sort.Strings(sl1)
+	for _, s := range sl2 {
+		if x := sort.SearchStrings(sl1, s); (x >= len(sl1)) || (sl1[x] != s) {
+			return false
+		}
+	}
+	return true
 }
 
 // ----------------------------------------------------------------------

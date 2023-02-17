@@ -17,8 +17,7 @@ import (
 // consider symmetric nets).
 //
 // We assume that Add-expressions (like a + b) are always top-level and that
-// <all> and <subtract> expressions cannot occur in the condition of an input
-// arc.
+// <subtract> expressions cannot occur in the condition of an input arc.
 //
 // AddEnv is used to accumulate the free variables in the Expression to an
 // existing environment. It can be used to add the free variables of an
@@ -94,8 +93,13 @@ func (p All) Eval(net *Net, venv VEnv) []Atom {
 	return m
 }
 
+// This is one of the rare cases where we need to match against several values
+// and not just one. It is only observed on PhilosophersDyn. We could return a
+// negative number in order to test for this particular case but the model has
+// other problems.
 func (p All) Unify(net *Net, v *Value, venv VEnv) int {
-	log.Panic("try to apply Unify to an <All> expression")
+	// return -1
+	log.Fatalln("try to apply Unify to an <All> expression")
 	panic("")
 }
 
@@ -210,9 +214,9 @@ func (p Tuple) Unify(net *Net, v *Value, venv VEnv) int {
 	// starting to explore v. We can also safely assume that the tuple is of
 	// size at least 2 and that tuples only contain constants. We never have
 	// tuples inside of tuples.
-	if v.Tail == nil {
-		log.Panic("matching tuple expression with non-tuple value in Unify")
-	}
+	// if v.Tail == nil {
+	// 	log.Panic("matching tuple expression with non-tuple value in Unify")
+	// }
 	// We make a deep copy of venv since we may need to backtrack some
 	// modifications. The multiplicty should always be 1 in this case.
 	venv2 := venv.duplicate()
@@ -514,11 +518,9 @@ func (p Numberof) Eval(net *Net, venv VEnv) []Atom {
 	return m
 }
 
+// We can return a negative number of
 func (p Numberof) Unify(net *Net, v *Value, venv VEnv) int {
-	if p.Expression.Unify(net, v, venv) == 1 {
-		return p.Mult
-	}
-	return 0
+	return p.Mult * p.Expression.Unify(net, v, venv)
 }
 
 // ----------------------------------------------------------------------

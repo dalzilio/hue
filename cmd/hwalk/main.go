@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"time"
 
 	"github.com/dalzilio/hue/pkg/formula"
@@ -38,6 +39,9 @@ func main() {
 	var flaghideundef = flag.Bool("hide-undef", false, "hide queries with UNDEF result")
 	var flagreach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
 	var flagfire = flag.BoolP("fireability", "f", false, "check ReachabilityFireability.xml file")
+	// to support calls like "--select-queries 12,14"
+	var selectQueries []int
+	flag.IntSliceVar(&selectQueries, "select-queries", []int{}, "comma separated list of queries id")
 
 	flag.CommandLine.SortFlags = false
 
@@ -59,6 +63,8 @@ func main() {
 		os.Exit(0)
 	}
 
+	sort.Ints(selectQueries)
+
 	if *flagversion {
 		fmt.Printf("hue version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
 	}
@@ -71,12 +77,12 @@ func main() {
 	}
 
 	// we capture panics
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		log.Fatal("Error in generation: cannot compute")
-	// 		os.Exit(1)
-	// 	}
-	// }()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Fatal("ERROR: error in generation: cannot compute")
+			os.Exit(1)
+		}
+	}()
 
 	start := time.Now()
 
@@ -119,7 +125,9 @@ func main() {
 		return
 	}
 
-	s := hlnet.NewStepper(hl)
+	// The only possible error, at the moment, is unsupported models for
+	// fireability
+	s, stepperError := hlnet.NewStepper(hl)
 
 	if *flagstat {
 		elapsed := time.Since(start)
@@ -133,6 +141,9 @@ func main() {
 			xmlFile, err = os.Open(filepath.Join(dirname, "ReachabilityCardinality.xml"))
 		}
 		if *flagfire {
+			if stepperError != nil {
+				log.Fatalln("Unsupported model when checking fireability")
+			}
 			xmlFile, err = os.Open(filepath.Join(dirname, "ReachabilityFireability.xml"))
 		}
 
@@ -150,23 +161,26 @@ func main() {
 			return
 		}
 		for k, q := range queries {
-			v := hlnet.EvaluateQueries(q, s.Marking)
-			if !hlnet.EvaluateAndTestSimplify(q, s.Marking) {
-				fmt.Println("----------------------------------")
-				fmt.Printf("SIMPLIFY ERROR in formula %d\n", k)
-				fmt.Fprintf(os.Stdout, "ORIGINAL: %s\n", q.Original.String())
-				fmt.Fprintf(os.Stdout, "SIMPLIFY: %s\n", q.Formula.String())
-				fmt.Println("----------------------------------")
-			}
-
-			if !*flaghideundef || (*flaghideundef && (v != hlnet.UNDEF)) {
-				if !*flaghidetrivial || (*flaghidetrivial && !q.IsTrivial()) {
-					if *flagshowqueries {
-						fmt.Fprint(os.Stdout, q.String())
-						fmt.Fprintf(os.Stdout, "VERDICT\t%s\n", v)
-						fmt.Println("----------------------------------")
-					} else {
-						fmt.Fprintf(os.Stdout, "FORMULA %s %s\n", q.ID, v)
+			whereq := sort.SearchInts(selectQueries, k)
+			if (len(selectQueries) == 0) ||
+				((whereq < len(selectQueries)) && (selectQueries[whereq] == k)) {
+				v := hlnet.EvaluateQueries(q, s.Marking)
+				// if !hlnet.EvaluateAndTestSimplify(q, s.Marking) {
+				// 	fmt.Println("----------------------------------")
+				// 	fmt.Printf("SIMPLIFY ERROR in formula %d\n", k)
+				// 	fmt.Fprintf(os.Stdout, "ORIGINAL: %s\n", q.Original.String())
+				// 	fmt.Fprintf(os.Stdout, "SIMPLIFY: %s\n", q.Formula.String())
+				// 	fmt.Println("----------------------------------")
+				// }
+				if !*flaghideundef || (*flaghideundef && (v != hlnet.UNDEF)) {
+					if !*flaghidetrivial || (*flaghidetrivial && !q.IsTrivial()) {
+						if *flagshowqueries {
+							fmt.Fprint(os.Stdout, q.String())
+							fmt.Fprintf(os.Stdout, "VERDICT\t%s\n", v)
+							fmt.Println("----------------------------------")
+						} else {
+							fmt.Fprintf(os.Stdout, "FORMULA %s %s\n", q.ID, v)
+						}
 					}
 				}
 			}

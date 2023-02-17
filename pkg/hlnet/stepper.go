@@ -4,8 +4,6 @@
 package hlnet
 
 import (
-	"fmt"
-
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
@@ -19,7 +17,7 @@ type Stepper struct {
 }
 
 // NewStepper returns a fresh Stepper starting with the initial marking of n
-func NewStepper(n *Net) *Stepper {
+func NewStepper(n *Net) (*Stepper, error) {
 	m0 := Marking{
 		COL:     make([]pnml.Hue, len(n.Places)),
 		PT:      make(map[string]int),
@@ -48,10 +46,14 @@ func NewStepper(n *Net) *Stepper {
 			inse = append(inse, a.Pattern)
 			insm = append(insm, a.Place)
 		}
-		s.iter[k] = pnml.NewIterator(s.Net.Net, t.Env, t.Cond, inse, insm)
+		var err error
+		s.iter[k], err = pnml.NewIterator(s.Net.Net, t.Env, t.Cond, inse, insm)
+		if err != nil {
+			return &s, err
+		}
 	}
 	s.ComputeEnabled()
-	return &s
+	return &s, nil
 }
 
 func (s *Stepper) String() string {
@@ -63,10 +65,11 @@ func (s *Stepper) String() string {
 func (s *Stepper) ExistMatch(t int) bool {
 	s.iter[t].Reset()
 	if s.iter[t].Check(s.COL) {
-		fmt.Println("----------------------------------")
-		fmt.Printf("%s enabled\n", s.Trans[t].Name)
-		fmt.Printf("witness:\n%s\n", s.PrintCOL(s.iter[t].Witness(s.COL)))
-		fmt.Println("----------------------------------")
+		// fmt.Println("----------------------------------")
+		// fmt.Printf("%s enabled\n", s.Trans[t].Name)
+		// fmt.Printf("witness:\n%s\n", s.PrintCOL(s.iter[t].Witness(s.COL)))
+		// fmt.Println("----------------------------------")
+		return true
 	}
 	return false
 }
