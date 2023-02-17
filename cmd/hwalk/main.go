@@ -33,8 +33,10 @@ var gitversion string = "v0"
 func main() {
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
 	var flagstat = flag.BoolP("stat", "s", false, "print statistics information")
-	var flagversion = flag.Bool("version", false, "print version number and generation date of hwalk")
+	var flagversion = flag.Bool("version", false, "print version number and generation date then quit")
 	var flagshowqueries = flag.Bool("show-queries", false, "print queries on standard output")
+	var flagshowwitness = flag.Bool("show-witness", false, "print witness for enabled transitions")
+	var flagtestfsimplify = flag.Bool("test-simplify", false, "print warning if formulas before and after simplification give different results")
 	var flaghidetrivial = flag.Bool("hide-trivial", false, "hide results for trivial queries")
 	var flaghideundef = flag.Bool("hide-undef", false, "hide queries with UNDEF result")
 	var flagreach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
@@ -55,10 +57,15 @@ func main() {
 	}
 
 	flag.Parse()
-	needformulas := *flagfire || *flagreach
 	N := len(flag.Args())
 
 	if *flaghelp {
+		fmt.Println("cannot use optioons -f and -r together")
+		flag.Usage()
+		os.Exit(0)
+	}
+
+	if *flagfire && *flagreach {
 		flag.Usage()
 		os.Exit(0)
 	}
@@ -67,6 +74,7 @@ func main() {
 
 	if *flagversion {
 		fmt.Printf("hue version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
+		os.Exit(1)
 	}
 
 	switch {
@@ -127,7 +135,7 @@ func main() {
 
 	// The only possible error, at the moment, is unsupported models for
 	// fireability
-	s, stepperError := hlnet.NewStepper(hl)
+	s, stepperError := hlnet.NewStepper(hl, *flagshowwitness, *flagfire)
 
 	if *flagstat {
 		elapsed := time.Since(start)
@@ -136,7 +144,7 @@ func main() {
 		fmt.Fprintf(os.Stdout, "%s\n", s)
 	}
 
-	if needformulas {
+	if *flagfire || *flagreach {
 		if *flagreach {
 			xmlFile, err = os.Open(filepath.Join(dirname, "ReachabilityCardinality.xml"))
 		}
@@ -165,13 +173,15 @@ func main() {
 			if (len(selectQueries) == 0) ||
 				((whereq < len(selectQueries)) && (selectQueries[whereq] == k)) {
 				v := hlnet.EvaluateQueries(q, s.Marking)
-				// if !hlnet.EvaluateAndTestSimplify(q, s.Marking) {
-				// 	fmt.Println("----------------------------------")
-				// 	fmt.Printf("SIMPLIFY ERROR in formula %d\n", k)
-				// 	fmt.Fprintf(os.Stdout, "ORIGINAL: %s\n", q.Original.String())
-				// 	fmt.Fprintf(os.Stdout, "SIMPLIFY: %s\n", q.Formula.String())
-				// 	fmt.Println("----------------------------------")
-				// }
+				if *flagtestfsimplify {
+					if !hlnet.EvaluateAndTestSimplify(q, s.Marking) {
+						fmt.Println("----------------------------------")
+						fmt.Printf("SIMPLIFY ERROR in formula %d\n", k)
+						fmt.Fprintf(os.Stdout, "ORIGINAL: %s\n", q.Original.String())
+						fmt.Fprintf(os.Stdout, "SIMPLIFY: %s\n", q.Formula.String())
+						fmt.Println("----------------------------------")
+					}
+				}
 				if !*flaghideundef || (*flaghideundef && (v != hlnet.UNDEF)) {
 					if !*flaghidetrivial || (*flaghidetrivial && !q.IsTrivial()) {
 						if *flagshowqueries {
