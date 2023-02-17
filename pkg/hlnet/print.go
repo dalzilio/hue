@@ -9,6 +9,17 @@ import (
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
+func zipString(a []string, start, end, sep string) string {
+	res := start
+	for k, aa := range a {
+		if k != 0 {
+			res += sep
+		}
+		res += aa
+	}
+	return res + end
+}
+
 func zipPrint[T fmt.Stringer](a []T, start, end, sep string) string {
 	res := start
 	for k, aa := range a {

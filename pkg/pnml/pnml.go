@@ -13,7 +13,8 @@ import (
 // ----------------------------------------------------------------------
 
 // Next gives the ith successor (i can be negative) of the constant with id
-// name.
+// name. We assume that the type of val is circular and do not check the
+// particular case where we should report overflows.
 func (e *Net) Next(i int, val *Value) *Value {
 	name := e.identity[val.Head]
 	typ := e.types[name]

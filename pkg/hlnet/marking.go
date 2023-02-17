@@ -25,21 +25,27 @@ type Marking struct {
 // ----------------------------------------------------------------------
 
 func (net *Net) PrintMarking(m Marking) string {
+	return net.PrintCOL(m.COL)
+}
+
+func (net *Net) PrintCOL(m []pnml.Hue) string {
 	s := ""
 	for k, v := range net.Places {
-		s += fmt.Sprintf("%s : %s\n", v.Name, net.PrintHue(m.COL[k]))
+		s += fmt.Sprintf("%s : %s\n", v.Name, net.PrintHue(m[k]))
 	}
 	return s
 }
 
 func (net *Net) PrintEnabled(m Marking) string {
-	s := ""
+	s := make([]string, len(net.Trans))
 	for k, v := range m.Enabled {
 		if v {
-			s += fmt.Sprintf("%s ", k)
+			s[net.TPosition[k]] = fmt.Sprintf("%s(+)", k)
+		} else {
+			s[net.TPosition[k]] = fmt.Sprintf("%s(-)", k)
 		}
 	}
-	return s
+	return zipString(s, "", "", " ")
 }
 
 func (net *Net) printMarkingAligned(m Marking, left int, trunc int) string {

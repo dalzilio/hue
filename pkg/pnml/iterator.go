@@ -4,8 +4,6 @@
 
 package pnml
 
-import "sort"
-
 // iterator is a structure which allows us to iterate through all the possible
 // valid associations between variables (in a transition Env) and values (in the
 // marking of places). We need to keep track of one position for each "split"
@@ -14,167 +12,273 @@ type Iterator struct {
 	*Net
 	Env
 	Operation
-	venv VEnv
-	arcs []*arcIterator
+	venv     VEnv
+	idx      int // index of the arcs we are currently trying to match
+	arcs     []*arcIterator
+	finished bool // report that we exhausted the search
 }
 
 type arcIterator struct {
-	exps []Expression
-	pl   int   // index of the related place in the net
-	pos  []int // current position in the multiset of values
+	exps     []Expression
+	pl       int           // index of the related place in the net
+	pos      []int         // current position in the multiset of values
+	mults    []int         // current multiplicities
+	match    IteratorMatch // to store the last potential match. A len of 0 means no match.
+	idx      int           // index of the exps we are currently trying to match
+	finished bool          // report that we exhausted the search
 }
 
-// NewIterator initialize a slice of Iterators for a transition. Pat and pl are
+// ----------------------------------------------------------------------
+
+// NewIterator initialize a slice of Iterators for a transition. Pats and pl are
 // two slices of equal length; pats is the list of "split" arc patterns and pl
 // gives the index to the related input places.
 func NewIterator(net *Net, env Env, cond Operation, pats [][]Expression, pl []int) Iterator {
-	iter := Iterator{Env: env, Operation: cond}
+	iter := Iterator{
+		Net:       net,
+		Env:       env,
+		Operation: cond,
+	}
 	iter.arcs = make([]*arcIterator, len(pats))
 	for k := range pats {
 		iter.arcs[k] = &arcIterator{
-			exps: pats[k],
-			pl:   pl[k],
-			pos:  make([]int, len(pats[k])),
+			exps:     pats[k],
+			pl:       pl[k],
+			pos:      make([]int, len(pats[k])),
+			mults:    make([]int, len(pats[k])),
+			match:    make(IteratorMatch, 0),
+			idx:      0,
+			finished: false,
 		}
 	}
 	return iter
 }
 
+// ----------------------------------------------------------------------
+
 // Reset is used when we need to iterate over a new marking.
 func (iter *Iterator) Reset() {
 	iter.venv = make(VEnv)
-	for _, p := range iter.arcs {
-		for k := range p.pos {
-			p.pos[k] = 0
-		}
+	iter.idx = 0
+	iter.finished = false
+	for k := range iter.arcs {
+		iter.ResetOneArc(k)
 	}
 }
 
-// ExistMatch reports if there is a set of values that match the condition of
-// the Iterator.
-func (iter *Iterator) ExistMatch(m []Hue) bool {
-	iter.Reset()
-	for {
-		if !iter.Step(m) {
-			return false
-		}
-		if iter.CheckCondition() {
-			return true
-		}
+// ResetOneArc is used when we need to reset only one arcIterator.
+func (iter *Iterator) ResetOneArc(i int) {
+	p := iter.arcs[i]
+	for k := range p.pos {
+		p.pos[k] = 0
+		p.mults[k] = 0
 	}
+	p.match = p.match[:0]
+	p.idx = 0
+	p.finished = false
 }
 
-// Step computes the next possible assignment (VEnv) and returns false if it is
-// not possible.
+// ----------------------------------------------------------------------
+
+// Step increments the search. We return false if we finished.
 func (iter *Iterator) Step(m []Hue) bool {
-	for _, a := range iter.arcs {
-		h := m[a.pl]
-		// if we reached the end of the marking with one of the arcIterator; for
-		// instance because the place marking is empty
-		for _, pp := range a.pos {
-			if pp == len(h) {
+	if iter.finished {
+		return false
+	}
+	for {
+		if !iter.StepOneArc(iter.idx, m) {
+			// the current arcIterator has finished
+			if iter.idx == 0 {
+				iter.finished = true
+				return false
+			}
+			iter.ResetOneArc(iter.idx)
+			iter.idx--
+			continue
+		}
+		return true
+	}
+}
 
+// StepOneArc increments the position for the arcIterator at position i. it
+// returns false if we finished.
+func (iter *Iterator) StepOneArc(i int, m []Hue) bool {
+	a := iter.arcs[i]
+	h := m[a.pl]
+	// there is nothing to match if the place marking is empty or if we finished
+	if len(h) == 0 || a.finished {
+		return false
+	}
+	for {
+		if a.pos[a.idx] == len(h)-1 {
+			if a.idx == 0 {
+				a.finished = true
+				return false
+			}
+			a.pos[a.idx] = 0
+			a.mults[a.idx] = 0
+			a.idx--
+			continue
+		}
+		a.pos[a.idx]++
+		return true
+	}
+}
+
+// ----------------------------------------------------------------------
+
+// Check computes the next possible assignment (VEnv) that matches all the arc
+// patterns and also the conditon (Operation). It returns false if it is not
+// possible.
+func (iter *Iterator) Check(m []Hue) bool {
+	for {
+		for i := range iter.arcs {
+			if !iter.CheckOneArc(i, m) {
+				iter.finished = true
 				return false
 			}
 		}
-		// Otherwise check if we can unify the arc condition with the values at
-		// the given position. We keep a copy of the current VEnv in case we
-		// need to backtrack changes made duting a failed unification. We also
-		// need to collect the multiplicities to make sure that we have enough
-		// tokens of the right value in h.
-		mult := make([]int, len(a.exps))
-		k := 0
-		var e Expression
-		var token Atom
-		venv2 := iter.venv.duplicate()
-	CHECK:
-		for {
-			e = a.exps[k]
-			token = h[a.pos[k]]
-			mult[k] = e.Unify(iter.Net, token.Value, iter.venv)
-			if mult[k] == 0 {
-				// Unification failed. We need to change the position. First we
-				// test if we are already at the end of h, in which case we need
-				// to increment previous arcs. Except if we are already at the
-				// beginning, in which case we stop.
-			REWIND:
-				if a.pos[k] == len(h)-1 {
-					if k == 0 {
-						return false
-					}
-					a.pos[k] = 0
-					mult[k] = 0
-					k--
-					goto REWIND
-				}
-				a.pos[k]++
-				// we restore the VEnv and reset mult
-				iter.venv.copy(venv2)
-				mult[k] = 0
-				goto CHECK
+		// If we have a match for all the input places, we have a possible
+		// match. We need to check that it is a solution for the condition in
+		// the transition
+		if !iter.Operation.OK(iter.Net, iter.venv) {
+			// if it is not, we need to start iterating to the next potential candidate
+			if !iter.Step(m) {
+				return false
 			}
-			if k == len(a.exps)-1 {
-				// we have a possible match ! We need to check the
-				// multiplicities to make sure that we have enough of them in
-				// the marking
-				if !capacity(mult, a.pos, h) {
-					// we need to REWIND, but we cannot 'goto REWIND' because it
-					// would jump across a nested block. So we copy the logic
-				REWIND2:
-					if a.pos[k] == len(h)-1 {
-						if k == 0 {
-							return false
-						}
-						a.pos[k] = 0
-						mult[k] = 0
-						k--
-						goto REWIND2
-					}
-					a.pos[k]++
-					iter.venv.copy(venv2)
-					mult[k] = 0
-					goto CHECK
-				}
-				return true
-			}
-			k++
+			continue
 		}
+		return true
+	}
+}
 
+// CheckOneArc computes the next possible assignment for the set of arc patterns
+// associated with the same input place. We return false if there are no match.
+// Otherwise  the potential match for the current place is stored in a.match.
+func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
+	a := iter.arcs[i]
+	h := m[a.pl]
+	// there is nothing to match if the place marking is empty or if we finished
+	if len(h) == 0 || a.finished {
+		return false
+	}
+	// Otherwise check if we can unify the arc conditions with the values at the
+	// given position. We also need to collect the multiplicities to make sure
+	// that we have enough tokens of the right value in h. The index of the
+	// current subpattern we are testing is the value of a.idx. We keep a copy
+	// of the current VEnv in case we need to backtrack changes made during a
+	// failed unification.
+	venv2 := iter.venv.duplicate()
+	// We zero a.mults
+	for i := range a.mults {
+		a.mults[i] = 0
+	}
+	for {
+		a.mults[a.idx] = a.exps[a.idx].Unify(iter.Net, h[a.pos[a.idx]].Value, iter.venv)
+		if a.mults[a.idx] == 0 {
+			// Unification failed. We need to change the position.
+			if !iter.StepOneArc(i, m) {
+				// we finished exploring for this arc
+				return false
+			}
+			// we restore the VEnv and reset mult
+			iter.venv.copy(venv2)
+			a.mults[a.idx] = 0
+			continue
+		}
+		if a.idx == len(a.exps)-1 {
+			// We matched the last arc pattern, so we have a possible match ! We
+			// need to check the multiplicities to make sure that we have enough
+			// of them in the marking
+
+			if !a.testCapacity(h) {
+				// This is not a real match. We need to step to the next
+				// possible match.
+				if !iter.StepOneArc(i, m) {
+					iter.venv.copy(venv2)
+					a.mults[a.idx] = 0
+					return false
+				}
+				continue
+			}
+
+			// We have found a match.
+			return true
+		}
+		a.idx++
+	}
+}
+
+// ----------------------------------------------------------------------
+
+// IteratorMatch is a slice of (mult x position) that can be used to reconstruct
+// the tokens that have been match by an iterator on a place marking
+type IteratorMatch []struct {
+	pos  int
+	mult int
+}
+
+// insert a match point keeping as an invariant that values are sorted in order
+// of position.
+func insertMatchPoint(m IteratorMatch, pos int, mult int) IteratorMatch {
+	for k := range m {
+		if m[k].pos == pos {
+			m[k].mult += mult
+			return m
+		}
+		if m[k].pos > pos {
+			// insert a new element at position k
+			return append(m[:k], append(IteratorMatch{{pos: pos, mult: mult}}, m[k:]...)...)
+		}
+	}
+	return append(m, struct {
+		pos  int
+		mult int
+	}{pos: pos, mult: mult})
+}
+
+// testCapacity takes the sum of multiplicities of tokens at the same positions
+// (given by a.pos) and check if it is less than the multiplicy found in h. If
+// so we have a valid IteratorMatch.
+func (a *arcIterator) testCapacity(h Hue) bool {
+	a.match = a.match[:0]
+	for i := range a.pos {
+		a.match = insertMatchPoint(a.match, a.pos[i], a.mults[i])
+	}
+	for k := range a.match {
+		if a.match[k].mult > h[a.match[k].pos].Mult {
+			a.match = a.match[:0]
+			return false
+		}
 	}
 	return true
 }
 
-// capacity takes the sum of multiplicities of tokens at the same positions
-// (given by pos) and check if it is less than the multiplicy found in h
-func capacity(mult []int, pos []int, h Hue) bool {
-	// we sort the slices so that multiplicities for the same position are
-	// contiguous
-	sort.Slice(pos, func(i int, j int) bool {
-		if pos[i] < pos[j] {
-			mult[i], mult[j] = mult[j], mult[i]
-			return true
-		}
-		return false
-	})
-	// we take the sum of multiplicities at this
-	current := pos[0]
-	sum := 0
-	for k, p := range pos {
-		if p > current {
-			if sum > h[current].Mult {
-				return false
-			}
-			current = p
-			sum = mult[k]
-			continue
-		}
-		sum += mult[k]
+// ----------------------------------------------------------------------
+
+// Witness returns a marking (a []Hue) for the current match. We return nil if
+// iter did not match.
+func (iter *Iterator) Witness(m []Hue) []Hue {
+	res := make([]Hue, len(m))
+	for i, a := range iter.arcs {
+		res[a.pl] = iter.witnessOneArc(i, m)
 	}
-	return sum <= h[current].Mult
+	return res
 }
 
-// CheckCondition reports if the transition's condition is true for the current
-// environment
-func (iter *Iterator) CheckCondition() bool {
-	return iter.Operation.OK(iter.Net, iter.venv)
+func (iter *Iterator) witnessOneArc(i int, m []Hue) Hue {
+	a := iter.arcs[i]
+	h := m[a.pl]
+	if len(a.match) == 0 {
+		// not a match
+		return nil
+	}
+	res := make(Hue, len(a.match))
+	for k := range res {
+		res[k] = Atom{
+			Value: h[a.match[k].pos].Value,
+			Mult:  a.match[k].mult,
+		}
+	}
+	return res
 }

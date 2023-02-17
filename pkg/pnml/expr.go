@@ -232,9 +232,9 @@ func (p Tuple) Unify(net *Net, v *Value, venv VEnv) int {
 		}
 		vv = v.Tail
 	}
-	if vv != nil {
-		log.Panic("matching tuple value is longer than tuple expression in Unify")
-	}
+	// if vv != nil {
+	// 	log.Panic("matching tuple value is longer than tuple expression in Unify")
+	// }
 	return 1
 }
 
@@ -419,7 +419,7 @@ func (p Var) Unify(net *Net, v *Value, venv VEnv) int {
 	vv, ok := venv[string(p)]
 	// if variable p is not set in venv, we add it
 	if !ok {
-		venv[string(p)] = vv
+		venv[string(p)] = v
 		return 1
 	}
 	// otherwise we need to check that the values are the same
@@ -482,9 +482,11 @@ func (p Successor) Eval(net *Net, venv VEnv) []Atom {
 	return []Atom{{res, 1}}
 }
 
+// Unification with a successor occurs in models BART and TokenRing. We use the
+// fact that var++k matches val if and only if var matches val--k.
 func (p Successor) Unify(net *Net, v *Value, venv VEnv) int {
-	log.Panic("try to apply Unify to a <Successor> expression")
-	panic("")
+	vv := net.Next(-p.Incr, v)
+	return p.Var.Unify(net, vv, venv)
 }
 
 // ----------------------------------------------------------------------

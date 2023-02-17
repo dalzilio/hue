@@ -4,6 +4,8 @@
 package hlnet
 
 import (
+	"fmt"
+
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
@@ -31,27 +33,13 @@ func NewStepper(n *Net) *Stepper {
 			lpn = len(v.Name)
 		}
 	}
-	s := &Stepper{
+	s := Stepper{
 		Net:     n,
 		Marking: m0,
 		iter:    make([]pnml.Iterator, len(n.Trans)),
 		lpn:     lpn,
 	}
 	// we should compute enabled after testing reachability queries on the initial marking.
-	s.SetInitialEnabled()
-	s.ComputeEnabled()
-	return s
-}
-
-func (s *Stepper) String() string {
-	return s.printMarkingAligned(s.Marking, s.lpn, 90) + "\nEnabled: " + s.PrintEnabled(s.Marking) + "\n"
-}
-
-// SetInitialEnabled computes the enable relation for the initial marking as
-// well as initialize some important data structure. We keep this separate from
-// the initializer because we can sometimes answer reachability verdict before
-// this step, which may be expensive on very large hlnets.
-func (s *Stepper) SetInitialEnabled() {
 	for k, t := range s.Trans {
 		// We collect the patterns and the marking of the places for the input arcs.
 		inse := [][]pnml.Expression{}
@@ -62,6 +50,25 @@ func (s *Stepper) SetInitialEnabled() {
 		}
 		s.iter[k] = pnml.NewIterator(s.Net.Net, t.Env, t.Cond, inse, insm)
 	}
+	s.ComputeEnabled()
+	return &s
+}
+
+func (s *Stepper) String() string {
+	return s.printMarkingAligned(s.Marking, s.lpn, 90) + "\nFireable: " + s.PrintEnabled(s.Marking) + "\n"
+}
+
+// ExistMatch reports if there is a set of values that match the condition of
+// the transition with index t.
+func (s *Stepper) ExistMatch(t int) bool {
+	s.iter[t].Reset()
+	if s.iter[t].Check(s.COL) {
+		fmt.Println("----------------------------------")
+		fmt.Printf("%s enabled\n", s.Trans[t].Name)
+		fmt.Printf("witness:\n%s\n", s.PrintCOL(s.iter[t].Witness(s.COL)))
+		fmt.Println("----------------------------------")
+	}
+	return false
 }
 
 // Enabled returns the set of transition (a slice of ordered indexes in n.Trans)
@@ -69,11 +76,11 @@ func (s *Stepper) SetInitialEnabled() {
 func (s *Stepper) ComputeEnabled() {
 	// We could be more clever and only update the transition whose input places
 	// have been modified.
-	for tname := range s.Enabled {
+	for tname := range s.TPosition {
 		s.Enabled[tname] = false
 	}
 	for k, t := range s.Trans {
-		if s.iter[k].ExistMatch(s.COL) {
+		if s.ExistMatch(k) {
 			s.Enabled[t.Name] = true
 		}
 	}
