@@ -52,14 +52,3 @@ func (typ TypeDecl) String() string {
 	}
 	return s
 }
-
-func (p Env) String() string {
-	s := "["
-	for k, vname := range p {
-		if k != 0 {
-			s += ", "
-		}
-		s += vname
-	}
-	return s + "]"
-}

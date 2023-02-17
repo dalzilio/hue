@@ -17,7 +17,7 @@ type Iterator struct {
 	*Net
 	Env
 	Operation
-	venv     VEnv
+	Venv     VEnv
 	idx      int // index of the arcs we are currently trying to match
 	arcs     []*arcIterator
 	finished bool // report that we exhausted the search
@@ -84,7 +84,7 @@ func stringListIncludes(sl1, sl2 []string) bool {
 
 // Reset is used when we need to iterate over a new marking.
 func (iter *Iterator) Reset() {
-	iter.venv = make(VEnv)
+	iter.Venv = make(VEnv)
 	iter.idx = 0
 	iter.finished = false
 	for k := range iter.arcs {
@@ -167,7 +167,7 @@ func (iter *Iterator) Check(m []Hue) bool {
 		// If we have a match for all the input places, we have a possible
 		// match. We need to check that it is a solution for the condition in
 		// the transition
-		if !iter.Operation.OK(iter.Net, iter.venv) {
+		if !iter.Operation.OK(iter.Net, iter.Venv) {
 			// if it is not, we need to start iterating to the next potential candidate
 			if !iter.Step(m) {
 				return false
@@ -194,13 +194,13 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 	// current subpattern we are testing is the value of a.idx. We keep a copy
 	// of the current VEnv in case we need to backtrack changes made during a
 	// failed unification.
-	venv2 := iter.venv.duplicate()
+	venv2 := iter.Venv.copy()
 	// We zero a.mults
 	for i := range a.mults {
 		a.mults[i] = 0
 	}
 	for {
-		a.mults[a.idx] = a.exps[a.idx].Unify(iter.Net, h[a.pos[a.idx]].Value, iter.venv)
+		a.mults[a.idx] = a.exps[a.idx].Unify(iter.Net, h[a.pos[a.idx]].Value, iter.Venv)
 		if a.mults[a.idx] == 0 {
 			// Unification failed. We need to change the position.
 			if !iter.StepOneArc(i, m) {
@@ -208,7 +208,7 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 				return false
 			}
 			// we restore the VEnv and reset mult
-			iter.venv.copy(venv2)
+			iter.Venv.restore(venv2)
 			a.mults[a.idx] = 0
 			continue
 		}
@@ -221,7 +221,7 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 				// This is not a real match. We need to step to the next
 				// possible match.
 				if !iter.StepOneArc(i, m) {
-					iter.venv.copy(venv2)
+					iter.Venv.restore(venv2)
 					a.mults[a.idx] = 0
 					return false
 				}
@@ -282,8 +282,9 @@ func (a *arcIterator) testCapacity(h Hue) bool {
 
 // ----------------------------------------------------------------------
 
-// Witness returns a marking (a []Hue) for the current match. We return nil if
-// iter did not match.
+// Witness returns a marking (a []Hue) for the current match. The function
+// should be called right after a call to Check. We return nil if iter did not
+// match.
 func (iter *Iterator) Witness(m []Hue) []Hue {
 	res := make([]Hue, len(m))
 	for i, a := range iter.arcs {

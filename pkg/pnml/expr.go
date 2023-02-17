@@ -211,34 +211,34 @@ func (p Tuple) Eval(net *Net, venv VEnv) []Atom {
 
 func (p Tuple) Unify(net *Net, v *Value, venv VEnv) int {
 	// v should be a tuple of size equal to p. We cannot detect this without
-	// starting to explore v. We can also safely assume that the tuple is of
-	// size at least 2 and that tuples only contain constants. We never have
-	// tuples inside of tuples.
-	// if v.Tail == nil {
-	// 	log.Panic("matching tuple expression with non-tuple value in Unify")
-	// }
-	// We make a deep copy of venv since we may need to backtrack some
+	// starting to explore v.
+	//
+	// We cannot assume that the tuple is of size at least 2, model
+	// UtilityControlRoom is a counter-example. But we may assume that tuples
+	// only contain constants. We never have tuples inside of tuples.
+	//
+	//  We make a deep copy of venv since we may need to backtrack some
 	// modifications. The multiplicty should always be 1 in this case.
-	venv2 := venv.duplicate()
+	venv2 := venv.copy()
 	vv := v
 	for _, e := range p {
 		if vv == nil {
 			log.Panic("matching tuple value is shorter than tuple expression in Unify")
 		}
-		mult := e.Unify(net, net.Unique[Value{Head: vv.Head}], venv)
+		mult := e.Unify(net, net.Unique[Value{Head: vv.Head, Tail: nil}], venv)
 		if mult == 0 {
 			// unification fails.
-			venv.copy(venv2)
+			venv.restore(venv2)
 			return 0
 		}
 		if mult != 1 {
 			log.Panic("matching multiplicity different from 1 during unification of tuple")
 		}
-		vv = v.Tail
+		vv = vv.Tail
 	}
-	// if vv != nil {
-	// 	log.Panic("matching tuple value is longer than tuple expression in Unify")
-	// }
+	if vv != nil {
+		log.Panic("matching tuple value is longer than tuple expression in Unify")
+	}
 	return 1
 }
 
