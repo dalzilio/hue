@@ -60,12 +60,12 @@ func main() {
 	N := len(flag.Args())
 
 	if *flaghelp {
-		fmt.Println("cannot use optioons -f and -r together")
 		flag.Usage()
 		os.Exit(0)
 	}
 
 	if *flagfire && *flagreach {
+		fmt.Println("cannot use options -f and -r together")
 		flag.Usage()
 		os.Exit(0)
 	}
