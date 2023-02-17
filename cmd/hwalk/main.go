@@ -71,12 +71,12 @@ func main() {
 	}
 
 	// we capture panics
-	defer func() {
-		if r := recover(); r != nil {
-			log.Fatal("Error in generation: cannot compute")
-			os.Exit(1)
-		}
-	}()
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		log.Fatal("Error in generation: cannot compute")
+	// 		os.Exit(1)
+	// 	}
+	// }()
 
 	start := time.Now()
 
@@ -149,8 +149,16 @@ func main() {
 			os.Exit(1)
 			return
 		}
-		for _, q := range queries {
-			v := hlnet.Evaluate(q, s.Marking)
+		for k, q := range queries {
+			v := hlnet.EvaluateQueries(q, s.Marking)
+			if !hlnet.EvaluateAndTestSimplify(q, s.Marking) {
+				fmt.Println("----------------------------------")
+				fmt.Printf("SIMPLIFY ERROR in formula %d\n", k)
+				fmt.Fprintf(os.Stdout, "ORIGINAL: %s\n", q.Original.String())
+				fmt.Fprintf(os.Stdout, "SIMPLIFY: %s\n", q.Formula.String())
+				fmt.Println("----------------------------------")
+			}
+
 			if !*flaghideundef || (*flaghideundef && (v != hlnet.UNDEF)) {
 				if !*flaghidetrivial || (*flaghidetrivial && !q.IsTrivial()) {
 					if *flagshowqueries {

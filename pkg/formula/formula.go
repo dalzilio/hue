@@ -14,6 +14,7 @@ type Query struct {
 	ID             string
 	IsEF           bool
 	IsReachability bool
+	Original       Formula
 	Formula
 }
 

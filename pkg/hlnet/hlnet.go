@@ -70,7 +70,7 @@ func Build(n *pnml.Net) (*Net, error) {
 		if p.InitialMarking == nil {
 			h = pnml.Hue{}
 		} else {
-			h = p.InitialMarking.Eval(net.Net)
+			h = p.InitialMarking.Eval(net.Net, nil)
 		}
 		net.Places[net.PPosition[p.ID]] = &Place{
 			Name: p.ID,

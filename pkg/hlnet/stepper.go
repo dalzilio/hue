@@ -3,14 +3,17 @@
 // the LICENSE file.
 package hlnet
 
-import "github.com/dalzilio/hue/pkg/pnml"
+import (
+	"github.com/dalzilio/hue/pkg/pnml"
+)
 
 // Stepper is the type of marked hlnet, that is a pair consisting of a
 // high-level net and its current marking
 type Stepper struct {
 	*Net
 	Marking
-	lpn int // length of the longest place name, for pretty printing markings
+	iter []pnml.Iterator // we keep iterators for each transitions in the net
+	lpn  int             // length of the longest place name, for pretty printing markings
 }
 
 // NewStepper returns a fresh Stepper starting with the initial marking of n
@@ -31,42 +34,47 @@ func NewStepper(n *Net) *Stepper {
 	s := &Stepper{
 		Net:     n,
 		Marking: m0,
+		iter:    make([]pnml.Iterator, len(n.Trans)),
 		lpn:     lpn,
 	}
+	// we should compute enabled after testing reachability queries on the initial marking.
+	s.SetInitialEnabled()
 	s.ComputeEnabled()
 	return s
 }
 
 func (s *Stepper) String() string {
-	return s.printMarkingAligned(s.Marking, s.lpn, 90)
+	return s.printMarkingAligned(s.Marking, s.lpn, 90) + "\nEnabled: " + s.PrintEnabled(s.Marking) + "\n"
+}
+
+// SetInitialEnabled computes the enable relation for the initial marking as
+// well as initialize some important data structure. We keep this separate from
+// the initializer because we can sometimes answer reachability verdict before
+// this step, which may be expensive on very large hlnets.
+func (s *Stepper) SetInitialEnabled() {
+	for k, t := range s.Trans {
+		// We collect the patterns and the marking of the places for the input arcs.
+		inse := [][]pnml.Expression{}
+		insm := []int{}
+		for _, a := range t.Ins {
+			inse = append(inse, a.Pattern)
+			insm = append(insm, a.Place)
+		}
+		s.iter[k] = pnml.NewIterator(s.Net.Net, t.Env, t.Cond, inse, insm)
+	}
 }
 
 // Enabled returns the set of transition (a slice of ordered indexes in n.Trans)
 // which are enabled at the current marking
 func (s *Stepper) ComputeEnabled() {
-	// reset the enabled list of the current marking
+	// We could be more clever and only update the transition whose input places
+	// have been modified.
 	for tname := range s.Enabled {
 		s.Enabled[tname] = false
 	}
-	for _, t := range s.Trans {
-		if s.CheckCondition(t) {
+	for k, t := range s.Trans {
+		if s.iter[k].ExistMatch(s.COL) {
 			s.Enabled[t.Name] = true
 		}
 	}
-}
-
-// CheckCondition checks the (marking) condition of the given transition.
-func (s *Stepper) CheckCondition(t *Transition) bool {
-	// // We collect the conditions and the marking of the places for the input arcs.
-	// inse := []pnml.Expression{}
-	// insm := []pnml.Hue{}
-	// for _, a := range t.Ins {
-	// 	inse = append(inse, a.Pattern)
-	// 	insm = append(insm, s.COL[a.Place])
-	// }
-	// // we initalize a mapping between var names in the transition environment
-	// // and their values
-	// assoc := make(map[string]pnml.Atom)
-	// return pnml.ExistMatch(inse, insm, assoc, t.Cond)
-	return false
 }

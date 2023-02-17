@@ -32,6 +32,16 @@ func (net *Net) PrintMarking(m Marking) string {
 	return s
 }
 
+func (net *Net) PrintEnabled(m Marking) string {
+	s := ""
+	for k, v := range m.Enabled {
+		if v {
+			s += fmt.Sprintf("%s ", k)
+		}
+	}
+	return s
+}
+
 func (net *Net) printMarkingAligned(m Marking, left int, trunc int) string {
 	s := ""
 	for k, v := range net.Places {

@@ -61,7 +61,7 @@ func Simplify(f Formula) Formula {
 			switch sv := sv.(type) {
 			case BooleanConstant:
 				//  Simplify(False & f) = True
-				if sv {
+				if !sv {
 					return BooleanConstant(false)
 				}
 				//  Simplify(True & f) = Simplify(f)

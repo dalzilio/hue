@@ -26,8 +26,8 @@ func (v Verdict) String() string {
 	}
 }
 
-// Evaluate reports whether a query is true, false, or still undefined
-func Evaluate(q formula.Query, m Marking) Verdict {
+// EvaluateQueries reports whether a query is true, false, or still undefined
+func EvaluateQueries(q formula.Query, m Marking) Verdict {
 	switch f := q.Formula.(type) {
 	case formula.BooleanConstant:
 		if f {
@@ -47,6 +47,19 @@ func Evaluate(q formula.Query, m Marking) Verdict {
 		}
 		return FALSE
 	}
+}
+
+func ifAndOnlyIf(b1, b2 bool) bool {
+	if b1 {
+		return b2
+	}
+	return !b2
+}
+
+// EvaluateAndTestSimplify checks whether the formula in a query evaluates to
+// the same result than its simplification on marking m.
+func EvaluateAndTestSimplify(q formula.Query, m Marking) bool {
+	return ifAndOnlyIf(Reached(q.Original, m), Reached(q.Formula, m))
 }
 
 // Reached reports if formula f is true for the current marking m

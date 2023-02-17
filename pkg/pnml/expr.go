@@ -25,11 +25,11 @@ import (
 // expression to an alreay existing environment. It creates a (sorted) slice
 // containing the names of all the variables.
 //
-// Eval return the set of constant values that match a ground Expression (an
+// Eval returns the set of constant values that match a ground Expression (an
 // expression without free variables, such as the ones used to define the
 // initial marking), together with their multiplicities.
 //
-// Unify report if a pattern expression matches a given *Value. For this we can
+// Unify reports if a pattern expression matches a given *Value. For this we can
 // use the VEnv to check that we respect previously unified variables. We can
 // also update the VEnv by adding new associations. A return value of 0 means no
 // match; otherwise it is the number of "copies" of the value that we need to
@@ -37,7 +37,7 @@ import (
 type Expression interface {
 	String() string
 	AddEnv(Env) Env
-	Eval(*Net) []Atom
+	Eval(*Net, VEnv) []Atom
 	Unify(*Net, *Value, VEnv) int
 }
 
@@ -85,7 +85,7 @@ func (p All) String() string {
 
 func (p All) AddEnv(env Env) Env { return env }
 
-func (p All) Eval(net *Net) []Atom {
+func (p All) Eval(net *Net, venv VEnv) []Atom {
 	f := net.World[string(p)]
 	m := make([]Atom, len(f))
 	for i := range f {
@@ -112,10 +112,10 @@ func (p Add) AddEnv(env Env) Env {
 	return multaddEnv(p, env)
 }
 
-func (p Add) Eval(net *Net) []Atom {
+func (p Add) Eval(net *Net, venv VEnv) []Atom {
 	var res []Atom
 	for i := range p {
-		res = append(res, p[i].Eval(net)...)
+		res = append(res, p[i].Eval(net, venv)...)
 	}
 	return res
 }
@@ -139,13 +139,13 @@ func (p Subtract) AddEnv(env Env) Env {
 	return multaddEnv(p, env)
 }
 
-func (p Subtract) Eval(net *Net) []Atom {
-	ma := p[0].Eval(net)
+func (p Subtract) Eval(net *Net, venv VEnv) []Atom {
+	ma := p[0].Eval(net, venv)
 	if ma == nil || len(p) == 1 {
 		return ma
 	}
 	for i := 1; i < len(p); i++ {
-		mb := p[i].Eval(net)
+		mb := p[i].Eval(net, venv)
 		if mb == nil {
 			continue
 		}
@@ -190,10 +190,10 @@ func (p Tuple) AddEnv(env Env) Env {
 	return multaddEnv(p, env)
 }
 
-func (p Tuple) Eval(net *Net) []Atom {
+func (p Tuple) Eval(net *Net, venv VEnv) []Atom {
 	res := []Atom{{nil, 1}}
 	for i := len(p) - 1; i >= 0; i-- {
-		fi := p[i].Eval(net)
+		fi := p[i].Eval(net, venv)
 		fr := []Atom{}
 		for _, v1 := range fi {
 			for _, v2 := range res {
@@ -277,7 +277,7 @@ func (p Operation) AddEnv(env Env) Env {
 	return multaddEnv(p.Elem, env)
 }
 
-func (p Operation) Eval(net *Net) []Atom {
+func (p Operation) Eval(net *Net, venv VEnv) []Atom {
 	log.Panic("Eval not authorized on Operation")
 	panic("")
 }
@@ -288,27 +288,27 @@ func (p Operation) Unify(net *Net, v *Value, venv VEnv) int {
 }
 
 // OK returns whether the condition evaluates to true.
-func (p Operation) OK(net *Net, env Env) bool {
+func (p Operation) OK(net *Net, venv VEnv) bool {
 	switch p.Op {
 	case NIL:
 		return true
 	case AND:
 		for _, c := range p.Elem {
-			if !c.(Operation).OK(net, env) {
+			if !c.(Operation).OK(net, venv) {
 				return false
 			}
 		}
 		return true
 	case OR:
 		for _, c := range p.Elem {
-			if c.(Operation).OK(net, env) {
+			if c.(Operation).OK(net, venv) {
 				return true
 			}
 		}
 		return false
 	default:
-		v1 := p.Elem[0].Eval(net)
-		v2 := p.Elem[1].Eval(net)
+		v1 := p.Elem[0].Eval(net, venv)
+		v2 := p.Elem[1].Eval(net, venv)
 		if len(v1) == 0 || len(v2) == 0 {
 			return false
 		}
@@ -330,19 +330,19 @@ func (p Constant) String() string {
 
 func (p Constant) AddEnv(env Env) Env { return env }
 
-func (p Constant) Eval(net *Net) []Atom {
+func (p Constant) Eval(net *Net, venv VEnv) []Atom {
 	pval, found := net.order[string(p)]
 	if !found {
-		log.Panicf("identifier %s is not a constant", string(p))
-		// f, wfound := net.World[string(p)]
-		// if !wfound {
-		// 	log.Panicf("identifier %s is not a constant or a known type", string(p))
-		// }
-		// m := make([]Atom, len(f))
-		// for i := range f {
-		// 	m[i] = Atom{f[i], 1}
-		// }
-		// return m
+		// for the special case of partition ; the only example is VehicularWifi
+		f, wfound := net.World[string(p)]
+		if !wfound {
+			log.Panicf("identifier %s is not a constant or a known type", string(p))
+		}
+		m := make([]Atom, len(f))
+		for i := range f {
+			m[i] = Atom{f[i], 1}
+		}
+		return m
 	}
 	return []Atom{{pval, 1}}
 }
@@ -378,7 +378,7 @@ func (p FIRConstant) String() string {
 
 func (p FIRConstant) AddEnv(env Env) Env { return env }
 
-func (p FIRConstant) Eval(net *Net) []Atom {
+func (p FIRConstant) Eval(net *Net, venv VEnv) []Atom {
 	return []Atom{{net.order[p.stringify()], 1}}
 }
 
@@ -407,9 +407,8 @@ func (p Var) AddEnv(env Env) Env {
 	return insertEnv(env, p)
 }
 
-func (p Var) Eval(net *Net) []Atom {
-	log.Panic("Eval not authorized on Var")
-	panic("")
+func (p Var) Eval(net *Net, venv VEnv) []Atom {
+	return []Atom{{venv[string(p)], 1}}
 }
 
 func (p Var) Unify(net *Net, v *Value, venv VEnv) int {
@@ -441,7 +440,7 @@ func (p Dot) String() string {
 
 func (p Dot) AddEnv(env Env) Env { return env }
 
-func (p Dot) Eval(net *Net) []Atom {
+func (p Dot) Eval(net *Net, venv VEnv) []Atom {
 	return []Atom{{net.vdot, 1}}
 }
 
@@ -474,15 +473,13 @@ func (p Successor) AddEnv(env Env) Env {
 	return insertEnv(env, p.Var)
 }
 
-func (p Successor) Eval(net *Net) []Atom {
-	log.Panic("Eval not authorized on Successor")
-	panic("")
-	// c := env[string(p.Var)]
-	// res := net.Next(p.Incr, c)
-	// if res == nil {
-	// 	return nil, nil
-	// }
-	// return []*Value{res}, []int{1}
+func (p Successor) Eval(net *Net, venv VEnv) []Atom {
+	c := venv[string(p.Var)]
+	res := net.Next(p.Incr, c)
+	if res == nil {
+		return nil
+	}
+	return []Atom{{res, 1}}
 }
 
 func (p Successor) Unify(net *Net, v *Value, venv VEnv) int {
@@ -507,8 +504,8 @@ func (p Numberof) AddEnv(env Env) Env {
 	return p.Expression.AddEnv(env)
 }
 
-func (p Numberof) Eval(net *Net) []Atom {
-	m := p.Expression.Eval(net)
+func (p Numberof) Eval(net *Net, venv VEnv) []Atom {
+	m := p.Expression.Eval(net, venv)
 	for i := range m {
 		m[i].Mult = p.Mult
 	}
