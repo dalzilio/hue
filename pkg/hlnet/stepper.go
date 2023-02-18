@@ -54,7 +54,7 @@ func NewStepper(n *Net, showwitness bool, needfireable bool) (*Stepper, error) {
 				insm = append(insm, a.Place)
 			}
 			var err error
-			s.iter[k], err = pnml.NewIterator(s.Net.Net, t.Env, t.Cond, inse, insm)
+			s.iter[k], err = pnml.NewIterator(n.Net, t.Name, t.Env, t.Cond, inse, insm)
 			if err != nil {
 				return &s, err
 			}

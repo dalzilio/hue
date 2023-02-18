@@ -6,7 +6,6 @@ package pnml
 
 import (
 	"errors"
-	"log"
 
 	"github.com/dalzilio/hue/pkg/internal/util"
 )
@@ -19,6 +18,7 @@ type Iterator struct {
 	*Net
 	Env
 	Operation
+	name        string
 	idx         int            // index of the arc we are currently trying to match
 	checkpoints []VEnv         // copy of Venv used when backtracking
 	arcs        []*arcIterator // sub-iterator for each input place
@@ -41,11 +41,12 @@ type arcIterator struct {
 // NewIterator initialize a slice of Iterators for a transition. Pats and pl are
 // two slices of equal length; pats is the list of "split" arc patterns and pl
 // gives the index to the related input places.
-func NewIterator(net *Net, env Env, cond Operation, pats [][]Expression, pl []int) (Iterator, error) {
+func NewIterator(net *Net, tname string, env Env, cond Operation, pats [][]Expression, pl []int) (Iterator, error) {
 	iter := Iterator{
 		Net:         net,
 		Env:         env,
 		Operation:   cond,
+		name:        tname,
 		checkpoints: make([]VEnv, len(pats)+1),
 		arcs:        make([]*arcIterator, len(pats)),
 	}
@@ -107,7 +108,6 @@ func (iter *Iterator) ResetOneArc(i int) {
 		p.mults[k] = 0
 	}
 	p.match = p.match[:0]
-	// ASSERT: we do not need to reset checkpoints. We do it when checking
 	p.idx = 0
 	p.finished = false
 }
@@ -193,10 +193,6 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 	a := iter.arcs[i]
 	h := m[a.pl]
 
-	if a.idx != 0 {
-		log.Fatal("ASSERT failed")
-	}
-
 	// there is nothing to match if the place marking is empty or if we finished
 	if len(h) == 0 || a.finished {
 		return false
@@ -243,6 +239,7 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 			}
 			// We have found a match.
 			iter.checkpoints[i+1].copy(a.checkpoints[a.idx])
+			a.idx = 0
 			return true
 		}
 		a.idx++
