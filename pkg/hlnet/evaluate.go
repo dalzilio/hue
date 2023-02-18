@@ -4,7 +4,10 @@
 
 package hlnet
 
-import "github.com/dalzilio/hue/pkg/formula"
+import (
+	"github.com/dalzilio/hue/pkg/formula"
+	"github.com/dalzilio/hue/pkg/internal/util"
+)
 
 // Verdict is the possible result of a query evaluation
 type Verdict int
@@ -49,17 +52,10 @@ func EvaluateQueries(q formula.Query, m Marking) Verdict {
 	}
 }
 
-func ifAndOnlyIf(b1, b2 bool) bool {
-	if b1 {
-		return b2
-	}
-	return !b2
-}
-
 // EvaluateAndTestSimplify checks whether the formula in a query evaluates to
 // the same result than its simplification on marking m.
 func EvaluateAndTestSimplify(q formula.Query, m Marking) bool {
-	return ifAndOnlyIf(Reached(q.Original, m), Reached(q.Formula, m))
+	return util.IfAndOnlyIf(Reached(q.Original, m), Reached(q.Formula, m))
 }
 
 // Reached reports if formula f is true for the current marking m

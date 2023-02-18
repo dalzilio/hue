@@ -6,7 +6,9 @@ package pnml
 
 import (
 	"errors"
-	"sort"
+	"log"
+
+	"github.com/dalzilio/hue/pkg/internal/util"
 )
 
 // iterator is a structure which allows us to iterate through all the possible
@@ -17,20 +19,21 @@ type Iterator struct {
 	*Net
 	Env
 	Operation
-	Venv     VEnv
-	idx      int // index of the arcs we are currently trying to match
-	arcs     []*arcIterator
-	finished bool // report that we exhausted the search
+	idx         int            // index of the arc we are currently trying to match
+	checkpoints []VEnv         // copy of Venv used when backtracking
+	arcs        []*arcIterator // sub-iterator for each input place
+	finished    bool           // report that we exhausted the search
 }
 
 type arcIterator struct {
-	exps     []Expression
-	pl       int           // index of the related place in the net
-	pos      []int         // current position in the multiset of values
-	mults    []int         // current multiplicities
-	match    IteratorMatch // to store the last potential match. A len of 0 means no match.
-	idx      int           // index of the exps we are currently trying to match
-	finished bool          // report that we exhausted the search
+	exps        []Expression
+	pl          int           // index of the related place in the net
+	pos         []int         // current position in the multiset of values
+	mults       []int         // current multiplicities
+	match       IteratorMatch // to store the last potential match. A len of 0 means no match.
+	idx         int           // index of the exps we are currently trying to match
+	checkpoints []VEnv        // copy of Venv when backtarcking over exprs
+	finished    bool          // report that we exhausted the search
 }
 
 // ----------------------------------------------------------------------
@@ -40,51 +43,55 @@ type arcIterator struct {
 // gives the index to the related input places.
 func NewIterator(net *Net, env Env, cond Operation, pats [][]Expression, pl []int) (Iterator, error) {
 	iter := Iterator{
-		Net:       net,
-		Env:       env,
-		Operation: cond,
+		Net:         net,
+		Env:         env,
+		Operation:   cond,
+		checkpoints: make([]VEnv, len(pats)+1),
+		arcs:        make([]*arcIterator, len(pats)),
 	}
-	iter.arcs = make([]*arcIterator, len(pats))
-	// We need to test that all the variables in env are in the input arcs;
-	// otherwise we may miss constraints during the unification.
+	// We compute the set of variables that are matched by the patterns. We use
+	// the fact that the order in which we unify VEnv is deterministic, which
+	// means that we know wich variables may already have been set. The first
+	// checkpoint is always empty and is used only to reset the VEnv.
 	insEnv := make(Env, 0)
+	iter.checkpoints[0] = make(VEnv)
 	for k := range pats {
 		iter.arcs[k] = &arcIterator{
-			exps:     pats[k],
-			pl:       pl[k],
-			pos:      make([]int, len(pats[k])),
-			mults:    make([]int, len(pats[k])),
-			match:    make(IteratorMatch, 0),
-			idx:      0,
-			finished: false,
+			exps:        pats[k],
+			pl:          pl[k],
+			pos:         make([]int, len(pats[k])),
+			mults:       make([]int, len(pats[k])),
+			match:       make(IteratorMatch, 0),
+			checkpoints: make([]VEnv, len(pats[k])),
 		}
-		for _, p := range pats[k] {
+		for i, p := range pats[k] {
 			insEnv = p.AddEnv(insEnv)
+			iter.arcs[k].checkpoints[i] = newVenv(insEnv)
 		}
+		iter.checkpoints[k+1] = newVenv(insEnv)
 	}
-	if !stringListIncludes(insEnv, cond.AddEnv(nil)) {
+	// We test that all the variables in env are in the input arcs; otherwise we
+	// may miss constraints during  unification and cannot decide if a
+	// transition is enabled.
+	//
+	// TODO: use a ternary system for enabled transition, for this particular
+	// case.
+	if !util.StringListIncludes(insEnv, cond.AddEnv(nil)) {
 		return iter, errors.New("not enough variables in input arcs patterns")
 	}
 	return iter, nil
 }
 
-// returns true if all the strings in sl2 are also in sl1. WARNING: We sort the
-// input strings.
-func stringListIncludes(sl1, sl2 []string) bool {
-	sort.Strings(sl1)
-	for _, s := range sl2 {
-		if x := sort.SearchStrings(sl1, s); (x >= len(sl1)) || (sl1[x] != s) {
-			return false
-		}
-	}
-	return true
+// Venv returns the tight VEnv association when we have found a match. It can be
+// found in the last checkpoint of the iterator.
+func (iter *Iterator) Venv() VEnv {
+	return iter.checkpoints[len(iter.arcs)]
 }
 
 // ----------------------------------------------------------------------
 
 // Reset is used when we need to iterate over a new marking.
 func (iter *Iterator) Reset() {
-	iter.Venv = make(VEnv)
 	iter.idx = 0
 	iter.finished = false
 	for k := range iter.arcs {
@@ -100,6 +107,7 @@ func (iter *Iterator) ResetOneArc(i int) {
 		p.mults[k] = 0
 	}
 	p.match = p.match[:0]
+	// ASSERT: we do not need to reset checkpoints. We do it when checking
 	p.idx = 0
 	p.finished = false
 }
@@ -167,7 +175,7 @@ func (iter *Iterator) Check(m []Hue) bool {
 		// If we have a match for all the input places, we have a possible
 		// match. We need to check that it is a solution for the condition in
 		// the transition
-		if !iter.Operation.OK(iter.Net, iter.Venv) {
+		if !iter.Operation.OK(iter.Net, iter.Venv()) {
 			// if it is not, we need to start iterating to the next potential candidate
 			if !iter.Step(m) {
 				return false
@@ -184,51 +192,57 @@ func (iter *Iterator) Check(m []Hue) bool {
 func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 	a := iter.arcs[i]
 	h := m[a.pl]
+
+	if a.idx != 0 {
+		log.Fatal("ASSERT failed")
+	}
+
 	// there is nothing to match if the place marking is empty or if we finished
 	if len(h) == 0 || a.finished {
 		return false
 	}
+
 	// Otherwise check if we can unify the arc conditions with the values at the
 	// given position. We also need to collect the multiplicities to make sure
 	// that we have enough tokens of the right value in h. The index of the
 	// current subpattern we are testing is the value of a.idx. We keep a copy
 	// of the current VEnv in case we need to backtrack changes made during a
 	// failed unification.
-	venv2 := iter.Venv.copy()
+
 	// We zero a.mults
 	for i := range a.mults {
 		a.mults[i] = 0
 	}
 	for {
-		a.mults[a.idx] = a.exps[a.idx].Unify(iter.Net, h[a.pos[a.idx]].Value, iter.Venv)
+		// we restore the VEnv and reset mult
+		if a.idx == 0 {
+			a.checkpoints[a.idx].copy(iter.checkpoints[i])
+		} else {
+			a.checkpoints[a.idx].copy(a.checkpoints[a.idx-1])
+		}
+		a.mults[a.idx] = a.exps[a.idx].Unify(iter.Net, h[a.pos[a.idx]].Value, a.checkpoints[a.idx])
 		if a.mults[a.idx] == 0 {
 			// Unification failed. We need to change the position.
 			if !iter.StepOneArc(i, m) {
 				// we finished exploring for this arc
 				return false
 			}
-			// we restore the VEnv and reset mult
-			iter.Venv.restore(venv2)
-			a.mults[a.idx] = 0
 			continue
 		}
 		if a.idx == len(a.exps)-1 {
 			// We matched the last arc pattern, so we have a possible match ! We
 			// need to check the multiplicities to make sure that we have enough
 			// of them in the marking
-
 			if !a.testCapacity(h) {
 				// This is not a real match. We need to step to the next
 				// possible match.
 				if !iter.StepOneArc(i, m) {
-					iter.Venv.restore(venv2)
-					a.mults[a.idx] = 0
 					return false
 				}
 				continue
 			}
-
 			// We have found a match.
+			iter.checkpoints[i+1].copy(a.checkpoints[a.idx])
 			return true
 		}
 		a.idx++

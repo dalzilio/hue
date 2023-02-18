@@ -83,7 +83,7 @@ func (s *Stepper) ExistMatch(t int) bool {
 			fmt.Printf("%s enabled\n", s.Trans[t].Name)
 			fmt.Println("witness:")
 			fmt.Print(s.PrintCOL(s.iter[t].Witness(s.COL)))
-			fmt.Println(s.iter[t].Venv.PrintVEnv(s.Net.Net))
+			fmt.Println(s.iter[t].PrintVEnv(s.Net.Net))
 			fmt.Println("----------------------------------")
 		}
 		return true

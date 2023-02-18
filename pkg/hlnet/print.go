@@ -6,30 +6,9 @@ package hlnet
 import (
 	"fmt"
 
+	"github.com/dalzilio/hue/pkg/internal/util"
 	"github.com/dalzilio/hue/pkg/pnml"
 )
-
-func zipString(a []string, start, end, sep string) string {
-	res := start
-	for k, aa := range a {
-		if k != 0 {
-			res += sep
-		}
-		res += aa
-	}
-	return res + end
-}
-
-func zipPrint[T fmt.Stringer](a []T, start, end, sep string) string {
-	res := start
-	for k, aa := range a {
-		if k != 0 {
-			res += sep
-		}
-		res += aa.String()
-	}
-	return res + end
-}
 
 func (net Net) String() string {
 	// s := fmt.Sprintf("# net %s\n", net.Name)
@@ -40,10 +19,10 @@ func (net Net) String() string {
 	for _, v := range net.Trans {
 		s += fmt.Sprintf("# tr %s %s %s\n", v.Name, v.Cond, v.Env)
 		for _, e := range v.Ins {
-			s += fmt.Sprintf("#\t%s -->( %s )\n", net.Places[e.Place].Name, zipPrint(e.Pattern, "[", "]", ","))
+			s += fmt.Sprintf("#\t%s -->( %s )\n", net.Places[e.Place].Name, util.ZipPrint(e.Pattern, "[", "]", ","))
 		}
 		for _, e := range v.Outs {
-			s += fmt.Sprintf("#\t%s <--( %s )\n", net.Places[e.Place].Name, zipPrint(e.Pattern, "[", "]", ","))
+			s += fmt.Sprintf("#\t%s <--( %s )\n", net.Places[e.Place].Name, util.ZipPrint(e.Pattern, "[", "]", ","))
 		}
 	}
 	return s

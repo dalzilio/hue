@@ -4,9 +4,13 @@
 
 package formula
 
-import "fmt"
+import (
+	"fmt"
 
-func (p *Query) String() string {
+	"github.com/dalzilio/hue/pkg/internal/util"
+)
+
+func (p Query) String() string {
 	s := fmt.Sprintf("Property %s\n", p.ID)
 	if p.IsEF {
 		s += fmt.Sprintf("EF %v\n", p.Formula)
@@ -17,12 +21,5 @@ func (p *Query) String() string {
 }
 
 func PrintQueries(queries []Query) string {
-	s := ""
-	for k, v := range queries {
-		if k != 0 {
-			s += "----------------------------------\n"
-		}
-		s += v.String()
-	}
-	return s
+	return util.ZipPrint(queries, "", "", "----------------------------------\n")
 }

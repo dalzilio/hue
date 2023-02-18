@@ -27,26 +27,26 @@ func (p Env) String() string {
 // values.
 type VEnv map[string]*Value
 
-func (venv VEnv) copy() VEnv {
+func newVenv(env Env) VEnv {
 	res := make(VEnv)
-	for k, v := range venv {
-		res[k] = v
+	for _, s := range env {
+		res[s] = nil
 	}
 	return res
 }
 
-func (venv VEnv) restore(venv2 VEnv) {
+func (venv VEnv) copy(venv2 VEnv) {
 	for k := range venv {
-		delete(venv, k)
+		venv[k] = nil
 	}
 	for k, v := range venv2 {
 		venv[k] = v
 	}
 }
 
-func (venv VEnv) PrintVEnv(net *Net) string {
+func (iter *Iterator) PrintVEnv(net *Net) string {
 	res := ""
-	for vname, val := range venv {
+	for vname, val := range iter.Venv() {
 		res += fmt.Sprintf("%s : %s\n", vname, net.PrintValue(val))
 	}
 	return res

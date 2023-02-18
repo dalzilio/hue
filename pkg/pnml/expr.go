@@ -9,6 +9,8 @@ import (
 	"log"
 	"sort"
 	"strconv"
+
+	"github.com/dalzilio/hue/pkg/internal/util"
 )
 
 // ----------------------------------------------------------------------
@@ -32,7 +34,7 @@ import (
 // use the VEnv to check that we respect previously unified variables. We can
 // also update the VEnv by adding new associations. A return value of 0 means no
 // match; otherwise it is the number of "copies" of the value that we need to
-// match
+// match. Unify can change the values in the VEnv even if it fails
 type Expression interface {
 	String() string
 	AddEnv(Env) Env
@@ -109,7 +111,7 @@ func (p All) Unify(net *Net, v *Value, venv VEnv) int {
 type Add []Expression
 
 func (p Add) String() string {
-	return multstring(p, "", " + ", "")
+	return util.ZipPrint(p, "", "", " + ")
 }
 
 func (p Add) AddEnv(env Env) Env {
@@ -136,7 +138,7 @@ func (p Add) Unify(net *Net, v *Value, venv VEnv) int {
 type Subtract []Expression
 
 func (p Subtract) String() string {
-	return multstring(p, "", " - ", "")
+	return util.ZipPrint(p, "", "", " - ")
 }
 
 func (p Subtract) AddEnv(env Env) Env {
@@ -187,7 +189,7 @@ OUTER:
 type Tuple []Expression
 
 func (p Tuple) String() string {
-	return multstring(p, "(", ", ", ")")
+	return util.ZipPrint(p, "(", ")", ", ")
 }
 
 func (p Tuple) AddEnv(env Env) Env {
@@ -216,10 +218,6 @@ func (p Tuple) Unify(net *Net, v *Value, venv VEnv) int {
 	// We cannot assume that the tuple is of size at least 2, model
 	// UtilityControlRoom is a counter-example. But we may assume that tuples
 	// only contain constants. We never have tuples inside of tuples.
-	//
-	//  We make a deep copy of venv since we may need to backtrack some
-	// modifications. The multiplicty should always be 1 in this case.
-	venv2 := venv.copy()
 	vv := v
 	for _, e := range p {
 		if vv == nil {
@@ -228,7 +226,6 @@ func (p Tuple) Unify(net *Net, v *Value, venv VEnv) int {
 		mult := e.Unify(net, net.Unique[Value{Head: vv.Head, Tail: nil}], venv)
 		if mult == 0 {
 			// unification fails.
-			venv.restore(venv2)
 			return 0
 		}
 		if mult != 1 {
@@ -274,7 +271,7 @@ func (p OP) String() string {
 }
 
 func (p Operation) String() string {
-	return multstring(p.Elem, "(", p.Op.String(), ")")
+	return util.ZipPrint(p.Elem, "(", ")", p.Op.String())
 }
 
 func (p Operation) AddEnv(env Env) Env {
@@ -422,7 +419,7 @@ func (p Var) Unify(net *Net, v *Value, venv VEnv) int {
 	}
 	vv, ok := venv[string(p)]
 	// if variable p is not set in venv, we add it
-	if !ok {
+	if !ok || vv == nil {
 		venv[string(p)] = v
 		return 1
 	}
@@ -524,21 +521,6 @@ func (p Numberof) Unify(net *Net, v *Value, venv VEnv) int {
 }
 
 // ----------------------------------------------------------------------
-
-func multstring(ee []Expression, start, delim, end string) string {
-	s := start
-	if len(ee) == 0 {
-		return s + end
-	}
-	s = s + ee[0].String()
-	if len(ee) == 1 {
-		return s + end
-	}
-	for i := 1; i < len(ee); i++ {
-		s = s + delim + ee[i].String()
-	}
-	return s + end
-}
 
 func multaddEnv(ee []Expression, env Env) Env {
 	for _, v := range ee {

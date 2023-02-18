@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/dalzilio/hue/pkg/internal/util"
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
@@ -45,7 +46,7 @@ func (net *Net) PrintEnabled(m Marking) string {
 			s[net.TPosition[k]] = fmt.Sprintf("%s(-)", k)
 		}
 	}
-	return zipString(s, "", "", " ")
+	return util.ZipString(s, "", "", " ")
 }
 
 func (net *Net) printMarkingAligned(m Marking, left int, trunc int) string {
