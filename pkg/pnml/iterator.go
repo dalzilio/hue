@@ -165,24 +165,37 @@ func (iter *Iterator) StepOneArc(i int, m []Hue) bool {
 // patterns and also the conditon (Operation). It returns false if it is not
 // possible.
 func (iter *Iterator) Check(m []Hue) bool {
+	iter.Reset()
 	for {
-		for i := range iter.arcs {
-			if !iter.CheckOneArc(i, m) {
-				iter.finished = true
-				return false
-			}
+		if iter.finished {
+			return false
 		}
-		// If we have a match for all the input places, we have a possible
-		// match. We need to check that it is a solution for the condition in
-		// the transition
-		if !iter.Operation.OK(iter.Net, iter.Venv()) {
-			// if it is not, we need to start iterating to the next potential candidate
+
+		if !iter.CheckOneArc(iter.idx, m) {
 			if !iter.Step(m) {
+				// there is no more possibilities
+				iter.finished = true
 				return false
 			}
 			continue
 		}
-		return true
+
+		if iter.idx == len(iter.arcs)-1 {
+			// If we have a match for all the input places, we have a possible
+			// match. We need to check that it is a solution for the condition
+			// in the transition
+			if !iter.Operation.OK(iter.Net, iter.Venv()) {
+				// it is not a match, we need to start iterating to the next
+				// potential candidate
+				if !iter.Step(m) {
+					return false
+				}
+				continue
+			}
+			return true
+		}
+
+		iter.idx++
 	}
 }
 
