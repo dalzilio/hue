@@ -5,7 +5,6 @@
 package hlnet
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/dalzilio/hue/pkg/internal/util"
@@ -18,11 +17,12 @@ import (
 // pattern in the input arc of a transition.
 type Iterator struct {
 	*Net
-	pnml.Operation
-	idx         int            // index of the arc we are currently trying to match
-	checkpoints []pnml.VEnv    // copy of Venv used when backtracking
-	arcs        []*arcIterator // sub-iterator for each input place
-	finished    bool           // report that we exhausted the search
+	tid            int            // index of the transition in the net
+	pnml.Operation                // condition associated with the transition
+	idx            int            // index of the arc we are currently trying to match
+	checkpoints    []pnml.VEnv    // copy of Venv used when backtracking
+	arcs           []*arcIterator // sub-iterator for each input place
+	finished       bool           // report that we exhausted the search
 }
 
 type arcIterator struct {
@@ -38,37 +38,29 @@ type arcIterator struct {
 
 // ----------------------------------------------------------------------
 
-// NewIterator initialize a slice of Iterators for a transition. Pats and pl are
-// two slices of equal length; pats is the list of "split" arc patterns and pl
-// gives the index to the related input places.
-func NewIterator(net *Net, tname string, cond pnml.Operation, pats [][]pnml.Expression, pl []int) (Iterator, error) {
+// newIterator initializes a slice of Iterators for transition with index k in
+// the Net.
+func (s *Stepper) newIterator(k int) Iterator {
+	t := s.Trans[k]
 	iter := Iterator{
-		Net:         net,
-		Operation:   cond,
-		checkpoints: make([]pnml.VEnv, len(pats)+1),
-		arcs:        make([]*arcIterator, len(pats)),
+		Net:       s.Net,
+		tid:       k,
+		Operation: t.Cond,
 	}
-	// We compute the set of variables that are matched by the patterns. We use
-	// the fact that the order in which we unify VEnv is deterministic, which
-	// means that we know wich variables may already have been set. The first
-	// checkpoint is always empty and is used only to reset the VEnv.
-	insEnv := make(pnml.Env, 0)
-	iter.checkpoints[0] = make(pnml.VEnv)
-	for k := range pats {
-		iter.arcs[k] = &arcIterator{
-			pre:         pats[k],
-			pl:          pl[k],
-			pos:         make([]int, len(pats[k])),
-			mults:       make([]int, len(pats[k])),
-			match:       make(IteratorMatch, 0),
-			checkpoints: make([]pnml.VEnv, len(pats[k])),
+
+	// We compute the environment of patterns in the input arcs to detect the
+	// case where we have extra variables (see DatabaseWithMutex)
+	pats := [][]pnml.Expression{}
+	pl := []int{}
+	insEnv := pnml.Env{}
+	for _, a := range t.Ins {
+		pats = append(pats, a.Pattern)
+		pl = append(pl, a.Place)
+		for _, e := range a.Pattern {
+			insEnv = e.AddEnv(insEnv)
 		}
-		for i, p := range pats[k] {
-			insEnv = p.AddEnv(insEnv)
-			iter.arcs[k].checkpoints[i] = newVenv(insEnv)
-		}
-		iter.checkpoints[k+1] = newVenv(insEnv)
 	}
+
 	// We test that all the variables in the condition are in the input arcs;
 	// otherwise we may miss constraints during  unification and cannot decide
 	// if a transition is enabled. This is the case with model PhilosopherDyn
@@ -77,13 +69,45 @@ func NewIterator(net *Net, tname string, cond pnml.Operation, pats [][]pnml.Expr
 	// We also have the case where there variables in the out arcs not appearing
 	// in the inputs. They should be associated with an <all> on all the values
 	// with the type of the place. The only knwown case is DatabaseWithMutex.
-	//
-	// TODO: use a ternary system for enabled transition, for this particular
-	// case.
-	if !util.StringListIncludes(insEnv, cond.AddEnv(nil)) {
-		return iter, errors.New("not enough variables in input arcs patterns")
+	if !util.StringListIncludes(insEnv, t.Cond.AddEnv(nil)) {
+		s.forbidFiring[k] = struct{}{}
+		s.forbidEnabled[k] = struct{}{}
+		s.forbidden[t.Name] = struct{}{}
+		return iter
 	}
-	return iter, nil
+
+	// if we have extra variables, we must prevent the stepper from firing this
+	// transition.
+	if len(t.Env) > len(insEnv) {
+		s.forbidFiring[k] = struct{}{}
+	}
+
+	iter.checkpoints = make([]pnml.VEnv, len(pl)+1)
+	iter.arcs = make([]*arcIterator, len(pl))
+
+	// We compute again the set of variables that are matched by the patterns.
+	// We use the fact that the order in which we unify VEnv is deterministic,
+	// which means that we know wich variables may already have been set. The
+	// first checkpoint is always empty and is used only to reset the VEnv.
+	insEnv = make(pnml.Env, 0)
+	iter.checkpoints[0] = make(pnml.VEnv)
+	for i := range pats {
+		iter.arcs[i] = &arcIterator{
+			pre:         pats[i],
+			pl:          pl[i],
+			pos:         make([]int, len(pats[i])),
+			mults:       make([]int, len(pats[i])),
+			match:       make(IteratorMatch, 0),
+			checkpoints: make([]pnml.VEnv, len(pats[i])),
+		}
+		for j, p := range pats[i] {
+			insEnv = p.AddEnv(insEnv)
+			iter.arcs[i].checkpoints[j] = newVenv(insEnv)
+		}
+		iter.checkpoints[i+1] = newVenv(insEnv)
+	}
+
+	return iter
 }
 
 // Venv returns the tight VEnv association when we have found a match. It can be

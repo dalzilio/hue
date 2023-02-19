@@ -18,16 +18,15 @@ type Query struct {
 	ID             string
 	IsEF           bool
 	IsReachability bool
-	Skip           bool    // whether we can skip evaluiating this formula
+	Skip           bool    // whether we should skip evaluating this formula
 	Original       Formula // formula before simplification. For debugging purpose
 	Formula
 }
 
 // Formula is the interface that wraps the type of XML Formula.
 //
-// Match return the set of constant values that match an Expression, also called
-// a pattern,  together with their multiplicities. The method returns two slices
-// that have equal length.
+// Includes reports if one of the constant in the formula is part of the set of
+// names
 type Formula interface {
 	String() string
 }
@@ -121,9 +120,11 @@ func (f IntegerConstant) String() string {
 	return fmt.Sprintf("%d", f)
 }
 
+// ----------------------------------------------------------------------
+//
 // The following elements are not used in practice
-
-// // ----------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------
 
 // // IntegerSum defines the sum between two or more integer expressions. We
 // // assume, but do not check beforehand, that all the Formula in IntegerSum are

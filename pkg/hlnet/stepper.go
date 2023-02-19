@@ -15,14 +15,16 @@ import (
 type Stepper struct {
 	*Net
 	State
-	iter         []Iterator       // we keep iterators for each transitions in the net
-	lpn          int              // length of the longest place name, for pretty printing markings
-	showwitness  bool             // flag to print witness when we find a fireable transition
-	forbidFiring map[int]struct{} // index of transitions we should never fire
+	iter          []Iterator          // we keep iterators for each transitions in the net
+	lpn           int                 // length of the longest place name, for pretty printing markings
+	forbidFiring  map[int]struct{}    // index of transitions we should never fire
+	forbidEnabled map[int]struct{}    // index of transitions for which we cannot decide enabledness
+	forbidden     map[string]struct{} // name of transitions in forbidEnabled
+
 }
 
 // NewStepper returns a fresh Stepper starting with the initial marking of n
-func NewStepper(n *Net, showwitness bool, needfireable bool) (*Stepper, error) {
+func NewStepper(n *Net, needfireable bool) *Stepper {
 	m0 := State{
 		COL:       make(pnml.Marking, len(n.Places)),
 		PT:        make(map[string]int),
@@ -32,57 +34,37 @@ func NewStepper(n *Net, showwitness bool, needfireable bool) (*Stepper, error) {
 	lpn := 0
 	for k, v := range n.Places {
 		m0.COL[k] = v.Init
-		m0.PT[v.Name] = v.Init.Sum()
+		m0.PT[v.Name] = m0.COL[k].Sum()
 		if len(v.Name) > lpn {
 			lpn = len(v.Name)
 		}
 	}
 	s := Stepper{
-		Net:          n,
-		State:        m0,
-		iter:         nil,
-		lpn:          lpn,
-		showwitness:  showwitness,
-		forbidFiring: make(map[int]struct{}),
+		Net:           n,
+		State:         m0,
+		iter:          nil,
+		lpn:           lpn,
+		forbidFiring:  make(map[int]struct{}),
+		forbidEnabled: make(map[int]struct{}),
+		forbidden:     make(map[string]struct{}),
 	}
 
-	if needfireable || showwitness {
+	if needfireable {
 		s.iter = make([]Iterator, len(n.Trans))
 		// we should compute enabled after testing reachability queries on the initial marking.
-		for k, t := range s.Trans {
-			// We collect the patterns and the list of places in the input arcs.
-			// We compute their environment to detect the case where we have
-			// extra variables in on the output arc (see DatabaseWithMutex)
-			inse := [][]pnml.Expression{}
-			insm := []int{}
-			insEnv := pnml.Env{}
-			for _, a := range t.Ins {
-				inse = append(inse, a.Pattern)
-				insm = append(insm, a.Place)
-				for _, e := range a.Pattern {
-					insEnv = e.AddEnv(insEnv)
-				}
-			}
-			// if we have extra variables, we must prevent the stepper from firing this transition.
-			if len(t.Env) > len(insEnv) {
-				s.forbidFiring[k] = struct{}{}
-			}
-			var err error
-			s.iter[k], err = NewIterator(n, t.Name, t.Cond, inse, insm)
-			if err != nil {
-				return &s, err
-			}
+		for k := range s.Trans {
+			s.iter[k] = s.newIterator(k)
 		}
 		s.ComputeEnabled()
 	}
 
-	return &s, nil
+	return &s
 }
 
 func (s *Stepper) String() string {
 	res := s.printMarkingAligned(s.State, s.lpn, 90)
 	if len(s.iter) != 0 {
-		res += "\nFireable: " + s.PrintEnabled(s.State)
+		res += "\nFireable: " + s.PrintEnabled()
 	}
 	return res + "\n"
 }
@@ -95,23 +77,53 @@ func (s *Stepper) PrintCOL(m pnml.Marking) string {
 	return res
 }
 
+func (s *Stepper) PrintCOLShort(m pnml.Marking) string {
+	res := ""
+	for k, v := range s.Places {
+		if len(m[k]) == 0 {
+			continue
+		}
+		res += fmt.Sprintf("%s : %s\n", v.Name, s.PrintHue(m[k]))
+	}
+	return res
+}
+
 // ExistMatch reports if there is a set of values that match the condition of
 // the transition with index t.
 func (s *Stepper) ExistMatch(t int) bool {
 	s.iter[t].Reset()
 	if w, ok := s.iter[t].Check(s.COL); ok {
-		if s.showwitness {
-			fmt.Println("----------------------------------")
-			fmt.Printf("%s enabled\n", s.Trans[t].Name)
-			fmt.Println("witness:")
-			fmt.Print(s.PrintCOL(w.ShowWitness(s.COL)))
-			fmt.Println(s.iter[t].PrintVEnv(s.Net))
-			fmt.Println("----------------------------------")
-		}
 		s.State.Witnesses[t] = w
 		return true
 	}
 	return false
+}
+
+func (s *Stepper) PrintWitnesses() {
+	for k := range s.Trans {
+		s.PrintWitness(k)
+	}
+}
+
+// PrintWitness displays information about a witness that the transition with
+// index t is enabled.
+func (s *Stepper) PrintWitness(t int) {
+	if _, ok := s.forbidEnabled[t]; ok {
+		return
+	}
+	if len(s.Witnesses) == 0 {
+		return
+	}
+	if !s.Enabled[s.Trans[t].Name] {
+		return
+	}
+	w := s.Witnesses[t]
+	fmt.Println("----------------------------------")
+	fmt.Printf("%s enabled\n", s.Trans[t].Name)
+	fmt.Println("witness:")
+	fmt.Print(s.PrintCOLShort(w.ShowWitness(s.COL)))
+	fmt.Println(s.iter[t].PrintVEnv(s.Net))
+	fmt.Println("----------------------------------")
 }
 
 // Enabled returns the set of transition (a slice of ordered indexes in n.Trans)
@@ -124,6 +136,9 @@ func (s *Stepper) ComputeEnabled() {
 		s.Enabled[tname] = false
 	}
 	for k, t := range s.Trans {
+		if _, ok := s.forbidEnabled[k]; ok {
+			continue
+		}
 		if s.ExistMatch(k) {
 			s.Enabled[t.Name] = true
 		}
@@ -133,13 +148,13 @@ func (s *Stepper) ComputeEnabled() {
 // Fire updates the stepper with the result of firing transition t. If there are
 // no witnesses, we try to compute one. We do nothing when t is not enabled.
 func (s *Stepper) Fire(t int) {
+	if _, ok := s.forbidFiring[t]; ok {
+		return
+	}
 	if s.Witnesses[t] == nil {
 		s.ComputeEnabled()
 	}
 	if !s.Enabled[s.iter[t].Name] {
-		return
-	}
-	if _, ok := s.forbidFiring[t]; ok {
 		return
 	}
 	s.fire(t)

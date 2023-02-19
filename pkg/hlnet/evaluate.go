@@ -6,100 +6,59 @@ package hlnet
 
 import (
 	"github.com/dalzilio/hue/pkg/formula"
-	"github.com/dalzilio/hue/pkg/internal/util"
 )
-
-// Verdict is the possible result of a query evaluation
-type Verdict int
-
-const (
-	UNDEF Verdict = iota
-	TRUE
-	FALSE
-)
-
-func (v Verdict) String() string {
-	switch v {
-	case TRUE:
-		return "TRUE"
-	case FALSE:
-		return "FALSE"
-	default:
-		return "UNDEF"
-	}
-}
 
 // EvaluateQueries reports whether a query is true, false, or still undefined
-func EvaluateQueries(q formula.Query, m State) Verdict {
+func (s *Stepper) EvaluateQueries(q formula.Query) formula.Bool {
 	switch f := q.Formula.(type) {
 	case formula.BooleanConstant:
-		if f {
-			return TRUE
-		}
-		return FALSE
+		return formula.NewBool(bool(f))
 	default:
-		r := Reached(f, m)
-		if q.IsEF {
-			if r {
-				return TRUE
-			}
-			return UNDEF
+		v, ok := s.Reached(f).Value()
+		if ok && q.IsEF && v {
+			return formula.TRUE
 		}
-		if r {
-			return UNDEF
+		if ok && !q.IsEF && !v {
+			return formula.FALSE
 		}
-		return FALSE
+		return formula.UNDEF
 	}
 }
 
 // EvaluateAndTestSimplify checks whether the formula in a query evaluates to
 // the same result than its simplification on marking m.
-func EvaluateAndTestSimplify(q formula.Query, m State) bool {
-	return util.IfAndOnlyIf(Reached(q.Original, m), Reached(q.Formula, m))
+func (s *Stepper) EvaluateAndTestSimplify(q formula.Query) bool {
+	return formula.BoolCompatible(s.Reached(q.Original), s.Reached(q.Formula))
 }
 
 // Reached reports if formula f is true for the current marking m
-func Reached(f formula.Formula, m State) bool {
+func (s *Stepper) Reached(f formula.Formula) formula.Bool {
 	switch f := f.(type) {
 	case formula.BooleanConstant:
-		return bool(f)
+		return formula.NewBool(bool(f))
 	case formula.Negation:
-		return !Reached(f.Formula, m)
+		return formula.BoolNot(s.Reached(f.Formula))
 	case formula.Disjunction:
-		for _, p := range f {
-			if Reached(p, m) {
-				return true
-			}
-		}
-		return false
+		return formula.FoldOr(func(x formula.Formula) formula.Bool { return s.Reached(x) }, f)
 	case formula.Conjunction:
-		for _, p := range f {
-			if !Reached(p, m) {
-				return false
-			}
-		}
-		return true
+		return formula.FoldAnd(func(x formula.Formula) formula.Bool { return s.Reached(x) }, f)
 	case formula.IntegerLe:
-		return Compute(f.Left, m) <= Compute(f.Right, m)
+		return formula.NewBool(s.Compute(f.Left) <= s.Compute(f.Right))
 	case formula.IsFireable:
-		for _, tname := range f {
-			if m.Enabled[tname] {
-				return true
-			}
-		}
-		return false
+		return formula.FoldOr(func(x string) formula.Bool { return s.isfireable(x) }, f)
 	default:
 		panic("wrong formula type in Reached")
 	}
 }
 
 // Compute returns the value of an integer formula
-func Compute(f formula.Formula, m State) int {
+func (s *Stepper) Compute(f formula.Formula) int {
 	switch f := f.(type) {
 	case formula.IntegerConstant:
 		return int(f)
 	case formula.TokensCount:
 		res := 0
+		m := s.State
 		for _, pname := range f {
 			res += m.PT[pname]
 		}
@@ -107,4 +66,15 @@ func Compute(f formula.Formula, m State) int {
 	default:
 		panic("wrong formula type in Compute")
 	}
+}
+
+func (s *Stepper) isfireable(name string) formula.Bool {
+	if _, ok := s.forbidden[name]; ok {
+		return formula.UNDEF
+	}
+	b, ok := s.Enabled[name]
+	if !ok {
+		return formula.UNDEF
+	}
+	return formula.NewBool(b)
 }

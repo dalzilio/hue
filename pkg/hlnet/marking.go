@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dalzilio/hue/pkg/internal/util"
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
@@ -26,16 +25,20 @@ type State struct {
 
 // ----------------------------------------------------------------------
 
-func (net *Net) PrintEnabled(m State) string {
-	s := make([]string, len(net.Trans))
-	for k, v := range m.Enabled {
-		if v {
-			s[net.TPosition[k]] = fmt.Sprintf("%s(+)", k)
+func (s *Stepper) PrintEnabled() string {
+	res := ""
+	for k, t := range s.Trans {
+		if _, ok := s.forbidEnabled[k]; ok {
+			res += fmt.Sprintf("%s(?) ", t.Name)
+			continue
+		}
+		if v := s.Enabled[t.Name]; v {
+			res += fmt.Sprintf("%s(+) ", t.Name)
 		} else {
-			s[net.TPosition[k]] = fmt.Sprintf("%s(-)", k)
+			res += fmt.Sprintf("%s(-) ", t.Name)
 		}
 	}
-	return util.ZipString(s, "", "", " ")
+	return res
 }
 
 func (net *Net) printMarkingAligned(m State, left int, trunc int) string {

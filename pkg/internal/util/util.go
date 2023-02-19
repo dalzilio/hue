@@ -67,3 +67,12 @@ func IfAndOnlyIf(b1, b2 bool) bool {
 	}
 	return !b2
 }
+
+func FoldOr[T any](f func(T) bool, bs []T) bool {
+	for _, b := range bs {
+		if f(b) {
+			return true
+		}
+	}
+	return false
+}

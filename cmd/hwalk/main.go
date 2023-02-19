@@ -127,13 +127,13 @@ func main() {
 
 	sort.Ints(selectQueries)
 
-	// we capture panics
-	defer func() {
-		if r := recover(); r != nil {
-			log.Fatal("error in generation: cannot compute")
-			os.Exit(1)
-		}
-	}()
+	// // we capture panics
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		log.Fatal("error in generation: cannot compute")
+	// 		os.Exit(1)
+	// 	}
+	// }()
 
 	var xmlFile *os.File
 	var err error
@@ -190,15 +190,18 @@ func main() {
 		return
 	}
 
-	// The only possible error, at the moment, is unsupported models for
-	// fireability
-	s, stepperError := hlnet.NewStepper(hl, *rflags.showwitness, *flagfire)
+	// we need fireability information with options -f and --show-witness
+	s := hlnet.NewStepper(hl, *flagfire || *rflags.showwitness)
 
 	if *flagstat {
 		elapsed := time.Since(start)
 		fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
 		fmt.Fprintf(os.Stdout, "%s\n", hl)
 		fmt.Fprintf(os.Stdout, "%s\n", s)
+	}
+
+	if *rflags.showwitness {
+		s.PrintWitnesses()
 	}
 
 	if *flagfire || *flagreach {
@@ -210,9 +213,6 @@ func main() {
 				xmlFile, err = os.Open(filepath.Join(*dirfile, "ReachabilityCardinality.xml"))
 			}
 			if *flagfire {
-				if stepperError != nil {
-					log.Fatalln("features not supported when checking fireability (model: " + s.Name + ")")
-				}
 				xmlFile, err = os.Open(filepath.Join(*dirfile, "ReachabilityFireability.xml"))
 			}
 		default:
@@ -256,9 +256,9 @@ func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags) {
 		if q.Skip {
 			continue
 		}
-		v := hlnet.EvaluateQueries(q, s.Marking)
+		v := s.EvaluateQueries(q)
 		if *flags.testfsimplify {
-			if !hlnet.EvaluateAndTestSimplify(q, s.Marking) {
+			if !s.EvaluateAndTestSimplify(q) {
 				fmt.Println("----------------------------------")
 				fmt.Printf("SIMPLIFY ERROR in formula %s\n", q.ID)
 				fmt.Fprintf(os.Stdout, "ORIGINAL: %s\n", q.Original.String())
@@ -266,7 +266,7 @@ func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags) {
 				fmt.Println("----------------------------------")
 			}
 		}
-		if !*flags.hideundef || (*flags.hideundef && (v != hlnet.UNDEF)) {
+		if !*flags.hideundef || (*flags.hideundef && (v != formula.UNDEF)) {
 			if !*flags.hidetrivial || (*flags.hidetrivial && !q.IsTrivial()) {
 				if *flags.showqueries {
 					fmt.Fprint(os.Stdout, q.String())
