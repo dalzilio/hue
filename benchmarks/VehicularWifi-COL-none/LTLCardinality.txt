@@ -1,0 +1,80 @@
+Property VehicularWifi-COL-none-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A (X ((2) <= (#tokens("BackoffMappings"))) U (X F ((#tokens("Sending")) <= (#tokens("Sense"))) & G !G ((#tokens("Receiving")) <= (#tokens("Garbled")))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A (((#tokens("AMedium")) <= (#tokens("PacketSent"))) & (!(X ((#tokens("ChoosingBackoff")) <= (#tokens("NotErrorSpike"))) & F G ((#tokens("ChoosingBackoff")) <= (#tokens("NotErrorSpike")))) U G !G X ((1) <= (#tokens("WaitForResponse")))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A !(((#tokens("Medium")) <= (#tokens("PausingBackoff"))) & X G (G ((#tokens("AGarbled")) <= (#tokens("Receiving"))) U F ((#tokens("PacketSent")) <= (#tokens("Idle")))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A ((!(!((0) <= (#tokens("AMedium"))) | F ((#tokens("Sending")) <= (#tokens("BackoffCounter")))) | X F ((1) <= (#tokens("ErrorSpike")))) U G ((#tokens("Sending")) <= (#tokens("BackoffCounter"))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A !G F (((0) <= (#tokens("ReadingPacket"))) U F X X ((0) <= (#tokens("ReadingPacket"))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A (G ((#tokens("SentPacket")) <= (#tokens("Sending"))) | (((#tokens("Idle")) <= (#tokens("AGarbled"))) & X ((3) <= (#tokens("TxAttemptsCounter"))) & (((#tokens("BackoffCounter")) <= (#tokens("Sending"))) U !((#tokens("BackoffCounter")) <= (#tokens("Sending"))))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A (G !((1) <= (#tokens("BackoffCounter"))) & F X !((3) <= (#tokens("WaitForResponse"))) & G (((1) <= (#tokens("GoingToBackoff"))) | ((3) <= (#tokens("WaitForResponse")))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A G !((1) <= (#tokens("Sending")))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A G X (X ((#tokens("AGarbled")) <= (#tokens("GoingToBackoff"))) & F X ((!((1) <= (#tokens("ErrorSpike"))) U ((#tokens("AGarbled")) <= (#tokens("GoingToBackoff")))) U ((#tokens("AGarbled")) <= (#tokens("GoingToBackoff")))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A G (((0) <= (#tokens("Garbled"))) | !(((1) <= (#tokens("NotErrorSpike"))) U ((#tokens("Medium")) <= (#tokens("ChoosingBackoff")))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A F ((((2) <= (#tokens("Garbled"))) & ((#tokens("ErrorSpike")) <= (#tokens("PausingBackoff"))) & X X ((#tokens("Receiving")) <= (#tokens("SentPacket")))) | (((#tokens("ErrorSpike")) <= (#tokens("PausingBackoff"))) U ((#tokens("GoingToBackoff")) <= (#tokens("ChoosingBackoff")))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A !(F ((0) <= (#tokens("Idle"))) & (G ((#tokens("Idle")) <= (#tokens("ChoosingBackoff"))) | (((#tokens("Idle")) <= (#tokens("ChoosingBackoff"))) U (((#tokens("WaitForResponse")) <= (#tokens("Sending"))) & !((3) <= (#tokens("Vulnerable")))))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A (!G ((#tokens("BackoffMappings")) <= (#tokens("Sending"))) | X !((2) <= (#tokens("Sending"))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A (((#tokens("ErrorSpike")) <= (#tokens("Sense"))) | F ((#tokens("ErrorSpike")) <= (#tokens("Sense"))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A F G F G (((2) <= (#tokens("Sense"))) U !((#tokens("AMedium")) <= (#tokens("Receiving"))))
+  end.
+Property VehicularWifi-COL-none-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A (!X X F G X !((1) <= (#tokens("BackoffMappings"))) U G ((#tokens("Idle")) <= (#tokens("Garbled"))))
+  end.

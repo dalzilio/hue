@@ -1,0 +1,80 @@
+Property PolyORBNT-COL-S05J20-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("place_456")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("f1")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("JobCnt")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("cJobCnt")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("mo2")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("cSources")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("Perform_Work_E")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("ModifiedSrc")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("place_500")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("NotifyEventEndOfCheckSourcesE")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("Schedule_Task_E")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("mo3")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("f3")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("Schedule_Task_B")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("place_460")
+  end.
+Property PolyORBNT-COL-S05J20-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("place_518")
+  end.

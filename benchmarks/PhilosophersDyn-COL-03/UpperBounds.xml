@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<property-set xmlns="http://mcc.lip6.fr/">
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-00</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Forks</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-01</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>WaitRight</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-02</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>WaitLeft</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-03</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>WaitRight</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-04</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Neighbourhood</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-05</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Think</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-06</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>WaitLeft</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-07</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Forks</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-08</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Neighbourhood</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-09</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Neighbourhood</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-10</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Outside</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-11</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>HasLeft</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-12</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Think</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-13</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Forks</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-14</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Think</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PhilosophersDyn-COL-03-UpperBounds-15</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Think</place>
+      </place-bound>
+    </formula>
+  </property>
+</property-set>

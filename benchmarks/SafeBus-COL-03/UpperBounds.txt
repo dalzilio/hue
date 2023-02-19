@@ -1,0 +1,80 @@
+Property SafeBus-COL-03-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Cpt1")
+  end.
+Property SafeBus-COL-03-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("FMC")
+  end.
+Property SafeBus-COL-03-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("R_tout")
+  end.
+Property SafeBus-COL-03-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("loop_em")
+  end.
+Property SafeBus-COL-03-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("MSG")
+  end.
+Property SafeBus-COL-03-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("listen")
+  end.
+Property SafeBus-COL-03-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("AMC")
+  end.
+Property SafeBus-COL-03-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("wait_cable")
+  end.
+Property SafeBus-COL-03-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("wait_msg")
+  end.
+Property SafeBus-COL-03-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("cable_free")
+  end.
+Property SafeBus-COL-03-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("PMC")
+  end.
+Property SafeBus-COL-03-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("RMC")
+  end.
+Property SafeBus-COL-03-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("FMCb")
+  end.
+Property SafeBus-COL-03-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("Cpt2")
+  end.
+Property SafeBus-COL-03-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("T_out")
+  end.
+Property SafeBus-COL-03-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("ACK")
+  end.

@@ -1,0 +1,80 @@
+Property Peterson-COL-2-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Idle")
+  end.
+Property Peterson-COL-2-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("AskForSection")
+  end.
+Property Peterson-COL-2-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("IsEndLoop")
+  end.
+Property Peterson-COL-2-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("IsEndLoop")
+  end.
+Property Peterson-COL-2-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("IsEndLoop")
+  end.
+Property Peterson-COL-2-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("TestAlone")
+  end.
+Property Peterson-COL-2-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("EndTurn")
+  end.
+Property Peterson-COL-2-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("IsEndLoop")
+  end.
+Property Peterson-COL-2-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("IsEndLoop")
+  end.
+Property Peterson-COL-2-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("CS")
+  end.
+Property Peterson-COL-2-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("TestTurn")
+  end.
+Property Peterson-COL-2-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("EndTurn")
+  end.
+Property Peterson-COL-2-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("TestAlone")
+  end.
+Property Peterson-COL-2-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("BeginLoop")
+  end.
+Property Peterson-COL-2-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("BeginLoop")
+  end.
+Property Peterson-COL-2-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("BeginLoop")
+  end.

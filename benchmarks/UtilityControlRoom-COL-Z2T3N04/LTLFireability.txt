@@ -1,0 +1,80 @@
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-00
+  "Automatically generated"
+  is:
+    A !F !"end"?
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-01
+  "Automatically generated"
+  is:
+    A G X (!F G "end"? U F X G ("end"? U X "reachLocation"?))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-02
+  "Automatically generated"
+  is:
+    A G X (("reachLocation"? | F !"assignMunicipality"?) & X X ("assignMunicipality"? & "reachLocation"?))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-03
+  "Automatically generated"
+  is:
+    A !(!X ("end"? U "assignMunicipality"?) U (G "assignMunicipality"? & G ("reachLocation"? & G "Timeout"?)))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-04
+  "Automatically generated"
+  is:
+    A (G F "assignFar"? & (!X G "end"? U G F X G X "assignNearZone"?))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-05
+  "Automatically generated"
+  is:
+    A !F !F X F ("calls"? U X X "move_between_Municipalities"?)
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-06
+  "Automatically generated"
+  is:
+    A ((X "Timeout"? U (G "Timeout"? | G (!F "reachLocation"? U "Timeout"?))) U F "reachLocation"?)
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-07
+  "Automatically generated"
+  is:
+    A F (F ("assignSameZone"? | "reachLocation"?) | X F ("end"? & X "reachLocation"?))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-08
+  "Automatically generated"
+  is:
+    A ("Timeout"? U ("assignSameZone"? & !"Timeout"? & F (X "calls"? U ("calls"? U G "reachLocation"?))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-09
+  "Automatically generated"
+  is:
+    A G (G ("assignMunicipality"? | "reachLocation"?) U (G "assignMunicipality"? U F X "reachLocation"?))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-10
+  "Automatically generated"
+  is:
+    A F !X ("move_between_Municipalities"? | X (!"assignFar"? U !G "assignFar"?) | F "assignFar"?)
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-11
+  "Automatically generated"
+  is:
+    A (!("move_between_Municipalities"? U !"end"?) U F ("assignSameZone"? & X G "reachLocation"?))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-12
+  "Automatically generated"
+  is:
+    A G "assignNearZone"?
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-13
+  "Automatically generated"
+  is:
+    A (("assignFar"? | ("securingInTime"? & G "securingInTime"?)) U "assignSameZone"?)
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-14
+  "Automatically generated"
+  is:
+    A (!("calls"? | F "assignNearZone"?) & F G (!G "assignNearZone"? | X "Timeout"?))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLFireability-15
+  "Automatically generated"
+  is:
+    A !((F "calls"? | F X "calls"?) & G X X !("securingInTime"? & "assignMunicipality"?))
+  end.

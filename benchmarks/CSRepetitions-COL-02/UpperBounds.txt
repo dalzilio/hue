@@ -1,0 +1,80 @@
+Property CSRepetitions-COL-02-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Server_Waiting")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("Server_Waiting")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("RequestBuffer")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("RequestBufferSlots")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("Server_Waiting")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("Server_Anwering")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("RequestBuffer")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("Client_Sending")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("Server_Waiting")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("Client_Sending")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("Client_Sending")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("Server_Anwering")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("RequestBuffer")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("RequestBufferSlots")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("Server_Anwering")
+  end.
+Property CSRepetitions-COL-02-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("Client_Waiting")
+  end.

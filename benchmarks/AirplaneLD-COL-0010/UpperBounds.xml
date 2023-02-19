@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<property-set xmlns="http://mcc.lip6.fr/">
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-00</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>stp5</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-01</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>P4</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-02</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>WeightPossibleVal</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-03</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Weight_Left_Wheel</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-04</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>P5</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-05</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Weight_Right_Wheel</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-06</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Plane_On_Ground_Signal_no</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-07</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>P2</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-08</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>stp3</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-09</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>P6</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-10</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>stp1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-11</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>TheAltitude</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-12</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>AltitudePossibleVal</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-13</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>stp4</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-14</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>SpeedPossibleVal</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>AirplaneLD-COL-0010-UpperBounds-15</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Speed_Right_Wheel</place>
+      </place-bound>
+    </formula>
+  </property>
+</property-set>

@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<property-set xmlns="http://mcc.lip6.fr/">
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-00</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l5</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-01</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l36</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-02</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>m1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-03</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>lc1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-04</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l16</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-05</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l29</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-06</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>c6</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-07</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l38</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-08</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l24</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-09</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l22</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-10</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>g3</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-11</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>p0</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-12</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l33</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-13</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>cl1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-14</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>l3</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-15</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>lp0</place>
+      </place-bound>
+    </formula>
+  </property>
+</property-set>

@@ -1,0 +1,80 @@
+Property SharedMemory-COL-000005-LTLFireability-00
+  "Automatically generated"
+  is:
+    A G ("Req_Ext_Acc"? U "Req_Ext_Acc"?)
+  end.
+Property SharedMemory-COL-000005-LTLFireability-01
+  "Automatically generated"
+  is:
+    A (X (!(G X "End_Ext_Acc"? U "End_Ext_Acc"?) U "End_Ext_Acc"?) & !("End_Ext_Acc"? & G "End_Ext_Acc"?))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-02
+  "Automatically generated"
+  is:
+    A (!F !"Begin_Ext_Acc"? | ("Begin_Ext_Acc"? U X "End_Ext_Acc"?) | X !("End_Ext_Acc"? & "Begin_Ext_Acc"?))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-03
+  "Automatically generated"
+  is:
+    A G !(F "Req_Ext_Acc"? U X ("End_Ext_Acc"? U X F ("Req_Ext_Acc"? & F "Req_Ext_Acc"?)))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-04
+  "Automatically generated"
+  is:
+    A X X (F !G X "Begin_Ext_Acc"? | G X "Begin_Ext_Acc"?)
+  end.
+Property SharedMemory-COL-000005-LTLFireability-05
+  "Automatically generated"
+  is:
+    A !G "Begin_Own_Acc"?
+  end.
+Property SharedMemory-COL-000005-LTLFireability-06
+  "Automatically generated"
+  is:
+    A ("Begin_Ext_Acc"? & F "Req_Ext_Acc"?)
+  end.
+Property SharedMemory-COL-000005-LTLFireability-07
+  "Automatically generated"
+  is:
+    A (G X "End_Own_Acc"? & X (X "End_Own_Acc"? & !X !F "End_Own_Acc"?))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-08
+  "Automatically generated"
+  is:
+    A (!G ("Begin_Own_Acc"? | "End_Own_Acc"?) U "End_Own_Acc"?)
+  end.
+Property SharedMemory-COL-000005-LTLFireability-09
+  "Automatically generated"
+  is:
+    A G F (G !"End_Own_Acc"? & !("Req_Ext_Acc"? U "End_Ext_Acc"?))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-10
+  "Automatically generated"
+  is:
+    A F (G F X "Begin_Ext_Acc"? | G ("Begin_Ext_Acc"? & "End_Own_Acc"?))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-11
+  "Automatically generated"
+  is:
+    A (!F ("Begin_Ext_Acc"? & "End_Ext_Acc"?) U !F "Begin_Ext_Acc"?)
+  end.
+Property SharedMemory-COL-000005-LTLFireability-12
+  "Automatically generated"
+  is:
+    A (("Req_Ext_Acc"? & G "Req_Ext_Acc"?) U X ("Req_Ext_Acc"? U F !("Req_Ext_Acc"? U "Req_Ext_Acc"?)))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-13
+  "Automatically generated"
+  is:
+    A (G (G ("Begin_Own_Acc"? & G "End_Own_Acc"?) U ("End_Own_Acc"? | X "Begin_Own_Acc"?)) U ("End_Ext_Acc"? | "Begin_Own_Acc"?))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-14
+  "Automatically generated"
+  is:
+    A !X X (G !F X G "Begin_Own_Acc"? & F (!"End_Ext_Acc"? & "Req_Ext_Acc"?))
+  end.
+Property SharedMemory-COL-000005-LTLFireability-15
+  "Automatically generated"
+  is:
+    A (!G F "End_Ext_Acc"? U G ("Req_Ext_Acc"? | X F X G F "End_Ext_Acc"?))
+  end.

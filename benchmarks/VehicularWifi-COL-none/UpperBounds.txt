@@ -1,0 +1,80 @@
+Property VehicularWifi-COL-none-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Idle")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("ErrorSpike")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("PausingBackoff")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("GoingToBackoff")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("Vulnerable")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("Garbled")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("SentPacket")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("Sense")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("NotErrorSpike")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("WaitForResponse")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("BackoffMappings")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("BackoffCounter")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("AMedium")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("ChoosingBackoff")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("ReadingPacket")
+  end.
+Property VehicularWifi-COL-none-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("Sending")
+  end.

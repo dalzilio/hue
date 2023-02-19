@@ -1,0 +1,80 @@
+Property AirplaneLD-COL-0010-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("stp5")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("P4")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("WeightPossibleVal")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("Weight_Left_Wheel")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("P5")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("Weight_Right_Wheel")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("Plane_On_Ground_Signal_no")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("P2")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("stp3")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("P6")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("stp1")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("TheAltitude")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("AltitudePossibleVal")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("stp4")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("SpeedPossibleVal")
+  end.
+Property AirplaneLD-COL-0010-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("Speed_Right_Wheel")
+  end.

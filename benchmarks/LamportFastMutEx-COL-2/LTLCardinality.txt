@@ -1,0 +1,80 @@
+Property LamportFastMutEx-COL-2-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A !(X !X X X !G F ((#tokens("x")) <= (#tokens("P-setbi_5"))) U X !F ((0) <= (#tokens("P-sety_9"))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A !G F (X G ((#tokens("P-sety_9")) <= (#tokens("P-setbi_24"))) | (X (((3) <= (#tokens("P-start_1"))) & F ((0) <= (#tokens("y")))) U ((#tokens("P-sety_9")) <= (#tokens("P-setbi_24")))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A X G !(X ((#tokens("P-ify0_4")) <= (#tokens("P-ifyi_15"))) & (((1) <= (#tokens("P-setbi_5"))) | (((2) <= (#tokens("P-ifyi_15"))) & !(((#tokens("P-ify0_4")) <= (#tokens("P-ifyi_15"))) | F ((1) <= (#tokens("P-setbi_5")))))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A (G !X (F ((#tokens("P-sety_9")) <= (#tokens("P-fordo_12"))) | G ((#tokens("P-sety_9")) <= (#tokens("P-fordo_12")))) U (((2) <= (#tokens("P-b"))) U ((#tokens("P-setbi_11")) <= (#tokens("P-sety_9")))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A !((!(((1) <= (#tokens("P-setbi_24"))) | ((0) <= (#tokens("x")))) U F X ((1) <= (#tokens("P-setbi_24")))) & (F ((#tokens("P-setx_3")) <= (#tokens("P-ify0_4"))) U F ((0) <= (#tokens("P-start_1")))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A F !((1) <= (#tokens("P-awaity")))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A (G ((#tokens("P-ify0_4")) <= (#tokens("x"))) U G !X !(((#tokens("P-ify0_4")) <= (#tokens("x"))) & G ((((#tokens("P-b")) <= (#tokens("P-setbi_5"))) | ((0) <= (#tokens("P-b")))) U ((#tokens("P-sety_9")) <= (#tokens("P-ifyi_15"))))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A ((((#tokens("P-sety_9")) <= (#tokens("P-start_1"))) U ((#tokens("P-setbi_24")) <= (#tokens("y")))) & F (((#tokens("P-setbi_24")) <= (#tokens("y"))) & ((1) <= (#tokens("P-sety_9"))) & ((#tokens("P-sety_9")) <= (#tokens("P-start_1"))) & !((1) <= (#tokens("P-ify0_4")))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A !((((#tokens("P-setbi_11")) <= (#tokens("y"))) | !G ((#tokens("P-setbi_11")) <= (#tokens("y")))) U X !((#tokens("P-setbi_11")) <= (#tokens("y"))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A !G X !X X (((#tokens("P-awaity")) <= (#tokens("P-ify0_4"))) | X ((#tokens("P-awaity")) <= (#tokens("P-fordo_12"))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A ((!((#tokens("P-awaity")) <= (#tokens("P-setbi_24"))) | !((#tokens("P-CS_21")) <= (#tokens("P-ifyi_15")))) & X !(G X X !((#tokens("P-wait")) <= (#tokens("P-setbi_11"))) U ((#tokens("P-CS_21")) <= (#tokens("P-ifyi_15")))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A !G X F X ((#tokens("P-ify0_4")) <= (#tokens("P-wait")))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A X ((((0) <= (#tokens("P-start_1"))) & F ((#tokens("P-awaity")) <= (#tokens("P-setbi_24")))) U ((F ((#tokens("P-awaity")) <= (#tokens("P-setbi_24"))) & G ((0) <= (#tokens("P-setbi_24")))) U ((2) <= (#tokens("P-setbi_11")))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A G !X X (!(((#tokens("P-setbi_24")) <= (#tokens("P-wait"))) U !F X ((#tokens("x")) <= (#tokens("P-setbi_11")))) U X ((#tokens("x")) <= (#tokens("P-setbi_11"))))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A F G !G ((#tokens("P-done")) <= (#tokens("P-wait")))
+  end.
+Property LamportFastMutEx-COL-2-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A (F X G X G ((#tokens("P-ifxi_10")) <= (#tokens("P-wait"))) U G ((#tokens("P-start_1")) <= (#tokens("x"))))
+  end.

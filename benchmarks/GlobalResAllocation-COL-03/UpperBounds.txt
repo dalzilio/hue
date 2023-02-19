@@ -1,0 +1,80 @@
+Property GlobalResAllocation-COL-03-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Resources")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("pr_in")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("Processes")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("pr_released")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("pr_released")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("pr_in")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("pr_released")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("pr_in")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("pr_in")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("Processes")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("in_critical_s")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("Processes")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("in_critical_s")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("pr_released")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("pr_released")
+  end.
+Property GlobalResAllocation-COL-03-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("pr_in")
+  end.

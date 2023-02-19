@@ -1,0 +1,87 @@
+<toolspecific tool="propertiesverdict" version="2.0">
+  <modelreference modelname="PolyORBNT"/>
+  <verdict category="GENERIC" reference="ORDINARY" value="false">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SIMPLE_FREE_CHOICE" value="false">
+    <explanation>see transitions textbf{fi&lt;i&gt;} -- the net is not ordinary in all its 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="EXTENDED_FREE_CHOICE" value="false">
+    <explanation>the net is not ordinary in all its 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="STATE_MACHINE" value="false">
+    <explanation>see transition textbf{fi3} -- the net is not ordinary in all its 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="MARKED_GRAPH" value="false">
+    <explanation>see place textbf{block} -- the net is not ordinary in all its 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="CONNECTED" value="true">
+    <explanation>stated by CAESARBDD version 2.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="STRONGLY_CONNECTED" value="true">
+    <explanation>stated by CAESARBDD version 2.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SOURCE_PLACE" value="false">
+    <explanation>stated by CAESARBDD version 2.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SINK_PLACE" value="false">
+    <explanation>stated by CAESARBDD version 2.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SOURCE_TRANSITION" value="false">
+    <explanation>stated by CAESARBDD version 2.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SINK_TRANSITION" value="false">
+    <explanation>stated by CAESARBDD version 2.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="LOOP_FREE" value="false">
+    <explanation>see transition textbf{NoJob} -- confirmed by CAESARBDD version 2.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="CONSERVATIVE" value="false">
+    <explanation>see transition textbf{IsEvt} -- confirmed by PNMLtoNUPN~1.3.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SUBCONSERVATIVE" value="false">
+    <explanation>see the transition in input of place textbf{NotifyEventEndOfCheckSourcesB} -- confirmed by PNMLtoNUPN~1.3.0 on all 10 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="NESTED_UNITS" value="false">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SAFE" value="false">
+    <explanation>in the initial marking, there exist 3 places containing between 3 and 10 tokens</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="DEAD_PLACES" value="unknown">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="DEAD_TRANSITIONS" value="unknown">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="DEADLOCK" value="true">
+    <explanation>checked by GreatSPN on December 2013; confirmed at MCC2014 by Helena on all 10 colored instances, and by GreatSPN and Lola on all 10 P/T instances. Presence of deadlock is normal because the model is not the last version described in the referenced paper</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="REVERSIBLE" value="unknown">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="LIVE" value="unknown">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-01-02T11:59:07.326+01:00" reference="https://mcc.lip6.fr/pdf/PolyORBNT-form.pdf"/>
+  </verdict>
+</toolspecific>

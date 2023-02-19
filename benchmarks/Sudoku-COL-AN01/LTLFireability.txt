@@ -1,0 +1,80 @@
+Property Sudoku-COL-AN01-LTLFireability-00
+  "Automatically generated"
+  is:
+    A !((G "select"? & X "select"?) | F ("select"? U "select"?) | G !"select"?)
+  end.
+Property Sudoku-COL-AN01-LTLFireability-01
+  "Automatically generated"
+  is:
+    A G "select"?
+  end.
+Property Sudoku-COL-AN01-LTLFireability-02
+  "Automatically generated"
+  is:
+    A (G "select"? & G X G (!"select"? & X !F X !"select"?))
+  end.
+Property Sudoku-COL-AN01-LTLFireability-03
+  "Automatically generated"
+  is:
+    A (!"select"? | !(!G "select"? & !G X ("select"? | G "select"?)))
+  end.
+Property Sudoku-COL-AN01-LTLFireability-04
+  "Automatically generated"
+  is:
+    A X ("select"? & F "select"? & G X "select"?)
+  end.
+Property Sudoku-COL-AN01-LTLFireability-05
+  "Automatically generated"
+  is:
+    A (F ("select"? | "select"?) | X ("select"? & !"select"?))
+  end.
+Property Sudoku-COL-AN01-LTLFireability-06
+  "Automatically generated"
+  is:
+    A G (F !G "select"? & !("select"? & F (!"select"? & X "select"?)))
+  end.
+Property Sudoku-COL-AN01-LTLFireability-07
+  "Automatically generated"
+  is:
+    A (X ("select"? U "select"?) & !G "select"? & G ("select"? & "select"?))
+  end.
+Property Sudoku-COL-AN01-LTLFireability-08
+  "Automatically generated"
+  is:
+    A ("select"? & G F !"select"? & !X G !"select"?)
+  end.
+Property Sudoku-COL-AN01-LTLFireability-09
+  "Automatically generated"
+  is:
+    A X X ("select"? | ("select"? & F "select"? & F X X "select"?))
+  end.
+Property Sudoku-COL-AN01-LTLFireability-10
+  "Automatically generated"
+  is:
+    A X F (G ("select"? & !G "select"?) U X X F "select"?)
+  end.
+Property Sudoku-COL-AN01-LTLFireability-11
+  "Automatically generated"
+  is:
+    A F G (G "select"? U F G (!"select"? U X "select"?))
+  end.
+Property Sudoku-COL-AN01-LTLFireability-12
+  "Automatically generated"
+  is:
+    A G (G !G F G ("select"? U "select"?) U X G "select"?)
+  end.
+Property Sudoku-COL-AN01-LTLFireability-13
+  "Automatically generated"
+  is:
+    A F (F "select"? U G !"select"?)
+  end.
+Property Sudoku-COL-AN01-LTLFireability-14
+  "Automatically generated"
+  is:
+    A (!"select"? U !("select"? & (!"select"? U "select"?)))
+  end.
+Property Sudoku-COL-AN01-LTLFireability-15
+  "Automatically generated"
+  is:
+    A G !G !G !("select"? & !F G "select"?)
+  end.

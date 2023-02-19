@@ -1,0 +1,80 @@
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A ((X ((#tokens("OpenRequests")) <= (#tokens("Idles"))) & G X ((#tokens("OpenRequests")) <= (#tokens("Idles")))) U !F (((2) <= (#tokens("Finished"))) U !X ((#tokens("OpenRequests")) <= (#tokens("Idles")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A X X G !G !(((0) <= (#tokens("Assigned"))) U (G !X ((0) <= (#tokens("MovetoZ"))) & F ((2) <= (#tokens("Assigned")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A G (((#tokens("IdleTechs")) <= (#tokens("Finished"))) & X ((#tokens("IdleTechs")) <= (#tokens("Finished"))) & (((3) <= (#tokens("Finished"))) | F X ((0) <= (#tokens("ClientsWaiting")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A (G X X !((1) <= (#tokens("Assigned"))) & (F ((#tokens("IdleTechs")) <= (#tokens("Idles"))) U X F (((1) <= (#tokens("Assigned"))) | X ((#tokens("DoSecuring")) <= (#tokens("IdleTechs"))))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A F (G ((1) <= (#tokens("Finished"))) U F ((3) <= (#tokens("MovetoZ"))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A !X G (G ((0) <= (#tokens("Finished"))) | (F ((#tokens("MovetoZ")) <= (#tokens("ClientsWaiting"))) U ((0) <= (#tokens("Finished")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A F (X ((2) <= (#tokens("NumClientsReq"))) & F G ((3) <= (#tokens("DoSecuring"))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A (G X ((#tokens("ControlRoomDispatch")) <= (#tokens("MovetoZ"))) U (((#tokens("StartSecuring")) <= (#tokens("ClientsWaiting"))) | ((0) <= (#tokens("MovetoZ"))) | ((#tokens("IdleTechs")) <= (#tokens("MovetoZ")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A !((((#tokens("ClientsWaiting")) <= (#tokens("NumClientsReq"))) & F ((#tokens("ClientsWaiting")) <= (#tokens("NumClientsReq")))) U (((0) <= (#tokens("Idles"))) & F (X ((0) <= (#tokens("Idles"))) U ((#tokens("NumClientsReq")) <= (#tokens("OpenRequests"))))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A (X F ((((0) <= (#tokens("MovetoZ"))) & ((0) <= (#tokens("Idles")))) | (((0) <= (#tokens("IdleTechs"))) U ((2) <= (#tokens("Idles"))))) | F !((0) <= (#tokens("MovetoZ"))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A !((X ((#tokens("NumClientsReq")) <= (#tokens("StartSecuring"))) U (((1) <= (#tokens("IdleTechs"))) | X ((#tokens("Assigned")) <= (#tokens("MovetoZ"))))) & F (((#tokens("StartSecuring")) <= (#tokens("NumClientsReq"))) & G ((#tokens("StartSecuring")) <= (#tokens("NumClientsReq")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A G (((#tokens("Finished")) <= (#tokens("ClientsWaiting"))) U X F X (((0) <= (#tokens("Assigned"))) & G ((3) <= (#tokens("DoSecuring")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A G !((X ((1) <= (#tokens("Idles"))) | X ((#tokens("StartSecuring")) <= (#tokens("NumClientsReq")))) U F (X X X ((1) <= (#tokens("ControlRoomDispatch"))) U ((#tokens("StartSecuring")) <= (#tokens("NumClientsReq")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A X !(!((0) <= (#tokens("IdleTechs"))) | !X F X (G ((1) <= (#tokens("Finished"))) U G !((#tokens("ControlRoomDispatch")) <= (#tokens("MovetoZ")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A (F ((1) <= (#tokens("NumClientsReq"))) & G !(((2) <= (#tokens("ClientsTimeout"))) U ((0) <= (#tokens("NumClientsReq")))))
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A (!X ((#tokens("DoSecuring")) <= (#tokens("OpenRequests"))) & X F (((#tokens("DoSecuring")) <= (#tokens("OpenRequests"))) | X F X X (((#tokens("DoSecuring")) <= (#tokens("OpenRequests"))) U ((#tokens("ClientsTimeout")) <= (#tokens("StartSecuring"))))))
+  end.

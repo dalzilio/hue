@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<property-set xmlns="http://mcc.lip6.fr/">
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-00</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>CanInjectEvent</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-01</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>EnablePollingB</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-02</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>NotifyEventJobCompletedB</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-03</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>AwakeTasks</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-04</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Perform_Work_E</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-05</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>P_1726</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-06</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>DataOnSrc</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-07</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>cJobCnt</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-08</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Insert_Source_E</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-09</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>FetchJobB</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-10</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>EnablePollingE</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-11</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Insert_Source_B</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-12</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>NotifyEventJobQueuedE</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-13</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Idle</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-14</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>P_1159</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>PolyORBLF-COL-S02J04T06-UpperBounds-15</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>P_1724</place>
+      </place-bound>
+    </formula>
+  </property>
+</property-set>

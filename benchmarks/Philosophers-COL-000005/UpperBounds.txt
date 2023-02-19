@@ -1,0 +1,80 @@
+Property Philosophers-COL-000005-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Fork")
+  end.
+Property Philosophers-COL-000005-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("Fork")
+  end.
+Property Philosophers-COL-000005-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("Catch1")
+  end.
+Property Philosophers-COL-000005-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("Catch1")
+  end.
+Property Philosophers-COL-000005-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("Catch1")
+  end.
+Property Philosophers-COL-000005-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("Catch2")
+  end.
+Property Philosophers-COL-000005-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("Think")
+  end.
+Property Philosophers-COL-000005-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("Think")
+  end.
+Property Philosophers-COL-000005-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("Eat")
+  end.
+Property Philosophers-COL-000005-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("Catch1")
+  end.
+Property Philosophers-COL-000005-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("Fork")
+  end.
+Property Philosophers-COL-000005-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("Eat")
+  end.
+Property Philosophers-COL-000005-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("Eat")
+  end.
+Property Philosophers-COL-000005-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("Catch1")
+  end.
+Property Philosophers-COL-000005-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("Catch2")
+  end.
+Property Philosophers-COL-000005-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("Think")
+  end.

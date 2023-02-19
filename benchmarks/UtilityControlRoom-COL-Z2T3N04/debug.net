@@ -1,0 +1,87 @@
+# net UtilityControlRoom-COL-Z2T3N04
+# type: dot : dot
+# type: Z : IntRange 1 -- 2
+# type: ZxZ : (Z x Z)
+# type: AxZ1xZ : (Z x Z x Z)
+# type: Cli : IntRange 1 -- 4
+# type: CxZ : (Cli x Z)
+# type: CxZxZ : (Cli x Z x Z)
+# var  a : Z
+# var  r : Z
+# var  c : Cli
+nt n0 1 {net UtilityControlRoom-COL-Z2T3N04\\ntype dot : dot\\ntype Z : IntRange 1 -- 2\\ntype ZxZ : (Z x Z)\\ntype AxZ1xZ : (Z x Z x Z)\\ntype Cli : IntRange 1 -- 4\\ntype CxZ : (Cli x Z)\\ntype CxZxZ : (Cli x Z x Z)\\nvar  a : Z\\nvar  r : Z\\nvar  c : Cli}
+net {UtilityControlRoom-COL-Z2T3N04}
+pl {NumClientsReq}
+pl {Finished}
+pl {ClientsWaiting}
+pl {DoSecuring}
+pl {OpenRequests}
+pl {Assigned}
+pl {MovetoZ}
+pl {StartSecuring}
+pl {ClientsTimeout}
+pl {IdleTechs} : {(<ALL:Z>)} (1)
+pl {Clients} : {(<ALL:Cli>)} (1)
+pl {ControlRoomDispatch}
+pl {Idles} : {3'o} (1)
+tr {Timeout} {ClientsWaiting} ->  {ClientsTimeout}
+#  ClientsWaiting ---( (c) )--> 
+#  ClientsTimeout <--( (c) )--- 
+nt n1 1 {tr Timeout :\\n  ClientsWaiting ---( (c) )--> \\n  ClientsTimeout <--( (c) )--- }
+tr {timeout} {StartSecuring} {ClientsTimeout} ->  {DoSecuring}
+#  StartSecuring ---( (c, r) )--> 
+#  DoSecuring <--( (c, r) )--- 
+#  ClientsTimeout ---( (c) )--> 
+nt n2 1 {tr timeout :\\n  StartSecuring ---( (c, r) )--> \\n  DoSecuring <--( (c, r) )--- \\n  ClientsTimeout ---( (c) )--> }
+tr {calls} {Clients} ->  {NumClientsReq} {ControlRoomDispatch} {ClientsWaiting}
+#  Clients ---( (c) )--> 
+#  NumClientsReq <--( 1'o )--- 
+#  ControlRoomDispatch <--( (c) )--- 
+#  ClientsWaiting <--( (c) )--- 
+nt n3 1 {tr calls :\\n  Clients ---( (c) )--> \\n  NumClientsReq <--( 1'o )--- \\n  ControlRoomDispatch <--( (c) )--- \\n  ClientsWaiting <--( (c) )--- }
+tr {assignNearZone} {OpenRequests} {IdleTechs} {Idles} ->  {MovetoZ}
+#  OpenRequests ---( (c, r) )--> 
+#  IdleTechs ---( (a) )--> 
+#  MovetoZ <--( (c, a, r) )--- 
+#  Idles ---( 1'o )--> 
+nt n4 1 {tr assignNearZone :\\n  OpenRequests ---( (c, r) )--> \\n  IdleTechs ---( (a) )--> \\n  MovetoZ <--( (c, a, r) )--- \\n  Idles ---( 1'o )--> }
+tr {securing} {DoSecuring} {NumClientsReq} ->  {IdleTechs} {Finished}
+#  DoSecuring ---( (c, r) )--> 
+#  IdleTechs <--( (r) )--- 
+#  Finished <--( (c) )--- 
+#  NumClientsReq ---( 1'o )--> 
+nt n5 1 {tr securing :\\n  DoSecuring ---( (c, r) )--> \\n  IdleTechs <--( (r) )--- \\n  Finished <--( (c) )--- \\n  NumClientsReq ---( 1'o )--> }
+tr {assignMunicipality} {ControlRoomDispatch} ->  {OpenRequests}
+#  ControlRoomDispatch ---( (c) )--> 
+#  OpenRequests <--( (c, r) )--- 
+nt n6 1 {tr assignMunicipality :\\n  ControlRoomDispatch ---( (c) )--> \\n  OpenRequests <--( (c, r) )--- }
+tr {assignFar} {OpenRequests} {IdleTechs} {Idles} ->  {MovetoZ}
+#  OpenRequests ---( (c, r) )--> 
+#  IdleTechs ---( (a) )--> 
+#  MovetoZ <--( (c, a, r) )--- 
+#  Idles ---( 1'o )--> 
+nt n7 1 {tr assignFar :\\n  OpenRequests ---( (c, r) )--> \\n  IdleTechs ---( (a) )--> \\n  MovetoZ <--( (c, a, r) )--- \\n  Idles ---( 1'o )--> }
+tr {end} {Finished} ->  {Idles} {Clients}
+#  Idles <--( 1'o )--- 
+#  Clients <--( (c) )--- 
+#  Finished ---( (c) )--> 
+nt n8 1 {tr end :\\n  Idles <--( 1'o )--- \\n  Clients <--( (c) )--- \\n  Finished ---( (c) )--> }
+tr {securingInTime} {StartSecuring} {ClientsWaiting} ->  {DoSecuring}
+#  StartSecuring ---( (c, r) )--> 
+#  DoSecuring <--( (c, r) )--- 
+#  ClientsWaiting ---( (c) )--> 
+nt n9 1 {tr securingInTime :\\n  StartSecuring ---( (c, r) )--> \\n  DoSecuring <--( (c, r) )--- \\n  ClientsWaiting ---( (c) )--> }
+tr {assignSameZone} {OpenRequests} {IdleTechs} {Idles} ->  {Assigned}
+#  OpenRequests ---( (c, a) )--> 
+#  IdleTechs ---( (a) )--> 
+#  Assigned <--( (c, a) )--- 
+#  Idles ---( 1'o )--> 
+nt n10 1 {tr assignSameZone :\\n  OpenRequests ---( (c, a) )--> \\n  IdleTechs ---( (a) )--> \\n  Assigned <--( (c, a) )--- \\n  Idles ---( 1'o )--> }
+tr {move_between_Municipalities} {MovetoZ} ->  {Assigned}
+#  MovetoZ ---( (c, a, r) )--> 
+#  Assigned <--( (c, r) )--- 
+nt n11 1 {tr move_between_Municipalities :\\n  MovetoZ ---( (c, a, r) )--> \\n  Assigned <--( (c, r) )--- }
+tr {reachLocation} {Assigned} ->  {StartSecuring}
+#  Assigned ---( (c, r) )--> 
+#  StartSecuring <--( (c, r) )--- 
+nt n12 1 {tr reachLocation :\\n  Assigned ---( (c, r) )--> \\n  StartSecuring <--( (c, r) )--- }

@@ -1,0 +1,80 @@
+Property CSRepetitions-COL-02-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A (((#tokens("Client_Waiting")) <= (#tokens("RequestBufferSlots"))) & X !G (((#tokens("Client_Waiting")) <= (#tokens("RequestBufferSlots"))) U !(((#tokens("RequestBufferSlots")) <= (#tokens("Server_Anwering"))) U (((#tokens("RequestBufferSlots")) <= (#tokens("Server_Anwering"))) U ((#tokens("Client_Sending")) <= (#tokens("Server_Anwering")))))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A (((3) <= (#tokens("Server_Anwering"))) | (((2) <= (#tokens("Server_Anwering"))) & X F X (((#tokens("Client_Sending")) <= (#tokens("Server_Waiting"))) | ((2) <= (#tokens("Client_Sending"))) | G ((#tokens("Client_Waiting")) <= (#tokens("Client_Sending"))))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A (G !X ((#tokens("Client_Waiting")) <= (#tokens("Client_Sending"))) & (G ((#tokens("Client_Waiting")) <= (#tokens("Server_Anwering"))) U (((#tokens("Client_Waiting")) <= (#tokens("Server_Anwering"))) U F ((1) <= (#tokens("RequestBufferSlots"))))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A (((0) <= (#tokens("RequestBufferSlots"))) | (!((#tokens("Server_Anwering")) <= (#tokens("Client_Waiting"))) U F ((0) <= (#tokens("RequestBufferSlots")))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A X (X !F ((#tokens("Client_Waiting")) <= (#tokens("Server_Anwering"))) | (!((#tokens("Client_Waiting")) <= (#tokens("Server_Anwering"))) U ((#tokens("Server_Waiting")) <= (#tokens("Client_Waiting")))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A F (!X (((#tokens("Server_Waiting")) <= (#tokens("Client_Sending"))) | G !((0) <= (#tokens("Server_Waiting")))) U F X !(((#tokens("Server_Waiting")) <= (#tokens("Client_Sending"))) U ((1) <= (#tokens("Client_Waiting")))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A G (G X G F !((#tokens("RequestBufferSlots")) <= (#tokens("Server_Waiting"))) | X ((#tokens("RequestBufferSlots")) <= (#tokens("Client_Waiting"))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A X !X (((#tokens("RequestBufferSlots")) <= (#tokens("Client_Sending"))) U !(!((#tokens("RequestBufferSlots")) <= (#tokens("Client_Sending"))) | F (((#tokens("Server_Waiting")) <= (#tokens("Server_Anwering"))) & ((#tokens("Server_Anwering")) <= (#tokens("Client_Waiting"))))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A G F X (X !F ((0) <= (#tokens("RequestBufferSlots"))) & (!((#tokens("Server_Anwering")) <= (#tokens("Server_Waiting"))) | G ((#tokens("RequestBufferSlots")) <= (#tokens("Client_Sending")))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A G (X ((#tokens("RequestBufferSlots")) <= (#tokens("Server_Waiting"))) & (((2) <= (#tokens("Client_Waiting"))) | G ((2) <= (#tokens("Client_Waiting")))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A (F ((#tokens("Server_Anwering")) <= (#tokens("RequestBufferSlots"))) & X G ((0) <= (#tokens("Client_Sending"))) & (((1) <= (#tokens("Client_Sending"))) | X ((#tokens("RequestBufferSlots")) <= (#tokens("Client_Sending")))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A X (X ((#tokens("Server_Waiting")) <= (#tokens("Client_Waiting"))) | G !((#tokens("Server_Waiting")) <= (#tokens("Client_Sending"))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A (X ((#tokens("Server_Anwering")) <= (#tokens("Client_Waiting"))) | (((1) <= (#tokens("Server_Waiting"))) U ((#tokens("Server_Anwering")) <= (#tokens("Client_Waiting")))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A !(((3) <= (#tokens("Server_Anwering"))) | !F ((2) <= (#tokens("Server_Waiting"))) | X !((3) <= (#tokens("Server_Anwering"))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A ((G X !((#tokens("Server_Anwering")) <= (#tokens("Server_Waiting"))) U ((#tokens("Server_Waiting")) <= (#tokens("Client_Sending")))) | (X ((#tokens("Server_Anwering")) <= (#tokens("Server_Waiting"))) & G ((#tokens("Server_Anwering")) <= (#tokens("Server_Waiting")))))
+  end.
+Property CSRepetitions-COL-02-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A (((2) <= (#tokens("Client_Waiting"))) U G X !(G X X (F ((3) <= (#tokens("Server_Waiting"))) & X ((#tokens("Client_Waiting")) <= (#tokens("RequestBufferSlots")))) U ((#tokens("RequestBufferSlots")) <= (#tokens("Client_Sending")))))
+  end.

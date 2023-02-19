@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<property-set xmlns="http://mcc.lip6.fr/">
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-00</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Fork</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-01</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Fork</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-02</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Catch1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-03</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Catch1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-04</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Catch1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-05</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Catch2</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-06</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Think</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-07</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Think</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-08</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Eat</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-09</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Catch1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-10</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Fork</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-11</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Eat</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-12</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Eat</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-13</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Catch1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-14</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Catch2</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Philosophers-COL-000005-UpperBounds-15</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Think</place>
+      </place-bound>
+    </formula>
+  </property>
+</property-set>

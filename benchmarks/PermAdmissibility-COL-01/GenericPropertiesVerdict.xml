@@ -1,0 +1,87 @@
+<toolspecific tool="propertiesverdict" version="2.0">
+  <modelreference modelname="PermAdmissibility"/>
+  <verdict category="GENERIC" reference="ORDINARY" value="false">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SIMPLE_FREE_CHOICE" value="false">
+    <explanation>the net is not ordinary in all its 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="EXTENDED_FREE_CHOICE" value="false">
+    <explanation>the net is not ordinary in all its 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="STATE_MACHINE" value="false">
+    <explanation>the net is not ordinary in all its 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="MARKED_GRAPH" value="false">
+    <explanation>the net is not ordinary in all its 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="CONNECTED" value="true">
+    <explanation>stated by CAESARBDD version 1.7 on all 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="STRONGLY_CONNECTED" value="false">
+    <explanation>from place aux16_0 one cannot reach place in4_6</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SOURCE_PLACE" value="true">
+    <explanation>there exist 9 source places, e.g., place in4_6</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SINK_PLACE" value="true">
+    <explanation>there exist 64 sink places, e.g., place out7_1</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SOURCE_TRANSITION" value="false">
+    <explanation>stated by CAESARBDD version 1.7 on all 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SINK_TRANSITION" value="false">
+    <explanation>stated by CAESARBDD version 1.7 on all 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="LOOP_FREE" value="true">
+    <explanation>stated by CAESARBDD version 1.7 on all 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="CONSERVATIVE" value="false">
+    <explanation>stated by PNMLtoNUPN 3.1.0 on all 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SUBCONSERVATIVE" value="true">
+    <explanation>stated by PNMLtoNUPN 3.1.0 on all 6 instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="NESTED_UNITS" value="false">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="SAFE" value="false">
+    <explanation>in the initial marking, some places have several tokens (the number of which depends on N)</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="DEAD_PLACES" value="unknown">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="DEAD_TRANSITIONS" value="unknown">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="DEADLOCK" value="true">
+    <explanation>confirmed at MCC2014 by Helena on all 6 colored instances, and by Lola and Tapaal on all 6 P/T instances</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="REVERSIBLE" value="false">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+  <verdict category="GENERIC" reference="LIVE" value="unknown">
+    <explanation>No explanation</explanation>
+    <statedby tool="MCC" version="2020" date="2020-03-24T12:27:22.819+01:00" reference="https://mcc.lip6.fr/pdf/PermAdmissibility-form.pdf"/>
+  </verdict>
+</toolspecific>

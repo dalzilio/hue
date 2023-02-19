@@ -1,0 +1,80 @@
+Property QuasiCertifProtocol-COL-02-LTLFireability-00
+  "Automatically generated"
+  is:
+    A F ("malS2"? | F ("malC1"? & (X !"malC1"? | (F "ScertCS"? U !"malC1"?))))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-01
+  "Automatically generated"
+  is:
+    A G (X "Sperform"? U X X G X F !F ("malC1"? U "Sperform"?))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-02
+  "Automatically generated"
+  is:
+    A (G X "AreqTS"? & ("malC1"? U "CgenCertif"?))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-03
+  "Automatically generated"
+  is:
+    A F X F ("AgetTS"? & F "malA5"?)
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-04
+  "Automatically generated"
+  is:
+    A ("SgetTS"? U F (("SgetTS"? & ("Sperform"? | "SgetTS"?)) U ("malA1"? & G "SgetTS"?)))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-05
+  "Automatically generated"
+  is:
+    A ("malC1"? & G "malA1"? & (G F ("malA1"? & F "malA1"?) U "malS2"?))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-06
+  "Automatically generated"
+  is:
+    A F (("AstartCS"? U G "AstartCS"?) & ("CsendTS1"? | F X G "CsendTS1"?))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-07
+  "Automatically generated"
+  is:
+    A F (G (("CgenCertif"? & ("CgenCertif"? | G "CgenCertif"?)) U "CgenCertif"?) & (!"malS3"? U "CgenCertif"?))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-08
+  "Automatically generated"
+  is:
+    A (G ("malS5"? | "malS2"?) U "malS2"?)
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-09
+  "Automatically generated"
+  is:
+    A G (G "malS5"? U ("SackCS"? & "malA2"?))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-10
+  "Automatically generated"
+  is:
+    A X F G X F "AreqCS"?
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-11
+  "Automatically generated"
+  is:
+    A !X !(F X ("AackCS"? U "Sperform"?) U G ("Sperform"? U "malC1"?))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-12
+  "Automatically generated"
+  is:
+    A X !("AendCS"? | F "AendCS"?)
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-13
+  "Automatically generated"
+  is:
+    A X (G X X "Sperform"? | G ("malA1"? | (!"malA1"? & "Sperform"?)))
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-14
+  "Automatically generated"
+  is:
+    A G "malA1"?
+  end.
+Property QuasiCertifProtocol-COL-02-LTLFireability-15
+  "Automatically generated"
+  is:
+    A X ("Sperform"? U !(G "malA5"? | G X (!"SackCS"? & "malC1"?)))
+  end.

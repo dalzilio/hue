@@ -1,0 +1,80 @@
+Property PhilosophersDyn-COL-03-LTLFireability-00
+  "Automatically generated"
+  is:
+    A (("SearchForks"? & G "Join"?) U G X "Join"?)
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-01
+  "Automatically generated"
+  is:
+    A (("TakeRight"? | "SearchForks"? | "Join"?) & F G F X X "SearchForks"? & X "TakeRight"?)
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-02
+  "Automatically generated"
+  is:
+    A !(X "TakeRight"? U !(F "TakeRight"? U !F "TakeRight"?))
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-03
+  "Automatically generated"
+  is:
+    A ("Join"? & X (G ("Join"? | "Initialize"?) U "Join"?))
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-04
+  "Automatically generated"
+  is:
+    A ("Initialize"? & ("Initialize"? U F ("Join"? | "TakeLeft"?)))
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-05
+  "Automatically generated"
+  is:
+    A X ((X "Join"? U F "Join"?) U ((!"SearchForks"? | ("SearchForks"? U "SearchForks"?)) U "SearchForks"?))
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-06
+  "Automatically generated"
+  is:
+    A (G ("Join"? | F X "Eat"?) & !G X "Join"?)
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-07
+  "Automatically generated"
+  is:
+    A ("SearchForks"? | "Join"? | F !X ("Join"? U (("TakeRight"? U "SearchForks"?) | G "Leave"?)))
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-08
+  "Automatically generated"
+  is:
+    A F G X G "SearchForks"?
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-09
+  "Automatically generated"
+  is:
+    A (("TakeLeft"? U "Leave"?) & X F "Leave"? & G "Leave"?)
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-10
+  "Automatically generated"
+  is:
+    A ("TakeLeft"? & X G X X X "Join"?)
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-11
+  "Automatically generated"
+  is:
+    A ("Join"? U (X F "Join"? & X G ("TakeRight"? & "TakeLeft"? & "Join"?)))
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-12
+  "Automatically generated"
+  is:
+    A F G (G "Leave"? U (F X X "Leave"? & G "Join"?))
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-13
+  "Automatically generated"
+  is:
+    A X !((G "Leave"? U !"Leave"?) & (("Initialize"? | "Initialize"?) U ("Initialize"? U "Initialize"?)))
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-14
+  "Automatically generated"
+  is:
+    A G !("Join"? | X F X !X X "Leave"?)
+  end.
+Property PhilosophersDyn-COL-03-LTLFireability-15
+  "Automatically generated"
+  is:
+    A (X F "Leave"? | (F "Eat"? & F !(!"Join"? & !"TakeLeft"?)))
+  end.

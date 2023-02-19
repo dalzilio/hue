@@ -1,0 +1,80 @@
+Property VehicularWifi-COL-none-LTLFireability-00
+  "Automatically generated"
+  is:
+    A !(!G "SendAck"? & G X "SenderSenseCollision"?)
+  end.
+Property VehicularWifi-COL-none-LTLFireability-01
+  "Automatically generated"
+  is:
+    A F (F "ChooseBackoff"? & ("CorrectPacketButAck"? U "ShortEnterVulnerable"?))
+  end.
+Property VehicularWifi-COL-none-LTLFireability-02
+  "Automatically generated"
+  is:
+    A (G X "GettingGarbled"? U ("GettingGarbled"? | "ShortEnterVulnerable"? | G !X "ShortEnterVulnerable"?))
+  end.
+Property VehicularWifi-COL-none-LTLFireability-03
+  "Automatically generated"
+  is:
+    A (G "ReceiverTimeout"? & !F (G ("WaitAIFS2"? U "BeginSending"?) & (!"PauseBackoff"? U "ReceiverTimeout"?)))
+  end.
+Property VehicularWifi-COL-none-LTLFireability-04
+  "Automatically generated"
+  is:
+    A F X !F X ("ResumeBackoff4"? U G F "ResumeBackoff4"?)
+  end.
+Property VehicularWifi-COL-none-LTLFireability-05
+  "Automatically generated"
+  is:
+    A F (X G F "SenderWrongPacket"? | ("SenderWrongPacket"? & (("DecrementBackoff"? | "PacketArrival"?) U "DecrementBackoff"?)))
+  end.
+Property VehicularWifi-COL-none-LTLFireability-06
+  "Automatically generated"
+  is:
+    A (("SenderTimeout"? | (G "DecrementBackoff"? & ("WaitAIFS1"? U "SenderTimeout"?))) & !F !"ExitingErrorSpike"?)
+  end.
+Property VehicularWifi-COL-none-LTLFireability-07
+  "Automatically generated"
+  is:
+    A F G ("ExitingErrorSpike"? | "CorrectPacketRts"? | (X F "StopReceiving"? & X !"WaitAIFS3"?))
+  end.
+Property VehicularWifi-COL-none-LTLFireability-08
+  "Automatically generated"
+  is:
+    A X G X (X G X G (!"ExitBackoff"? U "ExitBackoff"?) U !"ResumeBackoff2"?)
+  end.
+Property VehicularWifi-COL-none-LTLFireability-09
+  "Automatically generated"
+  is:
+    A (G X "ShortEnterVulnerable"? & G X "BeginWaitingForResponse"?)
+  end.
+Property VehicularWifi-COL-none-LTLFireability-10
+  "Automatically generated"
+  is:
+    A (!F (F "WaitAIFS3"? U "ResumeBackoff1"?) & (G "SendAck"? | ("WaitAIFS3"? U "InternalCollision"?)))
+  end.
+Property VehicularWifi-COL-none-LTLFireability-11
+  "Automatically generated"
+  is:
+    A (F G (X ("EnteringErrorSpike"? U "DropPacket"?) U "EnteringErrorSpike"?) & !F "DropPacket"?)
+  end.
+Property VehicularWifi-COL-none-LTLFireability-12
+  "Automatically generated"
+  is:
+    A X !F !X G !F X "ExitingErrorSpike"?
+  end.
+Property VehicularWifi-COL-none-LTLFireability-13
+  "Automatically generated"
+  is:
+    A F (!"EnteringErrorSpike"? U X !G X G "EnteringErrorSpike"?)
+  end.
+Property VehicularWifi-COL-none-LTLFireability-14
+  "Automatically generated"
+  is:
+    A (("SendRTS"? | F "ReturnToBackoff"?) & F X "ExitBackoff"?)
+  end.
+Property VehicularWifi-COL-none-LTLFireability-15
+  "Automatically generated"
+  is:
+    A G !F ("DropPacket"? & G ("SendAck"? U F "SendAck"?))
+  end.

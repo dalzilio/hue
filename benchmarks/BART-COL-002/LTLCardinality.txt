@@ -1,0 +1,80 @@
+Property BART-COL-002-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A (G !((#tokens("TrainState")) <= (#tokens("DistStation"))) | G ((#tokens("TrainState")) <= (#tokens("DistStation"))))
+  end.
+Property BART-COL-002-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A X F G X (((#tokens("TrainState")) <= (#tokens("DistStation"))) | F ((3) <= (#tokens("DistStation"))) | G ((#tokens("StopTable")) <= (#tokens("DistStation"))))
+  end.
+Property BART-COL-002-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A F G (((#tokens("NewDistTable")) <= (#tokens("DistStation"))) & ((3) <= (#tokens("StopTable"))) & (((#tokens("StopTable")) <= (#tokens("TrainState"))) | G ((3) <= (#tokens("TrainState")))))
+  end.
+Property BART-COL-002-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A X G F G F !G (((#tokens("NewDistTable")) <= (#tokens("StopTable"))) & ((2) <= (#tokens("NewDistTable"))))
+  end.
+Property BART-COL-002-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A (((#tokens("StopTable")) <= (#tokens("DistStation"))) & !(G ((#tokens("StopTable")) <= (#tokens("DistStation"))) U (((2) <= (#tokens("TrainState"))) | X ((#tokens("DistStation")) <= (#tokens("NewDistTable"))))))
+  end.
+Property BART-COL-002-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A F ((1) <= (#tokens("TrainState")))
+  end.
+Property BART-COL-002-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A (F G (((2) <= (#tokens("StopTable"))) & F ((#tokens("StopTable")) <= (#tokens("DistStation")))) | X (G ((3) <= (#tokens("StopTable"))) U (((3) <= (#tokens("StopTable"))) U F ((2) <= (#tokens("StopTable"))))))
+  end.
+Property BART-COL-002-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A !((((0) <= (#tokens("StopTable"))) | X X ((0) <= (#tokens("TrainState")))) & !G !X ((0) <= (#tokens("NewDistTable"))))
+  end.
+Property BART-COL-002-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A G (((3) <= (#tokens("NewDistTable"))) | !((#tokens("DistStation")) <= (#tokens("StopTable"))))
+  end.
+Property BART-COL-002-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A !G (((G ((0) <= (#tokens("StopTable"))) U !((0) <= (#tokens("TrainState")))) | (((0) <= (#tokens("TrainState"))) U ((0) <= (#tokens("StopTable"))))) & X G ((0) <= (#tokens("TrainState"))))
+  end.
+Property BART-COL-002-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A (!((3) <= (#tokens("DistStation"))) U (F ((#tokens("NewDistTable")) <= (#tokens("TrainState"))) | X G ((#tokens("TrainState")) <= (#tokens("StopTable"))) | !X (((#tokens("TrainState")) <= (#tokens("StopTable"))) U ((3) <= (#tokens("DistStation"))))))
+  end.
+Property BART-COL-002-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A (((2) <= (#tokens("StopTable"))) U G !X X !G (((#tokens("DistStation")) <= (#tokens("TrainState"))) & (X ((#tokens("StopTable")) <= (#tokens("NewDistTable"))) U G ((2) <= (#tokens("StopTable"))))))
+  end.
+Property BART-COL-002-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A X (F ((3) <= (#tokens("DistStation"))) & (!F (G !((#tokens("StopTable")) <= (#tokens("TrainState"))) | F X ((3) <= (#tokens("DistStation")))) U ((#tokens("StopTable")) <= (#tokens("TrainState")))))
+  end.
+Property BART-COL-002-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A (((#tokens("NewDistTable")) <= (#tokens("StopTable"))) U F (G ((0) <= (#tokens("TrainState"))) | G F ((#tokens("NewDistTable")) <= (#tokens("StopTable")))))
+  end.
+Property BART-COL-002-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A (X ((#tokens("NewDistTable")) <= (#tokens("DistStation"))) U (F (((#tokens("TrainState")) <= (#tokens("StopTable"))) & X ((#tokens("NewDistTable")) <= (#tokens("DistStation")))) & (((#tokens("TrainState")) <= (#tokens("StopTable"))) | !F ((2) <= (#tokens("NewDistTable"))))))
+  end.
+Property BART-COL-002-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A X !X (((1) <= (#tokens("DistStation"))) & G !X X X ((#tokens("StopTable")) <= (#tokens("NewDistTable"))))
+  end.

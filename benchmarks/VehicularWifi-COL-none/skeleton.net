@@ -1,0 +1,66 @@
+# generated with "mcc skeleton -o skeleton -i model.pnml", version: v2.0.0-1-gc6edcee-dirty, build date: 18/02/2023, at: 2023-02-18T16:13:28
+# net VehicularWifi-COL-none has 21 places and 41 transitions
+net {VehicularWifi-COL-none}
+
+pl AGarbled (1)
+pl AMedium (4)
+pl BackoffCounter
+pl BackoffMappings (8256)
+pl ChoosingBackoff
+pl ErrorSpike
+pl Garbled
+pl GoingToBackoff
+pl Idle (8)
+pl Medium
+pl NotErrorSpike (1)
+pl PacketSent
+pl PausingBackoff
+pl ReadingPacket
+pl Receiving
+pl Sending
+pl Sense
+pl SentPacket
+pl TxAttemptsCounter
+pl Vulnerable
+pl WaitForResponse (2)
+tr BeginReceiving  AGarbled Medium WaitForResponse -> AGarbled Medium Receiving
+tr BeginSending  AMedium Vulnerable -> Medium Sending
+tr BeginWaitingForResponse  Medium PacketSent -> AMedium SentPacket WaitForResponse
+tr ChooseBackoff  BackoffMappings ChoosingBackoff TxAttemptsCounter -> BackoffCounter BackoffMappings TxAttemptsCounter
+tr CorrectPacketAck  ReadingPacket SentPacket -> Idle
+tr CorrectPacketButAck  ReadingPacket SentPacket -> Sense
+tr CorrectPacketRts  ReadingPacket SentPacket -> Sense
+tr DecrementBackoff  BackoffCounter -> BackoffCounter
+tr DropPacket  ChoosingBackoff TxAttemptsCounter -> Idle
+tr EndingGarbled  AMedium*4 Garbled -> AGarbled AMedium*4
+tr EnteringErrorSpike  AGarbled AMedium NotErrorSpike -> ErrorSpike Garbled Medium
+tr ExitBackoff  BackoffCounter -> Sense
+tr ExitingErrorSpike  ErrorSpike Medium -> AMedium NotErrorSpike
+tr GettingGarbled  AGarbled Medium*2 -> Garbled Medium*2
+tr GoToBackoff  GoingToBackoff -> ChoosingBackoff TxAttemptsCounter
+tr InternalCollision  Vulnerable*2 -> GoingToBackoff Vulnerable
+tr PacketArrival  Idle -> Sense
+tr PauseBackoff  BackoffCounter Medium -> Medium PausingBackoff
+tr ReceiverGarbled  Garbled Receiving -> Garbled WaitForResponse
+tr ReceiverSenseCollision  Medium Sense -> Medium WaitForResponse
+tr ReceiverTimeout  WaitForResponse -> WaitForResponse
+tr ReceiverWrongPacket  ReadingPacket -> WaitForResponse
+tr ResumeBackoff1  AMedium*4 PausingBackoff -> AMedium*4 BackoffCounter
+tr ResumeBackoff2  AMedium*4 PausingBackoff -> AMedium*4 BackoffCounter
+tr ResumeBackoff3  AMedium*4 PausingBackoff -> AMedium*4 BackoffCounter
+tr ResumeBackoff4  AMedium*4 PausingBackoff -> AMedium*4 BackoffCounter
+tr ReturnToBackoff  GoingToBackoff TxAttemptsCounter -> ChoosingBackoff TxAttemptsCounter
+tr SendAck  Medium Sending -> AMedium SentPacket WaitForResponse
+tr SendCTS  Sending -> PacketSent
+tr SendData  Sending -> PacketSent
+tr SendRTS  Sending -> PacketSent
+tr SenderGarbled  Garbled Receiving -> Garbled GoingToBackoff
+tr SenderSenseCollision  Medium Sense -> GoingToBackoff Medium
+tr SenderTimeout  WaitForResponse -> GoingToBackoff
+tr SenderWrongPacket  ReadingPacket -> GoingToBackoff
+tr ShortEnterVulnerable  Sense -> Vulnerable
+tr StopReceiving  AMedium*4 Receiving -> AMedium*4 ReadingPacket
+tr WaitAIFS1  Sense -> Vulnerable
+tr WaitAIFS2  Sense -> Vulnerable
+tr WaitAIFS3  Sense -> Vulnerable
+tr WaitAIFS4  Sense -> Vulnerable

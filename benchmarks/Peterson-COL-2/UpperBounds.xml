@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<property-set xmlns="http://mcc.lip6.fr/">
+  <property>
+    <id>Peterson-COL-2-UpperBounds-00</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Idle</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-01</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>AskForSection</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-02</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>IsEndLoop</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-03</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>IsEndLoop</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-04</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>IsEndLoop</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-05</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>TestAlone</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-06</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>EndTurn</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-07</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>IsEndLoop</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-08</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>IsEndLoop</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-09</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>CS</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-10</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>TestTurn</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-11</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>EndTurn</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-12</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>TestAlone</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-13</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>BeginLoop</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-14</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>BeginLoop</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>Peterson-COL-2-UpperBounds-15</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>BeginLoop</place>
+      </place-bound>
+    </formula>
+  </property>
+</property-set>

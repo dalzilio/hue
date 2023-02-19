@@ -1,0 +1,80 @@
+Property PolyORBNT-COL-S05J20-LTLFireability-00
+  "Automatically generated"
+  is:
+    A G !X !(F "trans_508"? | F !("trans_488"? | F "trans_689"?))
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-01
+  "Automatically generated"
+  is:
+    A !G F X G F "EnterCSTCS"?
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-02
+  "Automatically generated"
+  is:
+    A F !(!X ("trans_487"? & G X "trans_489"?) | !("WillPerformWork"? | X "trans_489"?))
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-03
+  "Automatically generated"
+  is:
+    A ("trans_689"? | !("trans_486"? | G "trans_689"?) | X G "fi1"?)
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-04
+  "Automatically generated"
+  is:
+    A (G X F X "trans_685"? U X X ("trans_508"? | F ("JobExist"? | G "EnterCSTCS"?)))
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-05
+  "Automatically generated"
+  is:
+    A (("trans_510"? & ("trans_509"? | X "JobExist"?)) | X G !G "JobExist"?)
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-06
+  "Automatically generated"
+  is:
+    A ("DummyOR1"? U X (G "trans_508"? & X !("DummyOR1"? & G F "trans_508"?)))
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-07
+  "Automatically generated"
+  is:
+    A F G (X X "trans_534"? U X X !F X F "fo1"?)
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-08
+  "Automatically generated"
+  is:
+    A !(("trans_488"? | !F "trans_510"? | F (G "trans_510"? U "DummyOR2"?)) U X "trans_376"?)
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-09
+  "Automatically generated"
+  is:
+    A (X "DummyOR2"? | (F "DummyOR1"? & G "EnterCSTCS"?))
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-10
+  "Automatically generated"
+  is:
+    A !F X !(X "trans_510"? U (F ("trans_486"? | F "trans_510"?) | G "IsEvt"?))
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-11
+  "Automatically generated"
+  is:
+    A X X !F !(!"trans_685"? | G "fo1"?)
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-12
+  "Automatically generated"
+  is:
+    A (X "JobExist"? U G X ("JobExist"? | X !(("trans_487"? | "LeaveCSTCS"?) U "trans_461"?)))
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-13
+  "Automatically generated"
+  is:
+    A F "fo3"?
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-14
+  "Automatically generated"
+  is:
+    A X (G ("trans_487"? | !"trans_463"? | "trans_776"?) U F ("DummyOR1"? & ("trans_776"? | "trans_776"?)))
+  end.
+Property PolyORBNT-COL-S05J20-LTLFireability-15
+  "Automatically generated"
+  is:
+    A X X ("trans_511"? & X F X "fi3"?)
+  end.

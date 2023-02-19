@@ -1,0 +1,80 @@
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Idles")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("Finished")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("OpenRequests")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("StartSecuring")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("Clients")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("Finished")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("Clients")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("ControlRoomDispatch")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("Finished")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("StartSecuring")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("Clients")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("MovetoZ")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("StartSecuring")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("IdleTechs")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("DoSecuring")
+  end.
+Property UtilityControlRoom-COL-Z2T3N04-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("ControlRoomDispatch")
+  end.

@@ -1,0 +1,80 @@
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-00
+  "Automatically generated"
+  is:
+    A !X ("Gate1ANDSplit"? | "AppReqReceived"? | "Gate3XORSplit"? | (X "ReceiveLangChoice"? & F ("Gate3XORSplit"? U "SetUpAppoint"?)))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-01
+  "Automatically generated"
+  is:
+    A !("SendClearanceToRel"? & G !X "ArchiveReq"? & ("SendLangChoice"? | G "SendLangChoice"?))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-02
+  "Automatically generated"
+  is:
+    A !F G (("GotoOSSAndProdDoc"? U !"ReqAppointCINFORMI"?) | ("ArchiveReq"? & X F "ArchiveReq"?))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-03
+  "Automatically generated"
+  is:
+    A ("ObtainRelativeFinStatement"? & !"GiveAppoint"? & (G !"TickDocsObtained"? U !"SendClearanceToRel"?))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-04
+  "Automatically generated"
+  is:
+    A G !X (X F "TransmitReq"? U ("RegisterRelativePubHealth"? & "ObtainMissingDocs"?))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-05
+  "Automatically generated"
+  is:
+    A G F !F (("Summoned"? & "CheckHousingSuitReq"?) | X ("CheckHousingSuitReq"? U X "ReceiveDocsObtained"?))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-06
+  "Automatically generated"
+  is:
+    A !X F !"PrepIncomeCertif"?
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-07
+  "Automatically generated"
+  is:
+    A (X F !"SendLangChoice"? & F "SendLangChoice"?)
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-08
+  "Automatically generated"
+  is:
+    A !F !F (!X G "ObtainFamRelCertif"? & (X "ArchiveReq"? U "SetUpAppoint"?))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-09
+  "Automatically generated"
+  is:
+    A (X ("ObtainRelHealtCondStatement"? | G "SummonApplicant"?) & F ("ObtainRelHealtCondStatement"? | ("ExplainProcedure"? & "SummonApplicant"?)))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-10
+  "Automatically generated"
+  is:
+    A F X !X X (!"ObtainRelativeFinStatement"? & "CommunicateResp"?)
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-11
+  "Automatically generated"
+  is:
+    A ("DisplayReqDocs"? & G F G X !"SummonApplicant"?)
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-12
+  "Automatically generated"
+  is:
+    A F G ((F "CheckRequiredDoc"? U X X "EvaluateReq"?) U (("HousingSuitCertifObtained"? U "CheckRequiredDoc"?) & F "ReserveAppCINFORMI"?))
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-13
+  "Automatically generated"
+  is:
+    A F !X F G X "ReceiveRegsitration"?
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-14
+  "Automatically generated"
+  is:
+    A F G ((("GotoOSSAndProdDoc"? U X "ReceiveNeedChoice"?) U F X "ObtainFamRelCertif"?) U !F "ReceiveNeedChoice"?)
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-LTLFireability-15
+  "Automatically generated"
+  is:
+    A !((G "ChoseFamilyReunion"? U "Gate2XORSplit"?) & X "ChoseFamilyReunion"?)
+  end.

@@ -1,0 +1,80 @@
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("l5")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("l36")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("m1")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("lc1")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("l16")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("l29")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("c6")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("l38")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("l24")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("l22")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("g3")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("p0")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("l33")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("cl1")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("l3")
+  end.
+Property FamilyReunion-COL-L00010M0001C001P001G001-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("lp0")
+  end.

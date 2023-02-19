@@ -1,0 +1,80 @@
+Property PolyORBLF-COL-S02J04T06-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("CanInjectEvent")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("EnablePollingB")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("NotifyEventJobCompletedB")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("AwakeTasks")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("Perform_Work_E")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("P_1726")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("DataOnSrc")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("cJobCnt")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("Insert_Source_E")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("FetchJobB")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("EnablePollingE")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("Insert_Source_B")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("NotifyEventJobQueuedE")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("Idle")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("P_1159")
+  end.
+Property PolyORBLF-COL-S02J04T06-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("P_1724")
+  end.

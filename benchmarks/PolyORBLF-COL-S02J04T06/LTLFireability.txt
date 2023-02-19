@@ -1,0 +1,80 @@
+Property PolyORBLF-COL-S02J04T06-LTLFireability-00
+  "Automatically generated"
+  is:
+    A G X X G !X ("T_2285"? | F !X "IsAbort"? | G "NoCheck"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-01
+  "Automatically generated"
+  is:
+    A (("EnterCSIS"? | G "T_1146"? | F G (F "T_1124"? U "Run"?)) U "T_1146"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-02
+  "Automatically generated"
+  is:
+    A (!G !X F "T_1170"? U G !F "T_1098"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-03
+  "Automatically generated"
+  is:
+    A (G X !X !"T_2294"? & F X "T_1444"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-04
+  "Automatically generated"
+  is:
+    A X (G "LeaveCSTCS"? & ("T_1170"? U ("T_1713"? & "LeaveCSTCS"?)))
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-05
+  "Automatically generated"
+  is:
+    A G X ("T_2578"? & "IsEvt"? & "NotifyEventSourceAdded"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-06
+  "Automatically generated"
+  is:
+    A !F ("DummyOR2"? U ("T_1096"? | (X "T_1444"? & X ("T_2315"? & "T_1096"?))))
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-07
+  "Automatically generated"
+  is:
+    A !F G ("NotifyEventJobCompleted"? | G !F ((X "NotifyEventJobCompleted"? | G "GoCheckSource"?) U "LeaveCSPW"?))
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-08
+  "Automatically generated"
+  is:
+    A G !F X X (F "T_1147"? U "WaitCompleted"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-09
+  "Automatically generated"
+  is:
+    A X ("Run"? & X !"NeedMonitoring"? & F "NeedMonitoring"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-10
+  "Automatically generated"
+  is:
+    A X X ("IsAbort"? U G X ("GoIdle"? & !G !F "IsAbort"?))
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-11
+  "Automatically generated"
+  is:
+    A X (!"T_2577"? | F "NoMonitoring"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-12
+  "Automatically generated"
+  is:
+    A (("WaitCompleted"? & "T_2311"?) U X (!"DummyOR2"? U F X X "DummyOR2"?))
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-13
+  "Automatically generated"
+  is:
+    A X F !G (!"T_1730"? U !X "GoCheckSource"?)
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-14
+  "Automatically generated"
+  is:
+    A (!G (X "T_1096"? & X "LeaveIdle"?) | ("T_1171"? U ("NotifyEventJobCompleted"? & X G "NotifyEventJobCompleted"?)))
+  end.
+Property PolyORBLF-COL-S02J04T06-LTLFireability-15
+  "Automatically generated"
+  is:
+    A (!("LeaveCSTCS"? U "T_1730"?) & (!(("T_1730"? U "WillPerformWork"?) & X X "GoIdle"?) U "WillPerformWork"?))
+  end.

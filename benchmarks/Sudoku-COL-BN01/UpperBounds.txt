@@ -1,0 +1,80 @@
+Property Sudoku-COL-BN01-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Cells")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("Cells")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("Columns")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("Regions")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("Cells")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("Board")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("Board")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("Columns")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("Rows")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("Rows")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("Columns")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("Board")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("Columns")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("Cells")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("Regions")
+  end.
+Property Sudoku-COL-BN01-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("Rows")
+  end.

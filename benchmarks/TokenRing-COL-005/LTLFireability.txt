@@ -1,0 +1,80 @@
+Property TokenRing-COL-005-LTLFireability-00
+  "Automatically generated"
+  is:
+    A G (("MainProcess"? & !"MainProcess"?) U F G ("MainProcess"? | F "MainProcess"?))
+  end.
+Property TokenRing-COL-005-LTLFireability-01
+  "Automatically generated"
+  is:
+    A (!"MainProcess"? & X F X G ("MainProcess"? & X F !"MainProcess"?))
+  end.
+Property TokenRing-COL-005-LTLFireability-02
+  "Automatically generated"
+  is:
+    A (("MainProcess"? & "MainProcess"?) U ("MainProcess"? & X X G "MainProcess"?))
+  end.
+Property TokenRing-COL-005-LTLFireability-03
+  "Automatically generated"
+  is:
+    A X X F X !G !(!"MainProcess"? & X !F !"MainProcess"?)
+  end.
+Property TokenRing-COL-005-LTLFireability-04
+  "Automatically generated"
+  is:
+    A (!(F "OtherProcess"? U ("MainProcess"? & "OtherProcess"?)) U !"OtherProcess"?)
+  end.
+Property TokenRing-COL-005-LTLFireability-05
+  "Automatically generated"
+  is:
+    A G ("MainProcess"? & !F "OtherProcess"?)
+  end.
+Property TokenRing-COL-005-LTLFireability-06
+  "Automatically generated"
+  is:
+    A F ("MainProcess"? U "OtherProcess"?)
+  end.
+Property TokenRing-COL-005-LTLFireability-07
+  "Automatically generated"
+  is:
+    A !G X ("OtherProcess"? & X G X X "OtherProcess"?)
+  end.
+Property TokenRing-COL-005-LTLFireability-08
+  "Automatically generated"
+  is:
+    A X !(G "OtherProcess"? U !"MainProcess"?)
+  end.
+Property TokenRing-COL-005-LTLFireability-09
+  "Automatically generated"
+  is:
+    A X F "MainProcess"?
+  end.
+Property TokenRing-COL-005-LTLFireability-10
+  "Automatically generated"
+  is:
+    A (!(F G "MainProcess"? U G "OtherProcess"?) U ("MainProcess"? U ("OtherProcess"? & "OtherProcess"?)))
+  end.
+Property TokenRing-COL-005-LTLFireability-11
+  "Automatically generated"
+  is:
+    A !("OtherProcess"? U X (F "OtherProcess"? U F G X F (!"OtherProcess"? | "OtherProcess"?)))
+  end.
+Property TokenRing-COL-005-LTLFireability-12
+  "Automatically generated"
+  is:
+    A (!"OtherProcess"? & F "OtherProcess"? & G ("MainProcess"? | ("MainProcess"? & X "OtherProcess"?)))
+  end.
+Property TokenRing-COL-005-LTLFireability-13
+  "Automatically generated"
+  is:
+    A (!F "OtherProcess"? | (G ("OtherProcess"? U ("OtherProcess"? & "MainProcess"?)) & G "OtherProcess"?))
+  end.
+Property TokenRing-COL-005-LTLFireability-14
+  "Automatically generated"
+  is:
+    A G !"OtherProcess"?
+  end.
+Property TokenRing-COL-005-LTLFireability-15
+  "Automatically generated"
+  is:
+    A X G ("MainProcess"? | G !F "OtherProcess"?)
+  end.

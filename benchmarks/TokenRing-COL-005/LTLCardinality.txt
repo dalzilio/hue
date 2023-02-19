@@ -1,0 +1,80 @@
+Property TokenRing-COL-005-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A G ((#tokens("State")) <= (#tokens("State")))
+  end.
+Property TokenRing-COL-005-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A F !G ((#tokens("State")) <= (#tokens("State")))
+  end.
+Property TokenRing-COL-005-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A !X G (X X ((#tokens("State")) <= (#tokens("State"))) U X X X ((#tokens("State")) <= (#tokens("State"))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A F X F X G (((#tokens("State")) <= (#tokens("State"))) U !F ((#tokens("State")) <= (#tokens("State"))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A G (X (X ((#tokens("State")) <= (#tokens("State"))) & G ((#tokens("State")) <= (#tokens("State")))) U (((#tokens("State")) <= (#tokens("State"))) & !X X !((#tokens("State")) <= (#tokens("State")))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A (G (!((#tokens("State")) <= (#tokens("State"))) | ((0) <= (#tokens("State")))) & F X X F (((2) <= (#tokens("State"))) & ((1) <= (#tokens("State")))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A F (X ((2) <= (#tokens("State"))) U (X X !F ((#tokens("State")) <= (#tokens("State"))) | F !((#tokens("State")) <= (#tokens("State")))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A (G ((#tokens("State")) <= (#tokens("State"))) & G !X G !((#tokens("State")) <= (#tokens("State"))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A ((F ((#tokens("State")) <= (#tokens("State"))) U ((#tokens("State")) <= (#tokens("State")))) & G (((#tokens("State")) <= (#tokens("State"))) | !((0) <= (#tokens("State")))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A X X F (((#tokens("State")) <= (#tokens("State"))) | G (((#tokens("State")) <= (#tokens("State"))) & (((#tokens("State")) <= (#tokens("State"))) U ((3) <= (#tokens("State"))))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A (G ((#tokens("State")) <= (#tokens("State"))) U (X ((1) <= (#tokens("State"))) & G !X X !G ((#tokens("State")) <= (#tokens("State")))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A F ((G ((#tokens("State")) <= (#tokens("State"))) & X ((1) <= (#tokens("State")))) | F (X F ((2) <= (#tokens("State"))) & F X ((3) <= (#tokens("State")))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A !F ((F ((1) <= (#tokens("State"))) U ((1) <= (#tokens("State")))) U (((1) <= (#tokens("State"))) | ((2) <= (#tokens("State")))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A !(!((2) <= (#tokens("State"))) U (((3) <= (#tokens("State"))) | ((#tokens("State")) <= (#tokens("State"))) | ((3) <= (#tokens("State"))) | G (((2) <= (#tokens("State"))) U X ((1) <= (#tokens("State"))))))
+  end.
+Property TokenRing-COL-005-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A F G !X X F X G ((#tokens("State")) <= (#tokens("State")))
+  end.
+Property TokenRing-COL-005-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A X X F G !(X ((#tokens("State")) <= (#tokens("State"))) | (X ((#tokens("State")) <= (#tokens("State"))) U ((#tokens("State")) <= (#tokens("State")))))
+  end.

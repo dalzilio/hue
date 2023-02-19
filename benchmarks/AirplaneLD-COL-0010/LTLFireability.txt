@@ -1,0 +1,80 @@
+Property AirplaneLD-COL-0010-LTLFireability-00
+  "Automatically generated"
+  is:
+    A (X "SampleRW"? & X !X (G "SpeedRW"? | F !"SampleRW"?))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-01
+  "Automatically generated"
+  is:
+    A (G "t4_1"? & !X F "t5_2"?)
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-02
+  "Automatically generated"
+  is:
+    A !X (("t1_1"? U "t1_2"?) & ("t1_1"? | "t5_2"? | G "t5_2"?))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-03
+  "Automatically generated"
+  is:
+    A X G X ("t2_2"? U X X !(X ("t4_2"? | "SpeedRW"?) U "SpeedRW"?))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-04
+  "Automatically generated"
+  is:
+    A (X "t3_2"? U ("SpeedLW"? & X F X "t5_1"?))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-05
+  "Automatically generated"
+  is:
+    A X G F ("t4_2"? & G ("t2_2"? & ("t3_2"? U ("t4_2"? U "t1_2"?))))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-06
+  "Automatically generated"
+  is:
+    A F (!("t4_1"? | "SampleLW"?) U F "t5_1"?)
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-07
+  "Automatically generated"
+  is:
+    A (X "t1_2"? U (("t1_2"? | !"t1_2"?) & X "t1_2"? & (F "t1_1"? U "t3_1"?)))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-08
+  "Automatically generated"
+  is:
+    A ("SampleLW"? & G ((G !"t3_1"? | F X X "getAlt"?) U ("t5_2"? U "t3_1"?)))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-09
+  "Automatically generated"
+  is:
+    A ("t1_1"? | "t5_1"? | X G !"t1_1"? | F ("t1_1"? & "SampleRW"?))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-10
+  "Automatically generated"
+  is:
+    A G "t3_2"?
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-11
+  "Automatically generated"
+  is:
+    A !F (G "SampleLW"? U G !"t5_2"?)
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-12
+  "Automatically generated"
+  is:
+    A !X G (X "SpeedRW"? & X X X F X "SpeedRW"?)
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-13
+  "Automatically generated"
+  is:
+    A (!X X !X G ("t2_1"? | F "SampleLW"?) U !G F "SampleLW"?)
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-14
+  "Automatically generated"
+  is:
+    A !(F "t1_2"? | (X "t3_1"? U (G !"t3_1"? & X G "t4_2"?)))
+  end.
+Property AirplaneLD-COL-0010-LTLFireability-15
+  "Automatically generated"
+  is:
+    A X X (F "t1_2"? U !(X (F "t1_2"? U "t1_1"?) U ("t1_1"? U "t4_2"?)))
+  end.

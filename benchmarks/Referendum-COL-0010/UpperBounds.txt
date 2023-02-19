@@ -1,0 +1,80 @@
+Property Referendum-COL-0010-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("ready")
+  end.
+Property Referendum-COL-0010-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("voted_no")
+  end.
+Property Referendum-COL-0010-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("ready")
+  end.
+Property Referendum-COL-0010-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("voting")
+  end.
+Property Referendum-COL-0010-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("voting")
+  end.
+Property Referendum-COL-0010-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("voted_no")
+  end.
+Property Referendum-COL-0010-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("voting")
+  end.
+Property Referendum-COL-0010-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("voted_no")
+  end.
+Property Referendum-COL-0010-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("ready")
+  end.
+Property Referendum-COL-0010-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("voted_no")
+  end.
+Property Referendum-COL-0010-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("voted_yes")
+  end.
+Property Referendum-COL-0010-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("ready")
+  end.
+Property Referendum-COL-0010-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("ready")
+  end.
+Property Referendum-COL-0010-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("voted_yes")
+  end.
+Property Referendum-COL-0010-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("voting")
+  end.
+Property Referendum-COL-0010-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("ready")
+  end.

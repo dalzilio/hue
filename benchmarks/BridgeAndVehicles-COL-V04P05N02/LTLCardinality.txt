@@ -1,0 +1,80 @@
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A X ((((3) <= (#tokens("ROUTE_B"))) & ((0) <= (#tokens("ROUTE_A")))) | (G (((0) <= (#tokens("CAPACITE"))) & ((0) <= (#tokens("ROUTE_A")))) U ((3) <= (#tokens("ROUTE_B")))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A (((2) <= (#tokens("NB_ATTENTE_B"))) | G ((#tokens("ATTENTE_B")) <= (#tokens("COMPTEUR"))) | X ((#tokens("NB_ATTENTE_A")) <= (#tokens("ATTENTE_B"))) | F ((#tokens("NB_ATTENTE_A")) <= (#tokens("ATTENTE_B"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A G X X (!((#tokens("COMPTEUR")) <= (#tokens("VIDANGE"))) | X ((#tokens("VIDANGE")) <= (#tokens("CHOIX"))) | X F G F !((#tokens("VIDANGE")) <= (#tokens("CHOIX"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A X G (((0) <= (#tokens("CHOIX"))) & G ((2) <= (#tokens("SUR_PONT_A"))) & G ((0) <= (#tokens("ATTENTE_B"))) & (((2) <= (#tokens("SUR_PONT_A"))) U ((0) <= (#tokens("ATTENTE_B")))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A (X ((#tokens("ROUTE_B")) <= (#tokens("NB_ATTENTE_B"))) & G (((#tokens("ROUTE_A")) <= (#tokens("NB_ATTENTE_B"))) & !(F ((#tokens("ROUTE_A")) <= (#tokens("NB_ATTENTE_B"))) U ((2) <= (#tokens("ATTENTE_B"))))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A X (F X G ((0) <= (#tokens("SORTI_A"))) | X X F ((#tokens("SUR_PONT_B")) <= (#tokens("ATTENTE_B"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A F !((((#tokens("CAPACITE")) <= (#tokens("CONTROLEUR"))) | ((1) <= (#tokens("NB_ATTENTE_B")))) & X G ((1) <= (#tokens("NB_ATTENTE_B"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A !G (((#tokens("COMPTEUR")) <= (#tokens("NB_ATTENTE_B"))) | F G X ((#tokens("SUR_PONT_B")) <= (#tokens("SORTI_A"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A (!((2) <= (#tokens("NB_ATTENTE_B"))) | X X G ((2) <= (#tokens("NB_ATTENTE_B"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A G !G X X !(((3) <= (#tokens("ATTENTE_A"))) | G ((#tokens("CHOIX")) <= (#tokens("CONTROLEUR"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A (F X X ((0) <= (#tokens("COMPTEUR"))) | X (!((0) <= (#tokens("COMPTEUR"))) | G ((0) <= (#tokens("COMPTEUR")))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A F !(F G (((1) <= (#tokens("CHOIX"))) & !((#tokens("SUR_PONT_A")) <= (#tokens("ATTENTE_A")))) U X F !((#tokens("NB_ATTENTE_B")) <= (#tokens("COMPTEUR"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A ((!X F G X F ((2) <= (#tokens("VIDANGE"))) U (((2) <= (#tokens("SORTI_B"))) U G ((2) <= (#tokens("CONTROLEUR"))))) U F ((2) <= (#tokens("CONTROLEUR"))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A (!(X !F G ((#tokens("CAPACITE")) <= (#tokens("VIDANGE"))) U F !((#tokens("ROUTE_A")) <= (#tokens("SORTI_A")))) U F (((3) <= (#tokens("NB_ATTENTE_B"))) U ((#tokens("SUR_PONT_A")) <= (#tokens("CAPACITE")))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A G (((0) <= (#tokens("ATTENTE_A"))) | G (F G ((#tokens("COMPTEUR")) <= (#tokens("SUR_PONT_A"))) & F X (((0) <= (#tokens("ATTENTE_A"))) & F ((#tokens("COMPTEUR")) <= (#tokens("SUR_PONT_A"))))))
+  end.
+Property BridgeAndVehicles-COL-V04P05N02-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A F G F G (F ((#tokens("NB_ATTENTE_A")) <= (#tokens("SUR_PONT_A"))) U G ((#tokens("NB_ATTENTE_A")) <= (#tokens("SUR_PONT_A"))))
+  end.

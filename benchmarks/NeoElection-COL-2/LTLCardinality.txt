@@ -1,0 +1,80 @@
+Property NeoElection-COL-2-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A G X ((#tokens("P-stage")) <= (#tokens("P-startNeg__broadcasting")))
+  end.
+Property NeoElection-COL-2-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A (!((#tokens("P-poll__networl")) <= (#tokens("P-poll__pollEnd"))) | (F ((#tokens("P-crashed")) <= (#tokens("P-poll__networl"))) & G ((1) <= (#tokens("P-startNeg__broadcasting"))) & X (((#tokens("P-crashed")) <= (#tokens("P-poll__networl"))) | ((1) <= (#tokens("P-startNeg__broadcasting"))))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A !G F X F X G F (((1) <= (#tokens("P-poll__pollEnd"))) & ((#tokens("P-network")) <= (#tokens("P-poll__pollEnd"))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A (((3) <= (#tokens("P-electedPrimary"))) | F ((!((#tokens("P-sendAnnPs__broadcasting")) <= (#tokens("P-negotiation"))) & X ((#tokens("P-negotiation")) <= (#tokens("P-poll__networl")))) | (((#tokens("P-sendAnnPs__broadcasting")) <= (#tokens("P-negotiation"))) & G ((#tokens("P-dead")) <= (#tokens("P-poll__pollEnd"))))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A (G !((1) <= (#tokens("P-electedPrimary"))) | F (X G ((2) <= (#tokens("P-electedPrimary"))) | ((((1) <= (#tokens("P-electedPrimary"))) | ((0) <= (#tokens("P-masterList")))) & F ((2) <= (#tokens("P-electedPrimary"))))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A (!G ((#tokens("P-electedPrimary")) <= (#tokens("P-electionFailed"))) | (F ((1) <= (#tokens("P-poll__networl"))) U G X (!((1) <= (#tokens("P-poll__networl"))) & X ((0) <= (#tokens("P-masterState"))))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A (((#tokens("P-polling")) <= (#tokens("P-sendAnnPs__broadcasting"))) | G ((#tokens("P-electedSecondary")) <= (#tokens("P-masterList"))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A G F !(((1) <= (#tokens("P-startNeg__broadcasting"))) | F ((#tokens("P-electionFailed")) <= (#tokens("P-negotiation"))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A X (X !F ((0) <= (#tokens("P-electionInit"))) U ((((0) <= (#tokens("P-electionInit"))) U ((#tokens("P-poll__networl")) <= (#tokens("P-sendAnnPs__broadcasting")))) | !G ((#tokens("P-masterState")) <= (#tokens("P-electionInit")))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A G X !X ((((#tokens("P-electionFailed")) <= (#tokens("P-dead"))) & ((#tokens("P-sendAnnPs__broadcasting")) <= (#tokens("P-crashed"))) & G ((0) <= (#tokens("P-electionFailed")))) U X ((0) <= (#tokens("P-electionFailed"))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A ((F (((3) <= (#tokens("P-electionFailed"))) | ((#tokens("P-dead")) <= (#tokens("P-poll__networl")))) | X !G F ((1) <= (#tokens("P-poll__waitingMessage")))) U F (((3) <= (#tokens("P-electionFailed"))) U ((#tokens("P-electedPrimary")) <= (#tokens("P-masterState")))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A (((#tokens("P-electedSecondary")) <= (#tokens("P-network"))) | F (F ((#tokens("P-network")) <= (#tokens("P-poll__handlingMessage"))) | (((#tokens("P-electedSecondary")) <= (#tokens("P-poll__waitingMessage"))) & X ((#tokens("P-electedSecondary")) <= (#tokens("P-poll__waitingMessage"))))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A G (G (X G ((3) <= (#tokens("P-electionFailed"))) U ((#tokens("P-electionFailed")) <= (#tokens("P-electedPrimary")))) U !X (((#tokens("P-network")) <= (#tokens("P-electedPrimary"))) & G ((#tokens("P-poll__pollEnd")) <= (#tokens("P-poll__waitingMessage")))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A (X F X !F X F (((2) <= (#tokens("P-network"))) U G ((#tokens("P-poll__waitingMessage")) <= (#tokens("P-masterList")))) & X ((#tokens("P-electionInit")) <= (#tokens("P-sendAnnPs__broadcasting"))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A F (F (((#tokens("P-electionInit")) <= (#tokens("P-masterList"))) | !((#tokens("P-masterState")) <= (#tokens("P-electedPrimary")))) | F ((((#tokens("P-electionInit")) <= (#tokens("P-masterList"))) & ((#tokens("P-masterList")) <= (#tokens("P-poll__pollEnd")))) U !X ((#tokens("P-masterState")) <= (#tokens("P-electedPrimary")))))
+  end.
+Property NeoElection-COL-2-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A !G !G (!((0) <= (#tokens("P-stage"))) & X (!((1) <= (#tokens("P-startNeg__broadcasting"))) & G F ((1) <= (#tokens("P-poll__networl")))))
+  end.

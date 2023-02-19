@@ -1,0 +1,80 @@
+Property SafeBus-COL-03-LTLFireability-00
+  "Automatically generated"
+  is:
+    A G "loss_a"?
+  end.
+Property SafeBus-COL-03-LTLFireability-01
+  "Automatically generated"
+  is:
+    A (X ("I_ask1"? | F !"I_rec2"?) U (X "I_rec2"? | F ("I_ask2"? U "I_rec2"?)))
+  end.
+Property SafeBus-COL-03-LTLFireability-02
+  "Automatically generated"
+  is:
+    A (("Gto"? | "C_refuse"?) & (!"C_free"? U X "C_refuse"?))
+  end.
+Property SafeBus-COL-03-LTLFireability-03
+  "Automatically generated"
+  is:
+    A F !G (G "I_free"? | ("I_emit"? & G "I_refused"?))
+  end.
+Property SafeBus-COL-03-LTLFireability-04
+  "Automatically generated"
+  is:
+    A !X F G (!X F G "C_provide"? | X X "loss_m"?)
+  end.
+Property SafeBus-COL-03-LTLFireability-05
+  "Automatically generated"
+  is:
+    A !X G X X G !X ("I_free"? | !"I_refused"? | G "I_rec1"?)
+  end.
+Property SafeBus-COL-03-LTLFireability-06
+  "Automatically generated"
+  is:
+    A F (G "loss_a"? & !F X "Gto"?)
+  end.
+Property SafeBus-COL-03-LTLFireability-07
+  "Automatically generated"
+  is:
+    A G (("I_ask1"? U "I_rec2"?) U !("I_rec2"? | (!("I_reemit"? | "loss_m"?) & F "I_reemit"?)))
+  end.
+Property SafeBus-COL-03-LTLFireability-08
+  "Automatically generated"
+  is:
+    A X ("I_emit"? & X ("I_rec2"? | G X "C_refuse"? | F "I_rec2"?) & F "I_emit"?)
+  end.
+Property SafeBus-COL-03-LTLFireability-09
+  "Automatically generated"
+  is:
+    A !("I_emit"? | !((F "I_rec2"? | X "C_provide"?) U G !G "I_rec1"?))
+  end.
+Property SafeBus-COL-03-LTLFireability-10
+  "Automatically generated"
+  is:
+    A X (("I_rec2"? & F "I_rec2"? & (!"I_reemit"? U "C_refuse"?)) U G "I_reemit"?)
+  end.
+Property SafeBus-COL-03-LTLFireability-11
+  "Automatically generated"
+  is:
+    A !(X ("I_ask1"? | !("I_ask2"? U "I_rec2"?)) U "I_ask2"?)
+  end.
+Property SafeBus-COL-03-LTLFireability-12
+  "Automatically generated"
+  is:
+    A !X X (("I_rec2"? U G "I_refused"?) U X ("I_refused"? U "I_rec2"?))
+  end.
+Property SafeBus-COL-03-LTLFireability-13
+  "Automatically generated"
+  is:
+    A X ("I_rec1"? U G (F X "I_rec1"? U !"Gto"?))
+  end.
+Property SafeBus-COL-03-LTLFireability-14
+  "Automatically generated"
+  is:
+    A X G (G "C_refuse"? & G !"C_free"?)
+  end.
+Property SafeBus-COL-03-LTLFireability-15
+  "Automatically generated"
+  is:
+    A G (!("loss_m"? & "I_ask2"? & ("loss_m"? | "I_ask2"?)) | ("I_ask2"? & X "I_ask2"?))
+  end.

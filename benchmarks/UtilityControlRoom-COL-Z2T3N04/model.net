@@ -1,0 +1,119 @@
+# generated with "mcc tina -i model.pnml", version: v2.0.0-1-gc6edcee, build date: 17/02/2023, at: 2023-02-18T14:27:19
+# net UtilityControlRoom-COL-Z2T3N04 has 72 places and 108 transitions
+net {UtilityControlRoom-COL-Z2T3N04}
+
+pl Clients_3 (1)
+pl Clients_4 (1)
+pl Clients_5 (1)
+pl Clients_6 (1)
+pl IdleTechs_1 (1)
+pl IdleTechs_2 (1)
+pl Idles (3)
+tr t0 : {Timeout}  ClientsWaiting_3 -> ClientsTimeout_3
+tr t1 : {Timeout}  ClientsWaiting_4 -> ClientsTimeout_4
+tr t2 : {Timeout}  ClientsWaiting_5 -> ClientsTimeout_5
+tr t3 : {Timeout}  ClientsWaiting_6 -> ClientsTimeout_6
+tr t4 : {assignFar}  IdleTechs_1 Idles OpenRequests_3_1 -> MovetoZ_3_1_1
+tr t5 : {assignFar}  IdleTechs_1 Idles OpenRequests_3_2 -> MovetoZ_3_1_2
+tr t6 : {assignFar}  IdleTechs_1 Idles OpenRequests_4_1 -> MovetoZ_4_1_1
+tr t7 : {assignFar}  IdleTechs_1 Idles OpenRequests_4_2 -> MovetoZ_4_1_2
+tr t8 : {assignFar}  IdleTechs_1 Idles OpenRequests_5_1 -> MovetoZ_5_1_1
+tr t9 : {assignFar}  IdleTechs_1 Idles OpenRequests_5_2 -> MovetoZ_5_1_2
+tr t10 : {assignFar}  IdleTechs_1 Idles OpenRequests_6_1 -> MovetoZ_6_1_1
+tr t11 : {assignFar}  IdleTechs_1 Idles OpenRequests_6_2 -> MovetoZ_6_1_2
+tr t12 : {assignFar}  IdleTechs_2 Idles OpenRequests_3_1 -> MovetoZ_3_2_1
+tr t13 : {assignFar}  IdleTechs_2 Idles OpenRequests_3_2 -> MovetoZ_3_2_2
+tr t14 : {assignFar}  IdleTechs_2 Idles OpenRequests_4_1 -> MovetoZ_4_2_1
+tr t15 : {assignFar}  IdleTechs_2 Idles OpenRequests_4_2 -> MovetoZ_4_2_2
+tr t16 : {assignFar}  IdleTechs_2 Idles OpenRequests_5_1 -> MovetoZ_5_2_1
+tr t17 : {assignFar}  IdleTechs_2 Idles OpenRequests_5_2 -> MovetoZ_5_2_2
+tr t18 : {assignFar}  IdleTechs_2 Idles OpenRequests_6_1 -> MovetoZ_6_2_1
+tr t19 : {assignFar}  IdleTechs_2 Idles OpenRequests_6_2 -> MovetoZ_6_2_2
+tr t20 : {assignMunicipality}  ControlRoomDispatch_3 -> OpenRequests_3_1
+tr t21 : {assignMunicipality}  ControlRoomDispatch_3 -> OpenRequests_3_2
+tr t22 : {assignMunicipality}  ControlRoomDispatch_4 -> OpenRequests_4_1
+tr t23 : {assignMunicipality}  ControlRoomDispatch_4 -> OpenRequests_4_2
+tr t24 : {assignMunicipality}  ControlRoomDispatch_5 -> OpenRequests_5_1
+tr t25 : {assignMunicipality}  ControlRoomDispatch_5 -> OpenRequests_5_2
+tr t26 : {assignMunicipality}  ControlRoomDispatch_6 -> OpenRequests_6_1
+tr t27 : {assignMunicipality}  ControlRoomDispatch_6 -> OpenRequests_6_2
+tr t28 : {assignNearZone}  IdleTechs_1 Idles OpenRequests_3_1 -> MovetoZ_3_1_1
+tr t29 : {assignNearZone}  IdleTechs_1 Idles OpenRequests_3_2 -> MovetoZ_3_1_2
+tr t30 : {assignNearZone}  IdleTechs_1 Idles OpenRequests_4_1 -> MovetoZ_4_1_1
+tr t31 : {assignNearZone}  IdleTechs_1 Idles OpenRequests_4_2 -> MovetoZ_4_1_2
+tr t32 : {assignNearZone}  IdleTechs_1 Idles OpenRequests_5_1 -> MovetoZ_5_1_1
+tr t33 : {assignNearZone}  IdleTechs_1 Idles OpenRequests_5_2 -> MovetoZ_5_1_2
+tr t34 : {assignNearZone}  IdleTechs_1 Idles OpenRequests_6_1 -> MovetoZ_6_1_1
+tr t35 : {assignNearZone}  IdleTechs_1 Idles OpenRequests_6_2 -> MovetoZ_6_1_2
+tr t36 : {assignNearZone}  IdleTechs_2 Idles OpenRequests_3_1 -> MovetoZ_3_2_1
+tr t37 : {assignNearZone}  IdleTechs_2 Idles OpenRequests_3_2 -> MovetoZ_3_2_2
+tr t38 : {assignNearZone}  IdleTechs_2 Idles OpenRequests_4_1 -> MovetoZ_4_2_1
+tr t39 : {assignNearZone}  IdleTechs_2 Idles OpenRequests_4_2 -> MovetoZ_4_2_2
+tr t40 : {assignNearZone}  IdleTechs_2 Idles OpenRequests_5_1 -> MovetoZ_5_2_1
+tr t41 : {assignNearZone}  IdleTechs_2 Idles OpenRequests_5_2 -> MovetoZ_5_2_2
+tr t42 : {assignNearZone}  IdleTechs_2 Idles OpenRequests_6_1 -> MovetoZ_6_2_1
+tr t43 : {assignNearZone}  IdleTechs_2 Idles OpenRequests_6_2 -> MovetoZ_6_2_2
+tr t44 : {assignSameZone}  IdleTechs_1 Idles OpenRequests_3_1 -> Assigned_3_1
+tr t45 : {assignSameZone}  IdleTechs_1 Idles OpenRequests_4_1 -> Assigned_4_1
+tr t46 : {assignSameZone}  IdleTechs_1 Idles OpenRequests_5_1 -> Assigned_5_1
+tr t47 : {assignSameZone}  IdleTechs_1 Idles OpenRequests_6_1 -> Assigned_6_1
+tr t48 : {assignSameZone}  IdleTechs_2 Idles OpenRequests_3_2 -> Assigned_3_2
+tr t49 : {assignSameZone}  IdleTechs_2 Idles OpenRequests_4_2 -> Assigned_4_2
+tr t50 : {assignSameZone}  IdleTechs_2 Idles OpenRequests_5_2 -> Assigned_5_2
+tr t51 : {assignSameZone}  IdleTechs_2 Idles OpenRequests_6_2 -> Assigned_6_2
+tr t52 : {calls}  Clients_3 -> ClientsWaiting_3 ControlRoomDispatch_3 NumClientsReq
+tr t53 : {calls}  Clients_4 -> ClientsWaiting_4 ControlRoomDispatch_4 NumClientsReq
+tr t54 : {calls}  Clients_5 -> ClientsWaiting_5 ControlRoomDispatch_5 NumClientsReq
+tr t55 : {calls}  Clients_6 -> ClientsWaiting_6 ControlRoomDispatch_6 NumClientsReq
+tr t56 : {end}  Finished_3 -> Clients_3 Idles
+tr t57 : {end}  Finished_4 -> Clients_4 Idles
+tr t58 : {end}  Finished_5 -> Clients_5 Idles
+tr t59 : {end}  Finished_6 -> Clients_6 Idles
+tr t60 : {move_between_Municipalities}  MovetoZ_3_1_1 -> Assigned_3_1
+tr t61 : {move_between_Municipalities}  MovetoZ_3_1_2 -> Assigned_3_2
+tr t62 : {move_between_Municipalities}  MovetoZ_3_2_1 -> Assigned_3_1
+tr t63 : {move_between_Municipalities}  MovetoZ_3_2_2 -> Assigned_3_2
+tr t64 : {move_between_Municipalities}  MovetoZ_4_1_1 -> Assigned_4_1
+tr t65 : {move_between_Municipalities}  MovetoZ_4_1_2 -> Assigned_4_2
+tr t66 : {move_between_Municipalities}  MovetoZ_4_2_1 -> Assigned_4_1
+tr t67 : {move_between_Municipalities}  MovetoZ_4_2_2 -> Assigned_4_2
+tr t68 : {move_between_Municipalities}  MovetoZ_5_1_1 -> Assigned_5_1
+tr t69 : {move_between_Municipalities}  MovetoZ_5_1_2 -> Assigned_5_2
+tr t70 : {move_between_Municipalities}  MovetoZ_5_2_1 -> Assigned_5_1
+tr t71 : {move_between_Municipalities}  MovetoZ_5_2_2 -> Assigned_5_2
+tr t72 : {move_between_Municipalities}  MovetoZ_6_1_1 -> Assigned_6_1
+tr t73 : {move_between_Municipalities}  MovetoZ_6_1_2 -> Assigned_6_2
+tr t74 : {move_between_Municipalities}  MovetoZ_6_2_1 -> Assigned_6_1
+tr t75 : {move_between_Municipalities}  MovetoZ_6_2_2 -> Assigned_6_2
+tr t76 : {reachLocation}  Assigned_3_1 -> StartSecuring_3_1
+tr t77 : {reachLocation}  Assigned_3_2 -> StartSecuring_3_2
+tr t78 : {reachLocation}  Assigned_4_1 -> StartSecuring_4_1
+tr t79 : {reachLocation}  Assigned_4_2 -> StartSecuring_4_2
+tr t80 : {reachLocation}  Assigned_5_1 -> StartSecuring_5_1
+tr t81 : {reachLocation}  Assigned_5_2 -> StartSecuring_5_2
+tr t82 : {reachLocation}  Assigned_6_1 -> StartSecuring_6_1
+tr t83 : {reachLocation}  Assigned_6_2 -> StartSecuring_6_2
+tr t84 : {securing}  DoSecuring_3_1 NumClientsReq -> Finished_3 IdleTechs_1
+tr t85 : {securing}  DoSecuring_3_2 NumClientsReq -> Finished_3 IdleTechs_2
+tr t86 : {securing}  DoSecuring_4_1 NumClientsReq -> Finished_4 IdleTechs_1
+tr t87 : {securing}  DoSecuring_4_2 NumClientsReq -> Finished_4 IdleTechs_2
+tr t88 : {securing}  DoSecuring_5_1 NumClientsReq -> Finished_5 IdleTechs_1
+tr t89 : {securing}  DoSecuring_5_2 NumClientsReq -> Finished_5 IdleTechs_2
+tr t90 : {securing}  DoSecuring_6_1 NumClientsReq -> Finished_6 IdleTechs_1
+tr t91 : {securing}  DoSecuring_6_2 NumClientsReq -> Finished_6 IdleTechs_2
+tr t92 : {securingInTime}  ClientsWaiting_3 StartSecuring_3_1 -> DoSecuring_3_1
+tr t93 : {securingInTime}  ClientsWaiting_3 StartSecuring_3_2 -> DoSecuring_3_2
+tr t94 : {securingInTime}  ClientsWaiting_4 StartSecuring_4_1 -> DoSecuring_4_1
+tr t95 : {securingInTime}  ClientsWaiting_4 StartSecuring_4_2 -> DoSecuring_4_2
+tr t96 : {securingInTime}  ClientsWaiting_5 StartSecuring_5_1 -> DoSecuring_5_1
+tr t97 : {securingInTime}  ClientsWaiting_5 StartSecuring_5_2 -> DoSecuring_5_2
+tr t98 : {securingInTime}  ClientsWaiting_6 StartSecuring_6_1 -> DoSecuring_6_1
+tr t99 : {securingInTime}  ClientsWaiting_6 StartSecuring_6_2 -> DoSecuring_6_2
+tr t100 : {timeout}  ClientsTimeout_3 StartSecuring_3_1 -> DoSecuring_3_1
+tr t101 : {timeout}  ClientsTimeout_3 StartSecuring_3_2 -> DoSecuring_3_2
+tr t102 : {timeout}  ClientsTimeout_4 StartSecuring_4_1 -> DoSecuring_4_1
+tr t103 : {timeout}  ClientsTimeout_4 StartSecuring_4_2 -> DoSecuring_4_2
+tr t104 : {timeout}  ClientsTimeout_5 StartSecuring_5_1 -> DoSecuring_5_1
+tr t105 : {timeout}  ClientsTimeout_5 StartSecuring_5_2 -> DoSecuring_5_2
+tr t106 : {timeout}  ClientsTimeout_6 StartSecuring_6_1 -> DoSecuring_6_1
+tr t107 : {timeout}  ClientsTimeout_6 StartSecuring_6_2 -> DoSecuring_6_2

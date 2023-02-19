@@ -1,0 +1,80 @@
+Property BART-COL-002-LTLFireability-00
+  "Automatically generated"
+  is:
+    A ((F "TrainStable"? | F "TrainStop"?) & !("TrainStop"? U X "AtStation"?))
+  end.
+Property BART-COL-002-LTLFireability-01
+  "Automatically generated"
+  is:
+    A X (!F G ("TrainStable"? | G "TrainDecc"?) | (!"TrainDecc"? U "TrainDecc"?))
+  end.
+Property BART-COL-002-LTLFireability-02
+  "Automatically generated"
+  is:
+    A X !("TrainDecc"? U !F !("TrainStable"? & F "TrainStable"?))
+  end.
+Property BART-COL-002-LTLFireability-03
+  "Automatically generated"
+  is:
+    A (X "TrainAcc"? & G X ((!X "AtStation"? U "TrainAcc"?) & ("TrainAcc"? | F "TrainAcc"?)))
+  end.
+Property BART-COL-002-LTLFireability-04
+  "Automatically generated"
+  is:
+    A ((X F G "TrainStop"? U F G !"TrainStop"?) U G "TrainAcc"?)
+  end.
+Property BART-COL-002-LTLFireability-05
+  "Automatically generated"
+  is:
+    A (F !X X ("TrainDecc"? | G "TrainAcc"?) | F G X "TrainStable"?)
+  end.
+Property BART-COL-002-LTLFireability-06
+  "Automatically generated"
+  is:
+    A (X (X "TrainAcc"? & X ("TrainDecc"? & F "TrainAcc"?)) | G ("TrainDecc"? | X "AtStation"?))
+  end.
+Property BART-COL-002-LTLFireability-07
+  "Automatically generated"
+  is:
+    A (X ("TrainStable"? | G "TrainStop"?) | (("TrainStable"? U ("AtStation"? | G "TrainStable"?)) U "TrainStable"?))
+  end.
+Property BART-COL-002-LTLFireability-08
+  "Automatically generated"
+  is:
+    A (G X X ("TrainStop"? & X "TrainStable"?) | X (G !"TrainDecc"? | X "TrainStop"?))
+  end.
+Property BART-COL-002-LTLFireability-09
+  "Automatically generated"
+  is:
+    A ("AtStation"? | X G !G X X X ("TrainAcc"? U "TrainStop"?))
+  end.
+Property BART-COL-002-LTLFireability-10
+  "Automatically generated"
+  is:
+    A G (X "TrainStable"? & X "TrainAcc"?)
+  end.
+Property BART-COL-002-LTLFireability-11
+  "Automatically generated"
+  is:
+    A (F "TrainDecc"? U !X G "TrainAcc"?)
+  end.
+Property BART-COL-002-LTLFireability-12
+  "Automatically generated"
+  is:
+    A (X "AtStation"? | (G "TrainDecc"? & ("TrainAcc"? U G "AtStation"?)))
+  end.
+Property BART-COL-002-LTLFireability-13
+  "Automatically generated"
+  is:
+    A X ("TrainStop"? & (F X "TrainDecc"? U F (F "AtStation"? & ("AtStation"? | F "TrainStop"?))))
+  end.
+Property BART-COL-002-LTLFireability-14
+  "Automatically generated"
+  is:
+    A F (X !X ("AtStation"? | "AtStation"?) | ("TrainDecc"? U "AtStation"?))
+  end.
+Property BART-COL-002-LTLFireability-15
+  "Automatically generated"
+  is:
+    A ("AtStation"? & G "TrainStop"?)
+  end.

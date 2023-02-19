@@ -1,0 +1,80 @@
+Property BART-COL-002-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("NewDistTable")
+  end.
+Property BART-COL-002-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.
+Property BART-COL-002-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("NewDistTable")
+  end.
+Property BART-COL-002-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("StopTable")
+  end.
+Property BART-COL-002-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.
+Property BART-COL-002-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("NewDistTable")
+  end.
+Property BART-COL-002-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("StopTable")
+  end.
+Property BART-COL-002-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.
+Property BART-COL-002-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("StopTable")
+  end.
+Property BART-COL-002-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.
+Property BART-COL-002-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.
+Property BART-COL-002-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("NewDistTable")
+  end.
+Property BART-COL-002-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.
+Property BART-COL-002-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.
+Property BART-COL-002-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.
+Property BART-COL-002-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("TrainState")
+  end.

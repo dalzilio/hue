@@ -1,0 +1,65 @@
+p 260.0 520.0 ClientsWaiting 0 w
+t 310.0 645.0 Timeout 0 w n
+p 525.0 640.0 ClientsTimeout 0 s
+t 255.0 435.0 calls 0 w n
+p 165.0 435.0 ControlRoomDispatch 0 w
+p 255.0 360.0 Clients 1 w
+t 275.0 285.0 end 0 w n
+t 205.0 245.0 assignMunicipality 0 w n
+p 580.0 30.0 MovetoZ 0 e
+t 405.0 30.0 assignNearZone 0 w n
+p 325.0 235.0 Idles 3 e
+p 295.0 110.0 OpenRequests 0 nw
+t 510.0 110.0 assignFar 0 w n
+t 630.0 170.0 assignSameZone 0 w n
+p 760.0 170.0 Assigned 0 e
+t 760.0 65.0 move_between_Municipalities 0 w n
+t 760.0 305.0 reachLocation 0 w n
+p 750.0 420.0 StartSecuring 0 w
+t 675.0 555.0 timeout 0 w n
+t 375.0 520.0 securingInTime s 0 w n {} ne
+p 550.0 430.0 DoSecuring 0 w
+t 495.0 330.0 securing e 0 w n {} ne
+p 400.0 295.0 Finished 0 e
+p 400.0 395.0 NumClientsReq 0 n
+p 545.0 265.0 IdleTechs 1 e
+e timeout DoSecuring 1 n
+e ClientsTimeout timeout 1 n
+e StartSecuring timeout 1 n
+e securingInTime DoSecuring 1 n
+e ClientsWaiting securingInTime 1 n
+e StartSecuring securingInTime 1 n
+e securing Finished 1 n
+e securing IdleTechs 1 n
+e DoSecuring securing 1 n
+e NumClientsReq securing 1 n
+e reachLocation StartSecuring 1 n
+e Assigned reachLocation 1 n
+e move_between_Municipalities Assigned 1 n
+e MovetoZ move_between_Municipalities 1 n
+e end Clients 1 n
+e end Idles 1 n
+e Finished end 1 n
+e calls ClientsWaiting 1 n
+e calls ControlRoomDispatch 1 n
+e calls NumClientsReq 1 n
+e Clients calls 1 n
+e assignSameZone Assigned 1 n
+e IdleTechs assignSameZone 1 n
+e Idles assignSameZone 1 n
+e OpenRequests assignSameZone 1 n
+e assignNearZone MovetoZ 1 n
+e IdleTechs assignNearZone 1 n
+e Idles assignNearZone 1 n
+e OpenRequests assignNearZone 1 n
+e assignMunicipality OpenRequests 1 n
+e ControlRoomDispatch assignMunicipality 1 n
+e assignFar MovetoZ 1 n
+e IdleTechs assignFar 1 n
+e Idles assignFar 1 n
+e OpenRequests assignFar 1 n
+e Timeout ClientsTimeout 1 n
+e ClientsWaiting Timeout 1 n
+h {UtilityControlRoom-COL-Z2T3N04}
+
+

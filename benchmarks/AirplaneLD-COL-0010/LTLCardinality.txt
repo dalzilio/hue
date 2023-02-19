@@ -1,0 +1,80 @@
+Property AirplaneLD-COL-0010-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A G !(F X ((1) <= (#tokens("P3"))) & X (((0) <= (#tokens("P3"))) & ((1) <= (#tokens("P3")))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A X (X G X (((1) <= (#tokens("stp4"))) & F ((3) <= (#tokens("stp1")))) & F X G ((2) <= (#tokens("AltitudePossibleVal"))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A (((((2) <= (#tokens("Speed_Right_Wheel"))) & ((#tokens("P2")) <= (#tokens("P3")))) | F (((#tokens("stp3")) <= (#tokens("Speed_Left_Wheel"))) | ((2) <= (#tokens("stp4"))))) U F ((#tokens("P5")) <= (#tokens("P1"))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A ((((0) <= (#tokens("P1"))) U !((#tokens("Speed_Right_Wheel")) <= (#tokens("WeightPossibleVal")))) | X (((3) <= (#tokens("Weight_Right_Wheel"))) & X (((#tokens("Speed_Right_Wheel")) <= (#tokens("P6"))) & X ((#tokens("Speed_Right_Wheel")) <= (#tokens("WeightPossibleVal"))))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A F (F X X F G ((3) <= (#tokens("P4"))) U !((0) <= (#tokens("P6"))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A X !X (F !((#tokens("P3")) <= (#tokens("AltitudePossibleVal"))) U G X (X X ((#tokens("P3")) <= (#tokens("AltitudePossibleVal"))) U X ((#tokens("P3")) <= (#tokens("AltitudePossibleVal")))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A (G X F (((#tokens("Speed_Left_Wheel")) <= (#tokens("Speed_Right_Wheel"))) & ((#tokens("P4")) <= (#tokens("P6")))) | G !F ((#tokens("P4")) <= (#tokens("P6"))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A ((!((0) <= (#tokens("P5"))) & G !(G F ((3) <= (#tokens("Weight_Right_Wheel"))) U ((#tokens("P3")) <= (#tokens("stp3"))))) U X (((3) <= (#tokens("Weight_Right_Wheel"))) | ((#tokens("P3")) <= (#tokens("stp3")))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A (((3) <= (#tokens("AltitudePossibleVal"))) | X (((0) <= (#tokens("Speed_Right_Wheel"))) & (((3) <= (#tokens("AltitudePossibleVal"))) | !((#tokens("Speed_Right_Wheel")) <= (#tokens("P4"))))) | X G ((#tokens("Speed_Right_Wheel")) <= (#tokens("P4"))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A (((3) <= (#tokens("AltitudePossibleVal"))) | G F (((#tokens("Weight_Left_Wheel")) <= (#tokens("stp1"))) & G X !(((1) <= (#tokens("stp1"))) U ((3) <= (#tokens("AltitudePossibleVal"))))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A (G X !(!((#tokens("P1")) <= (#tokens("stp4"))) | ((#tokens("P2")) <= (#tokens("stp1")))) | F G X G ((3) <= (#tokens("stp5"))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A G X X ((((#tokens("stp3")) <= (#tokens("SpeedPossibleVal"))) | ((3) <= (#tokens("stp4")))) U G X X (((#tokens("stp1")) <= (#tokens("stp2"))) & ((1) <= (#tokens("SpeedPossibleVal")))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A (!F X (((#tokens("P4")) <= (#tokens("Plane_On_Ground_Signal_no"))) | ((#tokens("Plane_On_Ground_Signal_no")) <= (#tokens("P6")))) & (G (X ((2) <= (#tokens("Speed_Right_Wheel"))) U G ((2) <= (#tokens("Speed_Right_Wheel")))) U ((0) <= (#tokens("Weight_Right_Wheel")))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A (F (((2) <= (#tokens("P1"))) U !((#tokens("P4")) <= (#tokens("P5")))) & (((#tokens("P4")) <= (#tokens("P5"))) | F ((3) <= (#tokens("P5"))) | G ((3) <= (#tokens("Weight_Right_Wheel")))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A X (((0) <= (#tokens("SpeedPossibleVal"))) U G !((3) <= (#tokens("P6"))))
+  end.
+Property AirplaneLD-COL-0010-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A (!F ((#tokens("P1")) <= (#tokens("Speed_Right_Wheel"))) | X !F ((#tokens("Plane_On_Ground_Signal_no")) <= (#tokens("P2"))))
+  end.

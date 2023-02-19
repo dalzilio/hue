@@ -1,0 +1,80 @@
+Property NeoElection-COL-2-LTLFireability-00
+  "Automatically generated"
+  is:
+    A (!"T-poll__handleAnsP1"? U !(G "T-startNeg__start"? & X ("T-poll__handleRP"? U "T-poll__handleAnsP1"?)))
+  end.
+Property NeoElection-COL-2-LTLFireability-01
+  "Automatically generated"
+  is:
+    A (F "T-poll__handleAnnP1"? U G "T-poll__iAmSecondary"?)
+  end.
+Property NeoElection-COL-2-LTLFireability-02
+  "Automatically generated"
+  is:
+    A ("T-sendAnnPs__end"? | G "T-startNeg__send"?)
+  end.
+Property NeoElection-COL-2-LTLFireability-03
+  "Automatically generated"
+  is:
+    A (X "T-poll__iAmPrimary"? & G !"T-sendAnnPs__end"?)
+  end.
+Property NeoElection-COL-2-LTLFireability-04
+  "Automatically generated"
+  is:
+    A F (F X ("T-poll__handleAI1"? & "T-startNeg__send"?) U F "T-startNeg__send"?)
+  end.
+Property NeoElection-COL-2-LTLFireability-05
+  "Automatically generated"
+  is:
+    A (("T-startNeg__end"? & "T-poll__iAmPrimary"?) | G "T-startNeg__end"? | (G ("T-poll__iAmPrimary"? & X "T-sendAnnPs__end"?) U X "T-poll__handleAI1"?))
+  end.
+Property NeoElection-COL-2-LTLFireability-06
+  "Automatically generated"
+  is:
+    A X (("T-poll__iAmSecondary"? U ("T-sendAnnPs__end"? U "T-poll__handleAI2"?)) U X "T-poll__handleRI"?)
+  end.
+Property NeoElection-COL-2-LTLFireability-07
+  "Automatically generated"
+  is:
+    A ("T-poll__handleAnnP1"? | (F "T-startNeg__start"? & G !F "T-poll__handleAnnP1"?))
+  end.
+Property NeoElection-COL-2-LTLFireability-08
+  "Automatically generated"
+  is:
+    A G F !F (!"T-startNeg__start"? & ("T-startNeg__send"? U G !"T-startNeg__start"?))
+  end.
+Property NeoElection-COL-2-LTLFireability-09
+  "Automatically generated"
+  is:
+    A G X (!"T-poll__handleAnsP4"? U X F ("T-poll__handleAnsP1"? | G F G !"T-startNeg__send"?))
+  end.
+Property NeoElection-COL-2-LTLFireability-10
+  "Automatically generated"
+  is:
+    A (X "T-sendAnnPs__send"? | G ("T-poll__handleAnsP3"? | F X "T-poll__handleRP"?))
+  end.
+Property NeoElection-COL-2-LTLFireability-11
+  "Automatically generated"
+  is:
+    A F X !F X X F X X "T-poll__handleAskP"?
+  end.
+Property NeoElection-COL-2-LTLFireability-12
+  "Automatically generated"
+  is:
+    A X (!X !("T-poll__handleRI"? & "T-sendAnnPs__end"?) U (!"T-poll__handleRI"? | G ("T-poll__end"? & "T-sendAnnPs__end"?)))
+  end.
+Property NeoElection-COL-2-LTLFireability-13
+  "Automatically generated"
+  is:
+    A (G "T-poll__end"? | G X !X X X F !"T-poll__handleAnsP3"?)
+  end.
+Property NeoElection-COL-2-LTLFireability-14
+  "Automatically generated"
+  is:
+    A (G F "T-poll__start"? U !(G "T-sendAnnPs__end"? U (G "T-sendAnnPs__end"? U "T-startNeg__send"?)))
+  end.
+Property NeoElection-COL-2-LTLFireability-15
+  "Automatically generated"
+  is:
+    A (F X (!"T-poll__handleAnnP2"? | !G "T-sendAnnPs__end"?) | !F "T-sendAnnPs__end"?)
+  end.

@@ -1,0 +1,80 @@
+Property SharedMemory-COL-000005-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("Ext_Mem_Acc")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("Queue")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("Active")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("Queue")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("Queue")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("Memory")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("Queue")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("Ext_Bus")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("Ext_Bus")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("Queue")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("OwnMemAcc")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("Ext_Bus")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("Ext_Mem_Acc")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("OwnMemAcc")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("Ext_Bus")
+  end.
+Property SharedMemory-COL-000005-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("Ext_Mem_Acc")
+  end.

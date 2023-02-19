@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<property-set xmlns="http://mcc.lip6.fr/">
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-00</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>SstopAbort</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-01</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>n5</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-02</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Astart</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-03</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>n4</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-04</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>CstopOK</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-05</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>s2</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-06</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>n9</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-07</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>s4</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-08</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Cstart</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-09</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>c1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-10</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>n7</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-11</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>SstopOK</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-12</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>n6</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-13</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>a1</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-14</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>s3</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>QuasiCertifProtocol-COL-02-UpperBounds-15</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>AstopOK</place>
+      </place-bound>
+    </formula>
+  </property>
+</property-set>

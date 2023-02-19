@@ -1,0 +1,80 @@
+Property DrinkVendingMachine-COL-02-LTLFireability-00
+  "Automatically generated"
+  is:
+    A G (G "elaborate2"? & F ("elaborate3"? U X G !G ("elaborate3"? U X "serve"?)))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-01
+  "Automatically generated"
+  is:
+    A F (X (!"elaborate1"? & F "elaborate2"?) U X F ("elaborate1"? | "elaborate0"?))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-02
+  "Automatically generated"
+  is:
+    A F !F G ("elaborate1"? U F !("addProduct"? U "elaborate1"?))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-03
+  "Automatically generated"
+  is:
+    A ("elaborate2"? | (X ("elaborate2"? & ("serve"? U !"serve"?)) & G (G "elaborate3"? U "addOption"?)))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-04
+  "Automatically generated"
+  is:
+    A (F X G "addProduct"? U "elaborate2"?)
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-05
+  "Automatically generated"
+  is:
+    A F G F ("elaborate1"? & "serve"? & G (G "elaborate1"? | ("addProduct"? U F "elaborate1"?)))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-06
+  "Automatically generated"
+  is:
+    A F ("elaborate0"? & G (F "elaborate3"? & X "elaborate3"?))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-07
+  "Automatically generated"
+  is:
+    A ((G "elaborate3"? | F !"elaborate0"?) & (!F "addProduct"? U (!"elaborate0"? U "elaborate1"?)))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-08
+  "Automatically generated"
+  is:
+    A X (X "elaborate3"? | ("addOption"? & ("elaborate2"? | G "serve"? | F "elaborate2"?)))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-09
+  "Automatically generated"
+  is:
+    A G "elaborate2"?
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-10
+  "Automatically generated"
+  is:
+    A G ("addOption"? & "serve"? & X ("elaborate2"? & "serve"?))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-11
+  "Automatically generated"
+  is:
+    A !(("elaborate1"? | X X X !"elaborate1"?) U ("elaborate1"? U !"elaborate1"?))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-12
+  "Automatically generated"
+  is:
+    A X F X "elaborate0"?
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-13
+  "Automatically generated"
+  is:
+    A !(G (X "addOption"? U "elaborate0"?) U X ("elaborate2"? | ("elaborate0"? & ("elaborate1"? | "elaborate2"?))))
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-14
+  "Automatically generated"
+  is:
+    A !(G "elaborate2"? U !X "elaborate3"?)
+  end.
+Property DrinkVendingMachine-COL-02-LTLFireability-15
+  "Automatically generated"
+  is:
+    A F X X !"elaborate3"?
+  end.

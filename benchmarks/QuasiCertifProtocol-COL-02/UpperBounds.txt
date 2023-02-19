@@ -1,0 +1,80 @@
+Property QuasiCertifProtocol-COL-02-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("SstopAbort")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("n5")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("Astart")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("n4")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("CstopOK")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("s2")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("n9")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("s4")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("Cstart")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("c1")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("n7")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("SstopOK")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("n6")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("a1")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("s3")
+  end.
+Property QuasiCertifProtocol-COL-02-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("AstopOK")
+  end.

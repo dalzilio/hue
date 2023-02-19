@@ -1,0 +1,80 @@
+Property PolyORBNT-COL-S05J20-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A (X ((#tokens("cSources")) <= (#tokens("place_518"))) & G (((#tokens("cSources")) <= (#tokens("place_518"))) & (((#tokens("cSources")) <= (#tokens("place_518"))) | ((1) <= (#tokens("place_782"))))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A (!X G !(((3) <= (#tokens("place_520"))) | !((#tokens("mi2")) <= (#tokens("mo1")))) & G ((#tokens("place_458")) <= (#tokens("FetchJobB"))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A F ((((3) <= (#tokens("NotifyEventJobQueuedE"))) & G ((!((1) <= (#tokens("AvailableJobId"))) U ((0) <= (#tokens("QueueJobB")))) | !G F ((3) <= (#tokens("NotifyEventJobQueuedE"))))) U ((1) <= (#tokens("CreatedJobs"))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A F !(G F X G F ((1) <= (#tokens("mo3"))) | G (((1) <= (#tokens("mo3"))) U ((#tokens("Check_Sources_B")) <= (#tokens("f2")))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A X X !(((#tokens("CanInjectEvent")) <= (#tokens("Perform_Work_E"))) U ((3) <= (#tokens("place_462"))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A G F X F !((((3) <= (#tokens("mi2"))) & ((#tokens("Try_Check_Sources_E")) <= (#tokens("FetchJobB")))) | (F ((3) <= (#tokens("Try_Check_Sources_E"))) & F ((2) <= (#tokens("place_523")))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A X (((3) <= (#tokens("f2"))) U !((3) <= (#tokens("QueueJobB"))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A G (((#tokens("place_521")) <= (#tokens("ModifiedSrc"))) U !X ((#tokens("NotifyEventEndOfCheckSourcesE")) <= (#tokens("cJobCnt"))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A (G ((0) <= (#tokens("f1"))) & F (((#tokens("f3")) <= (#tokens("place_458"))) | F ((((#tokens("Perform_Work_E")) <= (#tokens("mo2"))) & ((#tokens("mo3")) <= (#tokens("place_522")))) | X ((0) <= (#tokens("NotifyEventEndOfCheckSourcesE"))))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A (((#tokens("FetchJobB")) <= (#tokens("place_460"))) | !(((1) <= (#tokens("QueueJobE"))) U (((#tokens("Check_Sources_B")) <= (#tokens("place_518"))) & X X ((1) <= (#tokens("QueueJobE"))))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A G (((#tokens("Schedule_Task_E")) <= (#tokens("Schedule_Task_B"))) & G (G X ((#tokens("Schedule_Task_E")) <= (#tokens("Schedule_Task_B"))) U G ((#tokens("QueueJobB")) <= (#tokens("place_520")))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A X (F G F X (((3) <= (#tokens("CanInjectEvent"))) U G (!((#tokens("mi3")) <= (#tokens("cSources"))) | F ((3) <= (#tokens("CanInjectEvent"))))) U ((#tokens("mi3")) <= (#tokens("cSources"))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A ((((#tokens("QueueJobE")) <= (#tokens("place_523"))) | (((0) <= (#tokens("Try_Check_Sources_B"))) & F ((1) <= (#tokens("JobCnt"))))) U ((0) <= (#tokens("Try_Check_Sources_B"))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A G !(((3) <= (#tokens("Check_Sources_B"))) & !F X !(((#tokens("mi2")) <= (#tokens("Check_Sources_B"))) U (!((#tokens("mi2")) <= (#tokens("Check_Sources_B"))) U G ((3) <= (#tokens("Check_Sources_B"))))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A ((((0) <= (#tokens("FetchJobE"))) | X ((3) <= (#tokens("cJobCnt")))) U G F (!G (((3) <= (#tokens("cJobCnt"))) & ((2) <= (#tokens("place_500")))) U G ((#tokens("place_521")) <= (#tokens("QueueJobE")))))
+  end.
+Property PolyORBNT-COL-S05J20-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A !(F ((#tokens("Check_Sources_B")) <= (#tokens("FetchJobB"))) | (((#tokens("Perform_Work_B")) <= (#tokens("place_458"))) & G X ((#tokens("Try_Check_Sources_E")) <= (#tokens("f2")))))
+  end.

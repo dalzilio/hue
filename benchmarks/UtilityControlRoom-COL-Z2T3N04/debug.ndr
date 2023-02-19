@@ -1,0 +1,66 @@
+t 485.0 530.0 timeout 0 w n
+t 160.0 415.0 calls 0 w n
+t 355.0 335.0 securing w 0 w n {} ne
+t 170.0 165.0 assignMunicipality 0 w n
+t 210.0 235.0 end 0 w n
+p 425.0 430.0 DoSecuring 0 w
+p 290.0 105.0 OpenRequests 0 n
+p 525.0 455.0 StartSecuring 0 n
+p 405.0 615.0 ClientsTimeout 0 n
+p 310.0 170.0 Idles 1 n 3'o w
+p 165.0 320.0 Clients 1 n {(<ALL:Cli>)} e
+p 75.0 415.0 ControlRoomDispatch 0 n
+p 275.0 415.0 NumClientsReq 0 n
+p 310.0 285.0 Finished 0 n
+p 160.0 515.0 ClientsWaiting 0 n
+t 230.0 615.0 Timeout 0 w n
+t 305.0 515.0 securingInTime s 0 w n {} ne
+p 425.0 315.0 IdleTechs 1 n {(<ALL:Z>)} s
+t 575.0 115.0 move_between_Municipalities 0 w n
+p 575.0 225.0 Assigned 0 n
+t 475.0 225.0 assignSameZone 0 w n
+t 575.0 325.0 reachLocation 0 w n
+t 450.0 140.0 assignFar 0 w n
+t 375.0 50.0 assignNearZone 0 w n
+p 450.0 50.0 MovetoZ 0 n
+a 615.0 655.0 n0 1 {net UtilityControlRoom-COL-Z2T3N04\\ntype dot : dot\\ntype Z : IntRange 1 -- 2\\ntype ZxZ : (Z x Z)\\ntype AxZ1xZ : (Z x Z x Z)\\ntype Cli : IntRange 1 -- 4\\ntype CxZ : (Cli x Z)\\ntype CxZxZ : (Cli x Z x Z)\\nvar  a : Z\\nvar  r : Z\\nvar  c : Cli}
+e reachLocation StartSecuring 1 n
+e Assigned reachLocation 1 n
+e move_between_Municipalities Assigned 1 n
+e MovetoZ move_between_Municipalities 1 n
+e assignSameZone Assigned 1 n
+e OpenRequests assignSameZone 1 n
+e IdleTechs assignSameZone 1 n
+e Idles assignSameZone 1 n
+e securingInTime DoSecuring 1 n
+e StartSecuring securingInTime 1 n
+e ClientsWaiting securingInTime 1 n
+e end Idles 1 n
+e end Clients 1 n
+e Finished end 1 n
+e assignFar MovetoZ 1 n
+e OpenRequests assignFar 1 n
+e IdleTechs assignFar 1 n
+e Idles assignFar 1 n
+e assignMunicipality OpenRequests 1 n
+e ControlRoomDispatch assignMunicipality 1 n
+e securing IdleTechs 1 n
+e securing Finished 1 n
+e DoSecuring securing 1 n
+e NumClientsReq securing 1 n
+e assignNearZone MovetoZ 1 n
+e OpenRequests assignNearZone 1 n
+e IdleTechs assignNearZone 1 n
+e Idles assignNearZone 1 n
+e calls NumClientsReq 1 n
+e calls ControlRoomDispatch 1 n
+e calls ClientsWaiting 1 n
+e Clients calls 1 n
+e timeout DoSecuring 1 n
+e StartSecuring timeout 1 n
+e ClientsTimeout timeout 1 n
+e Timeout ClientsTimeout 1 n
+e ClientsWaiting Timeout 1 n
+h debug
+
+

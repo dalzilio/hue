@@ -1,0 +1,80 @@
+Property PermAdmissibility-COL-01-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("aux11")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("c17")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("aux6")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("in3")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("c5")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("out4")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("aux13")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("c9")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("in1")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("aux16")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("in4")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("c8")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("c14")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("c15")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("c20")
+  end.
+Property PermAdmissibility-COL-01-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("out3")
+  end.

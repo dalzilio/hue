@@ -1,0 +1,80 @@
+Property Peterson-COL-2-LTLFireability-00
+  "Automatically generated"
+  is:
+    A (X "AccessCS"? & G !X X "TurnDiff"?)
+  end.
+Property Peterson-COL-2-LTLFireability-01
+  "Automatically generated"
+  is:
+    A G F (!("UpdateTurn"? & "Loop"?) & G F (!"UpdateTurn"? U "UpdateTurn"?))
+  end.
+Property Peterson-COL-2-LTLFireability-02
+  "Automatically generated"
+  is:
+    A (X "BecomeIdle"? & F X !("NotAlone"? | X "BecomeIdle"? | X G "BecomeIdle"?))
+  end.
+Property Peterson-COL-2-LTLFireability-03
+  "Automatically generated"
+  is:
+    A !X ("UpdateTurn"? & !X X !(!"Loop"? | G "NoIdentity"?))
+  end.
+Property Peterson-COL-2-LTLFireability-04
+  "Automatically generated"
+  is:
+    A X X G ("Ask"? | F (X "Ask"? & G (!"Ask"? U "UpdateTurn"?)))
+  end.
+Property Peterson-COL-2-LTLFireability-05
+  "Automatically generated"
+  is:
+    A (F ("TurnEqual"? | G "TurnEqual"?) & ("TurnEqual"? | F ("TurnEqual"? & G "TurnEqual"?)))
+  end.
+Property Peterson-COL-2-LTLFireability-06
+  "Automatically generated"
+  is:
+    A ("Alone1"? U !("BecomeIdle"? U G "BecomeIdle"?))
+  end.
+Property Peterson-COL-2-LTLFireability-07
+  "Automatically generated"
+  is:
+    A (!F !"EndLoop"? | F X ("ContinueLoop"? | X "Alone1"?))
+  end.
+Property Peterson-COL-2-LTLFireability-08
+  "Automatically generated"
+  is:
+    A G F X X X ("BecomeIdle"? U G X "BecomeIdle"?)
+  end.
+Property Peterson-COL-2-LTLFireability-09
+  "Automatically generated"
+  is:
+    A !G ("TurnEqual"? U !"TurnEqual"?)
+  end.
+Property Peterson-COL-2-LTLFireability-10
+  "Automatically generated"
+  is:
+    A X G (G X ("BecomeIdle"? | X "BecomeIdle"?) | (("NotAlone"? | "AccessCS"?) & F "BecomeIdle"?))
+  end.
+Property Peterson-COL-2-LTLFireability-11
+  "Automatically generated"
+  is:
+    A (X "TurnDiff"? U !X (G "Loop"? U "TurnDiff"?))
+  end.
+Property Peterson-COL-2-LTLFireability-12
+  "Automatically generated"
+  is:
+    A (("ProgressTurn"? & G "NotAlone"?) U "UpdateTurn"?)
+  end.
+Property Peterson-COL-2-LTLFireability-13
+  "Automatically generated"
+  is:
+    A !(X (G "TurnDiff"? | G !"UpdateTurn"?) U G !("UpdateTurn"? & G "AccessCS"?))
+  end.
+Property Peterson-COL-2-LTLFireability-14
+  "Automatically generated"
+  is:
+    A G X !"NoIdentity"?
+  end.
+Property Peterson-COL-2-LTLFireability-15
+  "Automatically generated"
+  is:
+    A (!F !"Loop"? & ("Loop"? | X "Alone1"?))
+  end.

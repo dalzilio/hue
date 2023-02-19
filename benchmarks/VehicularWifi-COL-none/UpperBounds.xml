@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<property-set xmlns="http://mcc.lip6.fr/">
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-00</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Idle</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-01</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>ErrorSpike</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-02</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>PausingBackoff</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-03</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>GoingToBackoff</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-04</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Vulnerable</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-05</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Garbled</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-06</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>SentPacket</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-07</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Sense</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-08</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>NotErrorSpike</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-09</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>WaitForResponse</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-10</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>BackoffMappings</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-11</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>BackoffCounter</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-12</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>AMedium</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-13</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>ChoosingBackoff</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-14</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>ReadingPacket</place>
+      </place-bound>
+    </formula>
+  </property>
+  <property>
+    <id>VehicularWifi-COL-none-UpperBounds-15</id>
+    <description>Automatically generated</description>
+    <formula>
+      <place-bound>
+        <place>Sending</place>
+      </place-bound>
+    </formula>
+  </property>
+</property-set>

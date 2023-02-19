@@ -1,0 +1,452 @@
+<?xml version="1.0"?>
+<pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+	<net id="Philosophers-COL-000005" type="http://www.pnml.org/version-2009/grammar/symmetricnet">
+		<page id="philoDefaultPage">
+			<place id="Think">
+				<name>
+					<text>Think</text>
+				</name>
+				<type>
+					<text>Philo</text>
+					<structure>
+						<usersort declaration="philo"/>
+					</structure>
+				</type>
+				<hlinitialMarking>
+					<text>Philo.all</text>
+					<structure>
+						<all>
+							<usersort declaration="philo"/>
+						</all>
+					</structure>
+				</hlinitialMarking>
+			</place>
+			<place id="Fork">
+				<name>
+					<text>Fork</text>
+				</name>
+				<type>
+					<text>Philo</text>
+					<structure>
+						<usersort declaration="philo"/>
+					</structure>
+				</type>
+				<hlinitialMarking>
+					<text>Philo.all</text>
+					<structure>
+						<all>
+							<usersort declaration="philo"/>
+						</all>
+					</structure>
+				</hlinitialMarking>
+			</place>
+			<place id="Catch1">
+				<name>
+					<text>Catch1</text>
+				</name>
+				<type>
+					<text>Philo</text>
+					<structure>
+						<usersort declaration="philo"/>
+					</structure>
+				</type>
+			</place>
+			<place id="Catch2">
+				<name>
+					<text>Catch2</text>
+				</name>
+				<type>
+					<text>Philo</text>
+					<structure>
+						<usersort declaration="philo"/>
+					</structure>
+				</type>
+			</place>
+			<place id="Eat">
+				<name>
+					<text>Eat</text>
+				</name>
+				<type>
+					<text>Philo</text>
+					<structure>
+						<usersort declaration="philo"/>
+					</structure>
+				</type>
+			</place>
+			<transition id="FF1a">
+				<name>
+					<text>FF1a</text>
+				</name>
+			</transition>
+			<transition id="FF1b">
+				<name>
+					<text>FF1b</text>
+				</name>
+			</transition>
+			<transition id="FF2a">
+				<name>
+					<text>FF2a</text>
+				</name>
+			</transition>
+			<transition id="FF2b">
+				<name>
+					<text>FF2b</text>
+				</name>
+			</transition>
+			<transition id="End">
+				<name>
+					<text>End</text>
+				</name>
+			</transition>
+			<arc id="Think2ff1a" source="Think" target="FF1a">
+				<name>
+					<text>Think2FF1a</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="Think2ff1b" source="Think" target="FF1b">
+				<name>
+					<text>Think2FF1b</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="Fork2ff1b" source="Fork" target="FF1b">
+				<name>
+					<text>Fork2FF1b</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="Fork2ff1a" source="Fork" target="FF1a">
+				<name>
+					<text>Fork2FF1a</text>
+				</name>
+				<hlinscription>
+					<text>1'(x--1)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<predecessor>
+									<subterm>
+										<variable refvariable="varx"/>
+									</subterm>
+								</predecessor>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="Fork2ff2b" source="Fork" target="FF2b">
+				<name>
+					<text>Fork2FF2b</text>
+				</name>
+				<hlinscription>
+					<text>1'(x--1)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<predecessor>
+									<subterm>
+										<variable refvariable="varx"/>
+									</subterm>
+								</predecessor>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="Fork2ff2a" source="Fork" target="FF2a">
+				<name>
+					<text>Fork2FF2a</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="Catch12ff2a" source="Catch1" target="FF2a">
+				<name>
+					<text>Catch12FF2a</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="Catch22ff2b" source="Catch2" target="FF2b">
+				<name>
+					<text>Catch22FF2b</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="Eat2end" source="Eat" target="End">
+				<name>
+					<text>Eat2End</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="End2think" source="End" target="Think">
+				<name>
+					<text>End2Think</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="FF1a2catch1" source="FF1a" target="Catch1">
+				<name>
+					<text>FF1a2Catch1</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="FF1b2catch2" source="FF1b" target="Catch2">
+				<name>
+					<text>FF1b2Catch2</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="FF2a2eat" source="FF2a" target="Eat">
+				<name>
+					<text>FF2a2Eat</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="FF2b2eat" source="FF2b" target="Eat">
+				<name>
+					<text>FF2b2Eat</text>
+				</name>
+				<hlinscription>
+					<text>1'(x)</text>
+					<structure>
+						<numberof>
+							<subterm>
+								<numberconstant value="1">
+									<positive/>
+								</numberconstant>
+							</subterm>
+							<subterm>
+								<variable refvariable="varx"/>
+							</subterm>
+						</numberof>
+					</structure>
+				</hlinscription>
+			</arc>
+			<arc id="End2fork" source="End" target="Fork">
+				<name>
+					<text>End2Fork</text>
+				</name>
+				<hlinscription>
+					<text>1'(x) + 1'(x--1)</text>
+					<structure>
+						<add>
+							<subterm>
+								<numberof>
+									<subterm>
+										<numberconstant value="1">
+											<positive/>
+										</numberconstant>
+									</subterm>
+									<subterm>
+										<variable refvariable="varx"/>
+									</subterm>
+								</numberof>
+							</subterm>
+							<subterm>
+								<numberof>
+									<subterm>
+										<numberconstant value="1">
+											<positive/>
+										</numberconstant>
+									</subterm>
+									<subterm>
+										<predecessor>
+											<subterm>
+												<variable refvariable="varx"/>
+											</subterm>
+										</predecessor>
+									</subterm>
+								</numberof>
+							</subterm>
+						</add>
+					</structure>
+				</hlinscription>
+			</arc>
+		</page>
+		<name>
+			<text>Philosophers-COL-000005</text>
+		</name>
+		<declaration>
+			<structure>
+				<declarations>
+					<namedsort id="philo" name="Philo">
+						<cyclicenumeration>
+							<feconstant id="Id1" name="1"/>
+							<feconstant id="Id2" name="2"/>
+							<feconstant id="Id3" name="3"/>
+							<feconstant id="Id4" name="4"/>
+							<feconstant id="Id5" name="5"/>
+						</cyclicenumeration>
+					</namedsort>
+					<variabledecl id="varx" name="x">
+						<usersort declaration="philo"/>
+					</variabledecl>
+				</declarations>
+			</structure>
+		</declaration>
+	</net>
+</pnml>

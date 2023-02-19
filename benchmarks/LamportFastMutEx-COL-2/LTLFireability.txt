@@ -1,0 +1,80 @@
+Property LamportFastMutEx-COL-2-LTLFireability-00
+  "Automatically generated"
+  is:
+    A G X F !("T-ynei_15"? | X ("T-yne0_4"? U "T-yeq0_4"?))
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-01
+  "Automatically generated"
+  is:
+    A G X "T-xnei_10"?
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-02
+  "Automatically generated"
+  is:
+    A X X (G "T-awaity"? U !"T-setbi_24"?)
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-03
+  "Automatically generated"
+  is:
+    A G ("T-sety_9"? | ("T-setx_3"? & !("T-forod_13"? | X X !X "T-await_13"?)))
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-04
+  "Automatically generated"
+  is:
+    A F ("T-await_13"? U ("T-sety0_23"? & "T-yne0_4"?))
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-05
+  "Automatically generated"
+  is:
+    A F ("T-setbi_11"? | X "T-yeq0_4"?)
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-06
+  "Automatically generated"
+  is:
+    A !X (!F !G "T-yeq0_4"? U G !F !"T-sety0_23"?)
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-07
+  "Automatically generated"
+  is:
+    A (G "T-setbi_5"? | F ("T-setbi_5"? & !G "T-yeq0_4"?) | ("T-yeq0_4"? U "T-xnei_10"?))
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-08
+  "Automatically generated"
+  is:
+    A ("T-awaity"? & "T-sety_9"? & !("T-sety_9"? & ("T-xnei_10"? U "T-await_13"?)) & F ("T-setbi_11"? & "T-sety_9"?))
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-09
+  "Automatically generated"
+  is:
+    A G F !F ("T-sety0_23"? | G F "T-yne0_4"?)
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-10
+  "Automatically generated"
+  is:
+    A (!F X !("T-forod_13"? U "T-setbi_5"?) U X G "T-await_13"?)
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-11
+  "Automatically generated"
+  is:
+    A G X ("T-setbi_24"? & ("T-sety_9"? | "T-yeqi_15"?) & ("T-awaity"? U "T-sety_9"?))
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-12
+  "Automatically generated"
+  is:
+    A X X (X (("T-awaity"? & "T-yeqi_15"?) | (X "T-awaity"? U "T-yeqi_15"?)) U F G "T-awaity"?)
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-13
+  "Automatically generated"
+  is:
+    A (G !"T-yne0_4"? & X ("T-sety_9"? | !F ("T-sety_9"? U !"T-fordo_12"?)))
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-14
+  "Automatically generated"
+  is:
+    A X ("T-ynei_15"? & "T-setbi_11"? & F "T-forod_13"? & (("T-sety_9"? & F "T-fordo_12"?) U G "T-fordo_12"?))
+  end.
+Property LamportFastMutEx-COL-2-LTLFireability-15
+  "Automatically generated"
+  is:
+    A (F "T-setbi_5"? & X X F "T-sety0_23"? & ("T-setbi_5"? U "T-sety0_23"?))
+  end.

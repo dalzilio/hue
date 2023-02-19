@@ -1,0 +1,80 @@
+Property Peterson-COL-2-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A (X G !((#tokens("AskForSection")) <= (#tokens("Turn"))) | (!((2) <= (#tokens("IsEndLoop"))) U !((#tokens("AskForSection")) <= (#tokens("Turn")))))
+  end.
+Property Peterson-COL-2-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A !G (((#tokens("BeginLoop")) <= (#tokens("EndTurn"))) & F (!((#tokens("TestTurn")) <= (#tokens("CS"))) U (!((#tokens("Idle")) <= (#tokens("WantSection"))) U (((#tokens("EndTurn")) <= (#tokens("TestTurn"))) U ((#tokens("BeginLoop")) <= (#tokens("EndTurn")))))))
+  end.
+Property Peterson-COL-2-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A X (X X F ((2) <= (#tokens("CS"))) & G !((#tokens("Idle")) <= (#tokens("EndTurn"))))
+  end.
+Property Peterson-COL-2-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A G F G (G ((3) <= (#tokens("WantSection"))) U X X X F !X ((#tokens("Turn")) <= (#tokens("TestAlone"))))
+  end.
+Property Peterson-COL-2-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A !G ((((1) <= (#tokens("TestTurn"))) & ((#tokens("TestAlone")) <= (#tokens("EndTurn")))) | F (((#tokens("Idle")) <= (#tokens("WantSection"))) & (((1) <= (#tokens("TestTurn"))) U G ((#tokens("TestAlone")) <= (#tokens("EndTurn"))))))
+  end.
+Property Peterson-COL-2-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A (X ((#tokens("TestIdentity")) <= (#tokens("IsEndLoop"))) & F !(((2) <= (#tokens("BeginLoop"))) | G (((0) <= (#tokens("BeginLoop"))) U !((1) <= (#tokens("BeginLoop"))))))
+  end.
+Property Peterson-COL-2-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A X (((((0) <= (#tokens("CS"))) U ((3) <= (#tokens("WantSection")))) | (X ((2) <= (#tokens("Idle"))) U ((3) <= (#tokens("WantSection"))))) U G ((3) <= (#tokens("WantSection"))))
+  end.
+Property Peterson-COL-2-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A F G F G X (G ((#tokens("Turn")) <= (#tokens("EndTurn"))) | X X G (((#tokens("TestTurn")) <= (#tokens("EndTurn"))) U ((#tokens("CS")) <= (#tokens("TestAlone")))))
+  end.
+Property Peterson-COL-2-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A (G (G ((#tokens("TestAlone")) <= (#tokens("CS"))) | X X ((#tokens("TestAlone")) <= (#tokens("CS")))) U (((3) <= (#tokens("TestIdentity"))) | X ((1) <= (#tokens("Idle")))))
+  end.
+Property Peterson-COL-2-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A G (((#tokens("BeginLoop")) <= (#tokens("TestAlone"))) & X G ((2) <= (#tokens("AskForSection"))))
+  end.
+Property Peterson-COL-2-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A !F (((#tokens("Turn")) <= (#tokens("EndTurn"))) & ((0) <= (#tokens("Turn"))) & (((1) <= (#tokens("TestTurn"))) | F ((0) <= (#tokens("Turn")))))
+  end.
+Property Peterson-COL-2-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A (((G ((#tokens("TestAlone")) <= (#tokens("WantSection"))) U !((2) <= (#tokens("TestAlone")))) & F X ((3) <= (#tokens("AskForSection")))) U !G ((1) <= (#tokens("CS"))))
+  end.
+Property Peterson-COL-2-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A X (((#tokens("AskForSection")) <= (#tokens("TestIdentity"))) & (F ((#tokens("AskForSection")) <= (#tokens("TestIdentity"))) | !G F ((3) <= (#tokens("WantSection")))) & (((1) <= (#tokens("Turn"))) U G ((3) <= (#tokens("WantSection")))))
+  end.
+Property Peterson-COL-2-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A (!((1) <= (#tokens("TestAlone"))) U ((#tokens("Turn")) <= (#tokens("EndTurn"))))
+  end.
+Property Peterson-COL-2-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A G ((0) <= (#tokens("TestAlone")))
+  end.
+Property Peterson-COL-2-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A G (!G !((3) <= (#tokens("IsEndLoop"))) U !((#tokens("Turn")) <= (#tokens("BeginLoop"))))
+  end.

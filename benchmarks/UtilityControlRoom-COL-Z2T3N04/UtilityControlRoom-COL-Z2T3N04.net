@@ -1,0 +1,29 @@
+# generated with "mcc skeleton --name -i model.pnml", version: v2.0.0-1-gc6edcee, build date: 17/02/2023, at: 2023-02-18T14:23:23
+# net UtilityControlRoom-COL-Z2T3N04 has 13 places and 12 transitions
+net {UtilityControlRoom-COL-Z2T3N04}
+
+pl Assigned
+pl Clients (1)
+pl ClientsTimeout
+pl ClientsWaiting
+pl ControlRoomDispatch
+pl DoSecuring
+pl Finished
+pl IdleTechs (1)
+pl Idles (3)
+pl MovetoZ
+pl NumClientsReq
+pl OpenRequests
+pl StartSecuring
+tr Timeout  ClientsWaiting -> ClientsTimeout
+tr assignFar  IdleTechs Idles OpenRequests -> MovetoZ
+tr assignMunicipality  ControlRoomDispatch -> OpenRequests
+tr assignNearZone  IdleTechs Idles OpenRequests -> MovetoZ
+tr assignSameZone  IdleTechs Idles OpenRequests -> Assigned
+tr calls  Clients -> ClientsWaiting ControlRoomDispatch NumClientsReq
+tr end  Finished -> Clients Idles
+tr move_between_Municipalities  MovetoZ -> Assigned
+tr reachLocation  Assigned -> StartSecuring
+tr securing  DoSecuring NumClientsReq -> Finished IdleTechs
+tr securingInTime  ClientsWaiting StartSecuring -> DoSecuring
+tr timeout  ClientsTimeout StartSecuring -> DoSecuring

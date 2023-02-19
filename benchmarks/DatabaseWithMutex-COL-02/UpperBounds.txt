@@ -1,0 +1,80 @@
+Property DatabaseWithMutex-COL-02-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("all_passive")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("RecBuff")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("all_passive")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("Message")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("WaitMutex")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("MesBuffReply")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("Modify")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("all_active")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("Modify")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("Message")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("MesBuffReply")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("updating")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("Acknowledge")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("RecBuff")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("all_passive")
+  end.
+Property DatabaseWithMutex-COL-02-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("updating")
+  end.

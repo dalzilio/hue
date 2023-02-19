@@ -1,0 +1,80 @@
+Property PermAdmissibility-COL-01-LTLCardinality-00
+  "Automatically generated"
+  is:
+    A (((#tokens("aux7")) <= (#tokens("c6"))) | F G (G ((#tokens("aux8")) <= (#tokens("aux5"))) & X (((2) <= (#tokens("aux5"))) | !((2) <= (#tokens("aux5"))))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-01
+  "Automatically generated"
+  is:
+    A ((((#tokens("c5")) <= (#tokens("out5"))) | ((#tokens("aux16")) <= (#tokens("out8"))) | G ((#tokens("aux16")) <= (#tokens("out8")))) U (((#tokens("out2")) <= (#tokens("aux14"))) U G ((#tokens("aux13")) <= (#tokens("out8")))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-02
+  "Automatically generated"
+  is:
+    A F G X X ((((1) <= (#tokens("in3"))) & G ((0) <= (#tokens("c110")))) | G !G ((#tokens("aux7")) <= (#tokens("aux13"))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-03
+  "Automatically generated"
+  is:
+    A F ((((#tokens("c17")) <= (#tokens("out7"))) | F ((3) <= (#tokens("in2")))) U F G (((3) <= (#tokens("aux7"))) U F ((0) <= (#tokens("c110")))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-04
+  "Automatically generated"
+  is:
+    A (!F ((2) <= (#tokens("c6"))) U (((#tokens("c14")) <= (#tokens("c5"))) | ((((#tokens("c14")) <= (#tokens("c5"))) | ((#tokens("aux6")) <= (#tokens("c20")))) & G !((#tokens("aux6")) <= (#tokens("c20"))))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-05
+  "Automatically generated"
+  is:
+    A G X (G ((#tokens("in3")) <= (#tokens("aux10"))) & G X (!((#tokens("out5")) <= (#tokens("in1"))) | F X G F ((#tokens("in3")) <= (#tokens("aux10")))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-06
+  "Automatically generated"
+  is:
+    A ((F ((#tokens("c20")) <= (#tokens("c110"))) U F ((#tokens("c17")) <= (#tokens("c15")))) | X (((#tokens("c17")) <= (#tokens("c15"))) & F ((#tokens("c17")) <= (#tokens("c15")))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-07
+  "Automatically generated"
+  is:
+    A (((((2) <= (#tokens("aux16"))) U ((2) <= (#tokens("out4")))) U X !X (((0) <= (#tokens("out8"))) & X ((2) <= (#tokens("aux16"))))) & !X ((2) <= (#tokens("aux16"))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-08
+  "Automatically generated"
+  is:
+    A F (((1) <= (#tokens("out5"))) & X ((#tokens("c5")) <= (#tokens("c14"))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-09
+  "Automatically generated"
+  is:
+    A ((X ((#tokens("in2")) <= (#tokens("aux11"))) | X G ((#tokens("in2")) <= (#tokens("aux11")))) & !(((2) <= (#tokens("c5"))) | (X !((2) <= (#tokens("c5"))) U ((3) <= (#tokens("aux7"))))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-10
+  "Automatically generated"
+  is:
+    A (G !(!((#tokens("aux9")) <= (#tokens("aux8"))) | ((1) <= (#tokens("c5")))) & (X ((#tokens("c16")) <= (#tokens("aux12"))) U (((#tokens("aux14")) <= (#tokens("aux12"))) | ((1) <= (#tokens("c5"))))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-11
+  "Automatically generated"
+  is:
+    A G (F !G (((3) <= (#tokens("c110"))) & ((#tokens("in2")) <= (#tokens("in3")))) U (!((#tokens("c18")) <= (#tokens("in1"))) | F X F ((#tokens("in2")) <= (#tokens("in3")))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-12
+  "Automatically generated"
+  is:
+    A G !X G (((#tokens("c18")) <= (#tokens("c17"))) & ((!((#tokens("out8")) <= (#tokens("aux6"))) U ((#tokens("c18")) <= (#tokens("c17")))) U F ((#tokens("out8")) <= (#tokens("aux6")))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-13
+  "Automatically generated"
+  is:
+    A F X (((2) <= (#tokens("out6"))) & F G !((1) <= (#tokens("aux7"))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-14
+  "Automatically generated"
+  is:
+    A (((#tokens("in4")) <= (#tokens("aux16"))) | (G ((3) <= (#tokens("out3"))) U ((#tokens("aux7")) <= (#tokens("in1")))) | X (X G ((0) <= (#tokens("aux12"))) U ((3) <= (#tokens("aux15")))))
+  end.
+Property PermAdmissibility-COL-01-LTLCardinality-15
+  "Automatically generated"
+  is:
+    A (((2) <= (#tokens("in3"))) & !(!((2) <= (#tokens("in3"))) U (!((#tokens("c6")) <= (#tokens("aux11"))) U X X F ((#tokens("c6")) <= (#tokens("aux11"))))))
+  end.

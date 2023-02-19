@@ -1,0 +1,80 @@
+Property LamportFastMutEx-COL-2-UpperBounds-00
+  "Automatically generated"
+  is:
+    bound("P-setbi_11")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-01
+  "Automatically generated"
+  is:
+    bound("P-ify0_4")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-02
+  "Automatically generated"
+  is:
+    bound("P-b")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-03
+  "Automatically generated"
+  is:
+    bound("P-setx_3")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-04
+  "Automatically generated"
+  is:
+    bound("P-done")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-05
+  "Automatically generated"
+  is:
+    bound("P-awaity")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-06
+  "Automatically generated"
+  is:
+    bound("P-sety_9")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-07
+  "Automatically generated"
+  is:
+    bound("P-ifxi_10")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-08
+  "Automatically generated"
+  is:
+    bound("y")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-09
+  "Automatically generated"
+  is:
+    bound("P-setbi_24")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-10
+  "Automatically generated"
+  is:
+    bound("P-setbi_5")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-11
+  "Automatically generated"
+  is:
+    bound("P-wait")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-12
+  "Automatically generated"
+  is:
+    bound("P-fordo_12")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-13
+  "Automatically generated"
+  is:
+    bound("P-start_1")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-14
+  "Automatically generated"
+  is:
+    bound("x")
+  end.
+Property LamportFastMutEx-COL-2-UpperBounds-15
+  "Automatically generated"
+  is:
+    bound("P-ifyi_15")
+  end.
