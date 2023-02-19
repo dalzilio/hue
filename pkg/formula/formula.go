@@ -4,7 +4,11 @@
 
 package formula
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/dalzilio/hue/pkg/internal/util"
+)
 
 // Query is the type of reachability queries we need to check. When IsEF is true
 // the query is (EF phi), meaning we report  true if we can reach a state where
@@ -14,7 +18,8 @@ type Query struct {
 	ID             string
 	IsEF           bool
 	IsReachability bool
-	Original       Formula
+	Skip           bool    // whether we can skip evaluiating this formula
+	Original       Formula // formula before simplification. For debugging purpose
 	Formula
 }
 
@@ -25,8 +30,6 @@ type Query struct {
 // that have equal length.
 type Formula interface {
 	String() string
-	// AddEnv(Env)
-	// Match(*Net, Env) ([]*Value, []int)
 }
 
 // ----------------------------------------------------------------------
@@ -58,11 +61,7 @@ func (f Negation) String() string {
 type Disjunction []Formula
 
 func (f Disjunction) String() string {
-	s := f[0].String()
-	for k := 1; k < len(f); k++ {
-		s += " " + f[k].String()
-	}
-	return "(or " + s + ")"
+	return util.ZipPrint(f, "(or ", ")", " ")
 }
 
 // ----------------------------------------------------------------------
@@ -71,11 +70,7 @@ func (f Disjunction) String() string {
 type Conjunction []Formula
 
 func (f Conjunction) String() string {
-	s := f[0].String()
-	for k := 1; k < len(f); k++ {
-		s += " " + f[k].String()
-	}
-	return "(and " + s + ")"
+	return util.ZipPrint(f, "(and ", ")", " ")
 }
 
 // ----------------------------------------------------------------------
@@ -100,11 +95,7 @@ func (f IsFireable) String() string {
 	if len(f) == 1 {
 		return f[0]
 	}
-	s := f[0]
-	for k := 1; k < len(f); k++ {
-		s += " " + f[k]
-	}
-	return "(or " + s + ")"
+	return util.ZipString(f, "(or ", ")", " ")
 }
 
 // ----------------------------------------------------------------------
@@ -117,11 +108,7 @@ func (f TokensCount) String() string {
 	if len(f) == 1 {
 		return f[0]
 	}
-	s := f[0]
-	for k := 1; k < len(f); k++ {
-		s += " " + f[k]
-	}
-	return "(+ " + s + ")"
+	return util.ZipString(f, "(+ ", ")", " ")
 }
 
 // ----------------------------------------------------------------------

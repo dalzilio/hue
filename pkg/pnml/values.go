@@ -48,18 +48,44 @@ func (net *Net) PrintHue(pm Hue) string {
 	return s
 }
 
+func copyHue(m0 []Hue) []Hue {
+	m1 := make([]Hue, len(m0))
+	for k, h := range m0 {
+		m1[k] = make(Hue, len(h))
+		copy(m1[k], h)
+	}
+	return m1
+}
+
 // ----------------------------------------------------------------------
 
-// ValueIsLess reports if vi is before vj in comparaison order. We assume, and
-// do not test, that vi and vj are both of the same type.
+// ValueIsLess reports if vi is before vj in comparaison order.
 func ValueIsLess(vi, vj *Value) bool {
 	if vi == nil {
 		return vj == nil
+	}
+	if vj == nil {
+		return false
 	}
 	if vi.Head == vj.Head {
 		return ValueIsLess(vi.Tail, vj.Tail)
 	}
 	return vi.Head < vj.Head
+}
+
+// AtomIsLess will sort all the Atom with multiplicity 0 first; otherwise the
+// order is based on Value.
+func AtomIsLess(ai, aj Atom) bool {
+	if ai.Mult == 0 {
+		if aj.Mult == 0 {
+			return ValueIsLess(ai.Value, aj.Value)
+		}
+		return true
+	}
+	if aj.Mult == 0 {
+		return false
+	}
+	return ValueIsLess(ai.Value, aj.Value)
 }
 
 // ----------------------------------------------------------------------

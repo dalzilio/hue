@@ -18,24 +18,17 @@ import (
 // computing tokens-count) and the list of enabled transitions (for
 // is-fireable), which helps simplify the evaluation of formulas.
 type Marking struct {
-	COL     []pnml.Hue
-	PT      map[string]int
-	Enabled map[string]bool
+	COL       []pnml.Hue      // Colored marking
+	PT        map[string]int  // Compound P/T marking
+	Enabled   map[string]bool // list of enabled transition (after ComputeEnabled)
+	Witnesses []*pnml.Witness // list of witnesses that can be used to fire transitions
 }
 
 // ----------------------------------------------------------------------
 
-func (net *Net) PrintMarking(m Marking) string {
-	return net.PrintCOL(m.COL)
-}
-
-func (net *Net) PrintCOL(m []pnml.Hue) string {
-	s := ""
-	for k, v := range net.Places {
-		s += fmt.Sprintf("%s : %s\n", v.Name, net.PrintHue(m[k]))
-	}
-	return s
-}
+// func (net *Net) PrintMarking(m Marking) string {
+// 	return net.PrintCOL(m.COL)
+// }
 
 func (net *Net) PrintEnabled(m Marking) string {
 	s := make([]string, len(net.Trans))

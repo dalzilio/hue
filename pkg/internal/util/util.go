@@ -9,7 +9,9 @@ import (
 	"sort"
 )
 
+// ----------------------------------------------------------------------
 // Strings stuff
+// ----------------------------------------------------------------------
 
 // returns true if all the strings in sl2 are also in sl1. WARNING: We sort the
 // input strings.
@@ -21,6 +23,16 @@ func StringListIncludes(sl1, sl2 []string) bool {
 		}
 	}
 	return true
+}
+
+// returns true if the string liss  sl containes s.
+func StringListContains(sl []string, s string) bool {
+	for _, x := range sl {
+		if x == s {
+			return true
+		}
+	}
+	return false
 }
 
 func ZipString(a []string, start, end, sep string) string {
@@ -45,7 +57,9 @@ func ZipPrint[T fmt.Stringer](a []T, start, end, sep string) string {
 	return res + end
 }
 
+// ----------------------------------------------------------------------
 // Bool stuff
+// ----------------------------------------------------------------------
 
 func IfAndOnlyIf(b1, b2 bool) bool {
 	if b1 {

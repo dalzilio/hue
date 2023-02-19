@@ -16,9 +16,7 @@ import (
 // pattern in the input arc of a transition.
 type Iterator struct {
 	*Net
-	Env
 	Operation
-	name        string
 	idx         int            // index of the arc we are currently trying to match
 	checkpoints []VEnv         // copy of Venv used when backtracking
 	arcs        []*arcIterator // sub-iterator for each input place
@@ -26,7 +24,7 @@ type Iterator struct {
 }
 
 type arcIterator struct {
-	exps        []Expression
+	pre         []Expression
 	pl          int           // index of the related place in the net
 	pos         []int         // current position in the multiset of values
 	mults       []int         // current multiplicities
@@ -41,12 +39,10 @@ type arcIterator struct {
 // NewIterator initialize a slice of Iterators for a transition. Pats and pl are
 // two slices of equal length; pats is the list of "split" arc patterns and pl
 // gives the index to the related input places.
-func NewIterator(net *Net, tname string, env Env, cond Operation, pats [][]Expression, pl []int) (Iterator, error) {
+func NewIterator(net *Net, tname string, cond Operation, pats [][]Expression, pl []int) (Iterator, error) {
 	iter := Iterator{
 		Net:         net,
-		Env:         env,
 		Operation:   cond,
-		name:        tname,
 		checkpoints: make([]VEnv, len(pats)+1),
 		arcs:        make([]*arcIterator, len(pats)),
 	}
@@ -58,7 +54,7 @@ func NewIterator(net *Net, tname string, env Env, cond Operation, pats [][]Expre
 	iter.checkpoints[0] = make(VEnv)
 	for k := range pats {
 		iter.arcs[k] = &arcIterator{
-			exps:        pats[k],
+			pre:         pats[k],
 			pl:          pl[k],
 			pos:         make([]int, len(pats[k])),
 			mults:       make([]int, len(pats[k])),
@@ -71,9 +67,14 @@ func NewIterator(net *Net, tname string, env Env, cond Operation, pats [][]Expre
 		}
 		iter.checkpoints[k+1] = newVenv(insEnv)
 	}
-	// We test that all the variables in env are in the input arcs; otherwise we
-	// may miss constraints during  unification and cannot decide if a
-	// transition is enabled.
+	// We test that all the variables in the condition are in the input arcs;
+	// otherwise we may miss constraints during  unification and cannot decide
+	// if a transition is enabled. This is the case with model PhilosopherDyn
+	// for example.
+	//
+	// We also have the case where there variables in the out arcs not appearing
+	// in the inputs. They should be associated with an <all> on all the values
+	// with the type of the place. The only knwown case is DatabaseWithMutex.
 	//
 	// TODO: use a ternary system for enabled transition, for this particular
 	// case.
@@ -162,20 +163,21 @@ func (iter *Iterator) StepOneArc(i int, m []Hue) bool {
 // ----------------------------------------------------------------------
 
 // Check computes the next possible assignment (VEnv) that matches all the arc
-// patterns and also the conditon (Operation). It returns false if it is not
-// possible.
-func (iter *Iterator) Check(m []Hue) bool {
+// patterns and also the condition (Operation). It returns false if it is not
+// possible. The first return value is a witness: a sub marking of m that
+// corresponds to the preconiditions of the transition.
+func (iter *Iterator) Check(m []Hue) (*Witness, bool) {
 	iter.Reset()
 	for {
 		if iter.finished {
-			return false
+			return nil, false
 		}
 
 		if !iter.CheckOneArc(iter.idx, m) {
 			if !iter.Step(m) {
 				// there is no more possibilities
 				iter.finished = true
-				return false
+				return nil, false
 			}
 			continue
 		}
@@ -188,13 +190,12 @@ func (iter *Iterator) Check(m []Hue) bool {
 				// it is not a match, we need to start iterating to the next
 				// potential candidate
 				if !iter.Step(m) {
-					return false
+					return nil, false
 				}
 				continue
 			}
-			return true
+			return iter.GetWitness(m), true
 		}
-
 		iter.idx++
 	}
 }
@@ -229,7 +230,7 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 		} else {
 			a.checkpoints[a.idx].copy(a.checkpoints[a.idx-1])
 		}
-		a.mults[a.idx] = a.exps[a.idx].Unify(iter.Net, h[a.pos[a.idx]].Value, a.checkpoints[a.idx])
+		a.mults[a.idx] = a.pre[a.idx].Unify(iter.Net, h[a.pos[a.idx]].Value, a.checkpoints[a.idx])
 		if a.mults[a.idx] == 0 {
 			// Unification failed. We need to change the position.
 			if !iter.StepOneArc(i, m) {
@@ -238,7 +239,7 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 			}
 			continue
 		}
-		if a.idx == len(a.exps)-1 {
+		if a.idx == len(a.pre)-1 {
 			// We matched the last arc pattern, so we have a possible match ! We
 			// need to check the multiplicities to make sure that we have enough
 			// of them in the marking
@@ -257,79 +258,4 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 		}
 		a.idx++
 	}
-}
-
-// ----------------------------------------------------------------------
-
-// IteratorMatch is a slice of (mult x position) that can be used to reconstruct
-// the tokens that have been match by an iterator on a place marking
-type IteratorMatch []struct {
-	pos  int
-	mult int
-}
-
-// insert a match point keeping as an invariant that values are sorted in order
-// of position.
-func insertMatchPoint(m IteratorMatch, pos int, mult int) IteratorMatch {
-	for k := range m {
-		if m[k].pos == pos {
-			m[k].mult += mult
-			return m
-		}
-		if m[k].pos > pos {
-			// insert a new element at position k
-			return append(m[:k], append(IteratorMatch{{pos: pos, mult: mult}}, m[k:]...)...)
-		}
-	}
-	return append(m, struct {
-		pos  int
-		mult int
-	}{pos: pos, mult: mult})
-}
-
-// testCapacity takes the sum of multiplicities of tokens at the same positions
-// (given by a.pos) and check if it is less than the multiplicy found in h. If
-// so we have a valid IteratorMatch.
-func (a *arcIterator) testCapacity(h Hue) bool {
-	a.match = a.match[:0]
-	for i := range a.pos {
-		a.match = insertMatchPoint(a.match, a.pos[i], a.mults[i])
-	}
-	for k := range a.match {
-		if a.match[k].mult > h[a.match[k].pos].Mult {
-			a.match = a.match[:0]
-			return false
-		}
-	}
-	return true
-}
-
-// ----------------------------------------------------------------------
-
-// Witness returns a marking (a []Hue) for the current match. The function
-// should be called right after a call to Check. We return nil if iter did not
-// match.
-func (iter *Iterator) Witness(m []Hue) []Hue {
-	res := make([]Hue, len(m))
-	for i, a := range iter.arcs {
-		res[a.pl] = iter.witnessOneArc(i, m)
-	}
-	return res
-}
-
-func (iter *Iterator) witnessOneArc(i int, m []Hue) Hue {
-	a := iter.arcs[i]
-	h := m[a.pl]
-	if len(a.match) == 0 {
-		// not a match
-		return nil
-	}
-	res := make(Hue, len(a.match))
-	for k := range res {
-		res[k] = Atom{
-			Value: h[a.match[k].pos].Value,
-			Mult:  a.match[k].mult,
-		}
-	}
-	return res
 }
