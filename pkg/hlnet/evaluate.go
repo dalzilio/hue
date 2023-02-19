@@ -30,7 +30,7 @@ func (v Verdict) String() string {
 }
 
 // EvaluateQueries reports whether a query is true, false, or still undefined
-func EvaluateQueries(q formula.Query, m Marking) Verdict {
+func EvaluateQueries(q formula.Query, m State) Verdict {
 	switch f := q.Formula.(type) {
 	case formula.BooleanConstant:
 		if f {
@@ -54,12 +54,12 @@ func EvaluateQueries(q formula.Query, m Marking) Verdict {
 
 // EvaluateAndTestSimplify checks whether the formula in a query evaluates to
 // the same result than its simplification on marking m.
-func EvaluateAndTestSimplify(q formula.Query, m Marking) bool {
+func EvaluateAndTestSimplify(q formula.Query, m State) bool {
 	return util.IfAndOnlyIf(Reached(q.Original, m), Reached(q.Formula, m))
 }
 
 // Reached reports if formula f is true for the current marking m
-func Reached(f formula.Formula, m Marking) bool {
+func Reached(f formula.Formula, m State) bool {
 	switch f := f.(type) {
 	case formula.BooleanConstant:
 		return bool(f)
@@ -94,7 +94,7 @@ func Reached(f formula.Formula, m Marking) bool {
 }
 
 // Compute returns the value of an integer formula
-func Compute(f formula.Formula, m Marking) int {
+func Compute(f formula.Formula, m State) int {
 	switch f := f.(type) {
 	case formula.IntegerConstant:
 		return int(f)

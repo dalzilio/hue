@@ -14,8 +14,8 @@ import (
 // high-level net and its current marking
 type Stepper struct {
 	*Net
-	Marking
-	iter         []pnml.Iterator  // we keep iterators for each transitions in the net
+	State
+	iter         []Iterator       // we keep iterators for each transitions in the net
 	lpn          int              // length of the longest place name, for pretty printing markings
 	showwitness  bool             // flag to print witness when we find a fireable transition
 	forbidFiring map[int]struct{} // index of transitions we should never fire
@@ -23,11 +23,11 @@ type Stepper struct {
 
 // NewStepper returns a fresh Stepper starting with the initial marking of n
 func NewStepper(n *Net, showwitness bool, needfireable bool) (*Stepper, error) {
-	m0 := Marking{
-		COL:       make([]pnml.Hue, len(n.Places)),
+	m0 := State{
+		COL:       make(pnml.Marking, len(n.Places)),
 		PT:        make(map[string]int),
 		Enabled:   make(map[string]bool),
-		Witnesses: make([]*pnml.Witness, len(n.Trans)),
+		Witnesses: make([]*Witness, len(n.Trans)),
 	}
 	lpn := 0
 	for k, v := range n.Places {
@@ -39,7 +39,7 @@ func NewStepper(n *Net, showwitness bool, needfireable bool) (*Stepper, error) {
 	}
 	s := Stepper{
 		Net:          n,
-		Marking:      m0,
+		State:        m0,
 		iter:         nil,
 		lpn:          lpn,
 		showwitness:  showwitness,
@@ -47,7 +47,7 @@ func NewStepper(n *Net, showwitness bool, needfireable bool) (*Stepper, error) {
 	}
 
 	if needfireable || showwitness {
-		s.iter = make([]pnml.Iterator, len(n.Trans))
+		s.iter = make([]Iterator, len(n.Trans))
 		// we should compute enabled after testing reachability queries on the initial marking.
 		for k, t := range s.Trans {
 			// We collect the patterns and the list of places in the input arcs.
@@ -68,7 +68,7 @@ func NewStepper(n *Net, showwitness bool, needfireable bool) (*Stepper, error) {
 				s.forbidFiring[k] = struct{}{}
 			}
 			var err error
-			s.iter[k], err = pnml.NewIterator(n.Net, t.Name, t.Cond, inse, insm)
+			s.iter[k], err = NewIterator(n, t.Name, t.Cond, inse, insm)
 			if err != nil {
 				return &s, err
 			}
@@ -80,14 +80,14 @@ func NewStepper(n *Net, showwitness bool, needfireable bool) (*Stepper, error) {
 }
 
 func (s *Stepper) String() string {
-	res := s.printMarkingAligned(s.Marking, s.lpn, 90)
+	res := s.printMarkingAligned(s.State, s.lpn, 90)
 	if len(s.iter) != 0 {
-		res += "\nFireable: " + s.PrintEnabled(s.Marking)
+		res += "\nFireable: " + s.PrintEnabled(s.State)
 	}
 	return res + "\n"
 }
 
-func (s *Stepper) PrintCOL(m []pnml.Hue) string {
+func (s *Stepper) PrintCOL(m pnml.Marking) string {
 	res := ""
 	for k, v := range s.Places {
 		res += fmt.Sprintf("%s : %s\n", v.Name, s.PrintHue(m[k]))
@@ -105,10 +105,10 @@ func (s *Stepper) ExistMatch(t int) bool {
 			fmt.Printf("%s enabled\n", s.Trans[t].Name)
 			fmt.Println("witness:")
 			fmt.Print(s.PrintCOL(w.ShowWitness(s.COL)))
-			fmt.Println(s.iter[t].PrintVEnv(s.Net.Net))
+			fmt.Println(s.iter[t].PrintVEnv(s.Net))
 			fmt.Println("----------------------------------")
 		}
-		s.Marking.Witnesses[t] = w
+		s.State.Witnesses[t] = w
 		return true
 	}
 	return false
@@ -152,7 +152,7 @@ func (s *Stepper) fire(t int) {
 	// We add the Post.
 	for _, a := range tr.Outs {
 		for _, e := range a.Pattern {
-			m1[a.Place] = append(m1[a.Place], e.Eval(w.Net, w.Assoc)...)
+			m1[a.Place] = append(m1[a.Place], e.Eval(w.Net.Net, w.Assoc)...)
 		}
 	}
 	// We need to shorten the marking but also to remove duplicates. We

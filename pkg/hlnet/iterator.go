@@ -2,12 +2,14 @@
 // this source code is governed by the GNU Affero license that can be found in
 // the LICENSE file.
 
-package pnml
+package hlnet
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/dalzilio/hue/pkg/internal/util"
+	"github.com/dalzilio/hue/pkg/pnml"
 )
 
 // iterator is a structure which allows us to iterate through all the possible
@@ -16,21 +18,21 @@ import (
 // pattern in the input arc of a transition.
 type Iterator struct {
 	*Net
-	Operation
+	pnml.Operation
 	idx         int            // index of the arc we are currently trying to match
-	checkpoints []VEnv         // copy of Venv used when backtracking
+	checkpoints []pnml.VEnv    // copy of Venv used when backtracking
 	arcs        []*arcIterator // sub-iterator for each input place
 	finished    bool           // report that we exhausted the search
 }
 
 type arcIterator struct {
-	pre         []Expression
+	pre         []pnml.Expression
 	pl          int           // index of the related place in the net
 	pos         []int         // current position in the multiset of values
 	mults       []int         // current multiplicities
 	match       IteratorMatch // to store the last potential match. A len of 0 means no match.
 	idx         int           // index of the exps we are currently trying to match
-	checkpoints []VEnv        // copy of Venv when backtarcking over exprs
+	checkpoints []pnml.VEnv   // copy of Venv when backtarcking over exprs
 	finished    bool          // report that we exhausted the search
 }
 
@@ -39,19 +41,19 @@ type arcIterator struct {
 // NewIterator initialize a slice of Iterators for a transition. Pats and pl are
 // two slices of equal length; pats is the list of "split" arc patterns and pl
 // gives the index to the related input places.
-func NewIterator(net *Net, tname string, cond Operation, pats [][]Expression, pl []int) (Iterator, error) {
+func NewIterator(net *Net, tname string, cond pnml.Operation, pats [][]pnml.Expression, pl []int) (Iterator, error) {
 	iter := Iterator{
 		Net:         net,
 		Operation:   cond,
-		checkpoints: make([]VEnv, len(pats)+1),
+		checkpoints: make([]pnml.VEnv, len(pats)+1),
 		arcs:        make([]*arcIterator, len(pats)),
 	}
 	// We compute the set of variables that are matched by the patterns. We use
 	// the fact that the order in which we unify VEnv is deterministic, which
 	// means that we know wich variables may already have been set. The first
 	// checkpoint is always empty and is used only to reset the VEnv.
-	insEnv := make(Env, 0)
-	iter.checkpoints[0] = make(VEnv)
+	insEnv := make(pnml.Env, 0)
+	iter.checkpoints[0] = make(pnml.VEnv)
 	for k := range pats {
 		iter.arcs[k] = &arcIterator{
 			pre:         pats[k],
@@ -59,7 +61,7 @@ func NewIterator(net *Net, tname string, cond Operation, pats [][]Expression, pl
 			pos:         make([]int, len(pats[k])),
 			mults:       make([]int, len(pats[k])),
 			match:       make(IteratorMatch, 0),
-			checkpoints: make([]VEnv, len(pats[k])),
+			checkpoints: make([]pnml.VEnv, len(pats[k])),
 		}
 		for i, p := range pats[k] {
 			insEnv = p.AddEnv(insEnv)
@@ -86,8 +88,16 @@ func NewIterator(net *Net, tname string, cond Operation, pats [][]Expression, pl
 
 // Venv returns the tight VEnv association when we have found a match. It can be
 // found in the last checkpoint of the iterator.
-func (iter *Iterator) Venv() VEnv {
+func (iter *Iterator) Venv() pnml.VEnv {
 	return iter.checkpoints[len(iter.arcs)]
+}
+
+func newVenv(env pnml.Env) pnml.VEnv {
+	res := make(pnml.VEnv)
+	for _, s := range env {
+		res[s] = nil
+	}
+	return res
 }
 
 // ----------------------------------------------------------------------
@@ -116,7 +126,7 @@ func (iter *Iterator) ResetOneArc(i int) {
 // ----------------------------------------------------------------------
 
 // Step increments the search. We return false if we finished.
-func (iter *Iterator) Step(m []Hue) bool {
+func (iter *Iterator) Step(m pnml.Marking) bool {
 	if iter.finished {
 		return false
 	}
@@ -137,7 +147,7 @@ func (iter *Iterator) Step(m []Hue) bool {
 
 // StepOneArc increments the position for the arcIterator at position i. it
 // returns false if we finished.
-func (iter *Iterator) StepOneArc(i int, m []Hue) bool {
+func (iter *Iterator) StepOneArc(i int, m pnml.Marking) bool {
 	a := iter.arcs[i]
 	h := m[a.pl]
 	// there is nothing to match if the place marking is empty or if we finished
@@ -166,7 +176,7 @@ func (iter *Iterator) StepOneArc(i int, m []Hue) bool {
 // patterns and also the condition (Operation). It returns false if it is not
 // possible. The first return value is a witness: a sub marking of m that
 // corresponds to the preconiditions of the transition.
-func (iter *Iterator) Check(m []Hue) (*Witness, bool) {
+func (iter *Iterator) Check(m pnml.Marking) (*Witness, bool) {
 	iter.Reset()
 	for {
 		if iter.finished {
@@ -186,7 +196,7 @@ func (iter *Iterator) Check(m []Hue) (*Witness, bool) {
 			// If we have a match for all the input places, we have a possible
 			// match. We need to check that it is a solution for the condition
 			// in the transition
-			if !iter.Operation.OK(iter.Net, iter.Venv()) {
+			if !iter.Operation.OK(iter.Net.Net, iter.Venv()) {
 				// it is not a match, we need to start iterating to the next
 				// potential candidate
 				if !iter.Step(m) {
@@ -203,7 +213,7 @@ func (iter *Iterator) Check(m []Hue) (*Witness, bool) {
 // CheckOneArc computes the next possible assignment for the set of arc patterns
 // associated with the same input place. We return false if there are no match.
 // Otherwise  the potential match for the current place is stored in a.match.
-func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
+func (iter *Iterator) CheckOneArc(i int, m pnml.Marking) bool {
 	a := iter.arcs[i]
 	h := m[a.pl]
 
@@ -226,11 +236,11 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 	for {
 		// we restore the VEnv and reset mult
 		if a.idx == 0 {
-			a.checkpoints[a.idx].copy(iter.checkpoints[i])
+			a.checkpoints[a.idx].Copy(iter.checkpoints[i])
 		} else {
-			a.checkpoints[a.idx].copy(a.checkpoints[a.idx-1])
+			a.checkpoints[a.idx].Copy(a.checkpoints[a.idx-1])
 		}
-		a.mults[a.idx] = a.pre[a.idx].Unify(iter.Net, h[a.pos[a.idx]].Value, a.checkpoints[a.idx])
+		a.mults[a.idx] = a.pre[a.idx].Unify(iter.Net.Net, h[a.pos[a.idx]].Value, a.checkpoints[a.idx])
 		if a.mults[a.idx] == 0 {
 			// Unification failed. We need to change the position.
 			if !iter.StepOneArc(i, m) {
@@ -252,10 +262,18 @@ func (iter *Iterator) CheckOneArc(i int, m []Hue) bool {
 				continue
 			}
 			// We have found a match.
-			iter.checkpoints[i+1].copy(a.checkpoints[a.idx])
+			iter.checkpoints[i+1].Copy(a.checkpoints[a.idx])
 			a.idx = 0
 			return true
 		}
 		a.idx++
 	}
+}
+
+func (iter *Iterator) PrintVEnv(net *Net) string {
+	res := ""
+	for vname, val := range iter.Venv() {
+		res += fmt.Sprintf("%s : %s\n", vname, net.PrintValue(val))
+	}
+	return res
 }

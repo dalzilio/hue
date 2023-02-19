@@ -29,6 +29,9 @@ type Atom struct {
 // place
 type Hue []Atom
 
+// Marking is an association between places and Hues.
+type Marking []Hue
+
 func (pm Hue) Sum() int {
 	s := 0
 	for _, v := range pm {
@@ -48,8 +51,8 @@ func (net *Net) PrintHue(pm Hue) string {
 	return s
 }
 
-func copyHue(m0 []Hue) []Hue {
-	m1 := make([]Hue, len(m0))
+func (m0 Marking) Clone() Marking {
+	m1 := make(Marking, len(m0))
 	for k, h := range m0 {
 		m1[k] = make(Hue, len(h))
 		copy(m1[k], h)

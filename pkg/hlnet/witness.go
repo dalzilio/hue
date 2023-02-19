@@ -2,7 +2,9 @@
 // this source code is governed by the GNU Affero license that can be found in
 // the LICENSE file.
 
-package pnml
+package hlnet
+
+import "github.com/dalzilio/hue/pkg/pnml"
 
 // IteratorMatch is a slice of (mult x position) that can be used to reconstruct
 // the tokens that have been match by an iterator on a place marking
@@ -33,7 +35,7 @@ func insertMatchPoint(m IteratorMatch, pos int, mult int) IteratorMatch {
 // testCapacity takes the sum of multiplicities of tokens at the same positions
 // (given by a.pos) and check if it is less than the multiplicy found in h. If
 // so we have a valid IteratorMatch.
-func (a *arcIterator) testCapacity(h Hue) bool {
+func (a *arcIterator) testCapacity(h pnml.Hue) bool {
 	a.match = a.match[:0]
 	for i := range a.pos {
 		a.match = insertMatchPoint(a.match, a.pos[i], a.mults[i])
@@ -56,19 +58,19 @@ type Witness struct {
 	Tr     int             // index of arc in the iterator
 	Places []int           // list of input places
 	Pre    []IteratorMatch // tokens for the pre-condition
-	Assoc  VEnv            // values for the variables
+	Assoc  pnml.VEnv       // values for the variables
 }
 
 // ShowWitness returns a colored marking corresponding to a witness. Marking m
 // should be equivalent (or larger) than the marking that was used to
 // instantiate the witness
-func (w *Witness) ShowWitness(m []Hue) []Hue {
-	res := make([]Hue, len(m))
+func (w *Witness) ShowWitness(m pnml.Marking) pnml.Marking {
+	res := make(pnml.Marking, len(m))
 	for i, pl := range w.Places {
 		h := m[pl]
-		hh := make(Hue, len(w.Pre[i]))
+		hh := make(pnml.Hue, len(w.Pre[i]))
 		for k := range w.Pre[i] {
-			hh[k] = Atom{
+			hh[k] = pnml.Atom{
 				Value: h[w.Pre[i][k].pos].Value,
 				Mult:  w.Pre[i][k].mult,
 			}
@@ -82,8 +84,8 @@ func (w *Witness) ShowWitness(m []Hue) []Hue {
 // We assume m is equal or larger than the marking used to instantiate the
 // witness. We do not compact the marking to eliminate  atoms with multiplicity
 // 0 since it will be done after we add the post.
-func (w *Witness) ApplyPreconditions(m []Hue) []Hue {
-	m1 := copyHue(m)
+func (w *Witness) ApplyPreconditions(m pnml.Marking) pnml.Marking {
+	m1 := m.Clone()
 	for k, pl := range w.Places {
 		// we remove the Pre.
 		if pre := w.Pre[k]; len(pre) != 0 {
@@ -97,7 +99,7 @@ func (w *Witness) ApplyPreconditions(m []Hue) []Hue {
 
 // GetWitness returns a witness for the current match. The function should be
 // used right after a call to Check. We return nil if iter did not match.
-func (iter *Iterator) GetWitness(m []Hue) *Witness {
+func (iter *Iterator) GetWitness(m pnml.Marking) *Witness {
 	res := Witness{
 		Iterator: iter,
 		Places:   make([]int, len(iter.arcs)),
