@@ -34,12 +34,14 @@ import (
 // use the VEnv to check that we respect previously unified variables. We can
 // also update the VEnv by adding new associations. A return value of 0 means no
 // match; otherwise it is the number of "copies" of the value that we need to
-// match. Unify can change the values in the VEnv even if it fails
+// match. Unify can change the values in the VEnv even if it fails. Unification
+// can fail, for instance if there is an <All> expression in one of the input
+// arc.
 type Expression interface {
 	String() string
 	AddEnv(Env) Env
 	Eval(*Net, VEnv) []Atom
-	Unify(*Net, *Value, VEnv) int
+	Unify(*Net, *Value, VEnv) (int, error)
 }
 
 // ----------------------------------------------------------------------
@@ -96,13 +98,11 @@ func (p All) Eval(net *Net, venv VEnv) []Atom {
 }
 
 // This is one of the rare cases where we need to match against several values
-// and not just one. It is only observed on PhilosophersDyn. We could return a
-// negative number in order to test for this particular case but the model has
-// other problems.
-func (p All) Unify(net *Net, v *Value, venv VEnv) int {
-	// return -1
-	log.Fatalln("try to apply Unify to an <All> expression")
-	panic("")
+// and not just one. It is observed on transition Initialize of PhilosophersDyn
+// and on model QuasiCertifProtocol. We could return a negative number in order
+// to test for this particular case but the model has other problems.
+func (p All) Unify(net *Net, v *Value, venv VEnv) (int, error) {
+	return -1, fmt.Errorf("try to apply Unify to an <All> expression")
 }
 
 // ----------------------------------------------------------------------
@@ -126,9 +126,8 @@ func (p Add) Eval(net *Net, venv VEnv) []Atom {
 	return res
 }
 
-func (p Add) Unify(net *Net, v *Value, venv VEnv) int {
-	log.Panic("try to apply Unify to an <Add> expression")
-	panic("")
+func (p Add) Unify(net *Net, v *Value, venv VEnv) (int, error) {
+	return -1, fmt.Errorf("try to apply Unify to an <Add> expression")
 }
 
 // ----------------------------------------------------------------------
@@ -160,9 +159,8 @@ func (p Subtract) Eval(net *Net, venv VEnv) []Atom {
 	return ma
 }
 
-func (p Subtract) Unify(net *Net, v *Value, venv VEnv) int {
-	log.Panic("try to apply Unify to a <Subtract> expression")
-	panic("")
+func (p Subtract) Unify(net *Net, v *Value, venv VEnv) (int, error) {
+	return -1, fmt.Errorf("try to apply Unify to a <Subtract> expression")
 }
 
 // subtract computes multiset difference, taking into account multiplicities
@@ -211,7 +209,7 @@ func (p Tuple) Eval(net *Net, venv VEnv) []Atom {
 	return res
 }
 
-func (p Tuple) Unify(net *Net, v *Value, venv VEnv) int {
+func (p Tuple) Unify(net *Net, v *Value, venv VEnv) (int, error) {
 	// v should be a tuple of size equal to p. We cannot detect this without
 	// starting to explore v.
 	//
@@ -221,22 +219,25 @@ func (p Tuple) Unify(net *Net, v *Value, venv VEnv) int {
 	vv := v
 	for _, e := range p {
 		if vv == nil {
-			log.Panic("matching tuple value is shorter than tuple expression in Unify")
+			return -1, fmt.Errorf("matching tuple value is shorter than tuple expression in Unify")
 		}
-		mult := e.Unify(net, net.Unique[Value{Head: vv.Head, Tail: nil}], venv)
+		mult, err := e.Unify(net, net.Unique[Value{Head: vv.Head, Tail: nil}], venv)
+		if err != nil {
+			return -1, err
+		}
 		if mult == 0 {
 			// unification fails.
-			return 0
+			return 0, nil
 		}
 		if mult != 1 {
-			log.Panic("matching multiplicity different from 1 during unification of tuple")
+			return -1, fmt.Errorf("matching multiplicity different from 1 during unification of tuple")
 		}
 		vv = vv.Tail
 	}
 	if vv != nil {
-		log.Panic("matching tuple value is longer than tuple expression in Unify")
+		return -1, fmt.Errorf("matching tuple value is longer than tuple expression in Unify")
 	}
-	return 1
+	return 1, nil
 }
 
 // ----------------------------------------------------------------------
@@ -283,9 +284,8 @@ func (p Operation) Eval(net *Net, venv VEnv) []Atom {
 	panic("")
 }
 
-func (p Operation) Unify(net *Net, v *Value, venv VEnv) int {
-	log.Panic("try to apply Unify to an <Operation> expression")
-	panic("")
+func (p Operation) Unify(net *Net, v *Value, venv VEnv) (int, error) {
+	return -1, fmt.Errorf("try to apply Unify to an <Operation> expression")
 }
 
 // OK returns whether the condition evaluates to true.
@@ -348,16 +348,16 @@ func (p Constant) Eval(net *Net, venv VEnv) []Atom {
 	return []Atom{{pval, 1}}
 }
 
-func (p Constant) Unify(net *Net, v *Value, venv VEnv) int {
+func (p Constant) Unify(net *Net, v *Value, venv VEnv) (int, error) {
 	// The two values should be equal. We do not expect to find a type constant in
 	pval, found := net.order[string(p)]
 	if !found {
-		log.Panic("bad identifier " + string(p) + " in constant unification")
+		return -1, fmt.Errorf("bad identifier " + string(p) + " in constant unification")
 	}
 	if pval.Head == v.Head {
-		return 1
+		return 1, nil
 	}
-	return 0
+	return 0, nil
 }
 
 // ----------------------------------------------------------------------
@@ -383,16 +383,16 @@ func (p FIRConstant) Eval(net *Net, venv VEnv) []Atom {
 	return []Atom{{net.order[p.stringify()], 1}}
 }
 
-func (p FIRConstant) Unify(net *Net, v *Value, venv VEnv) int {
+func (p FIRConstant) Unify(net *Net, v *Value, venv VEnv) (int, error) {
 	// The two values should be equal. We do not expect to find a type constant in
 	pval, found := net.order[p.stringify()]
 	if !found {
-		log.Panic("FIRconstant " + p.stringify() + " not found in net.order")
+		return -1, fmt.Errorf("FIRconstant " + p.stringify() + " not found in net.order")
 	}
 	if pval.Head == v.Head {
-		return 1
+		return 1, nil
 	}
-	return 0
+	return 0, nil
 }
 
 // ----------------------------------------------------------------------
@@ -412,22 +412,22 @@ func (p Var) Eval(net *Net, venv VEnv) []Atom {
 	return []Atom{{venv[string(p)], 1}}
 }
 
-func (p Var) Unify(net *Net, v *Value, venv VEnv) int {
+func (p Var) Unify(net *Net, v *Value, venv VEnv) (int, error) {
 	// We expect that value v is a constant (and not a tuple)
 	if v.Tail != nil {
-		log.Panic("value is not atomic in unification of Var")
+		return -1, fmt.Errorf("value is not atomic in unification of Var")
 	}
 	vv, ok := venv[string(p)]
 	// if variable p is not set in venv, we add it
 	if !ok || vv == nil {
 		venv[string(p)] = v
-		return 1
+		return 1, nil
 	}
 	// otherwise we need to check that the values are the same
 	if vv.Head == v.Head {
-		return 1
+		return 1, nil
 	}
-	return 0
+	return 0, nil
 }
 
 // ----------------------------------------------------------------------
@@ -445,11 +445,11 @@ func (p Dot) Eval(net *Net, venv VEnv) []Atom {
 	return []Atom{{net.vdot, 1}}
 }
 
-func (p Dot) Unify(net *Net, v *Value, venv VEnv) int {
+func (p Dot) Unify(net *Net, v *Value, venv VEnv) (int, error) {
 	if v.Head == 0 && v.Tail == nil {
-		return 1
+		return 1, nil
 	}
-	return 0
+	return 0, nil
 }
 
 // ----------------------------------------------------------------------
@@ -485,7 +485,7 @@ func (p Successor) Eval(net *Net, venv VEnv) []Atom {
 
 // Unification with a successor occurs in models BART and TokenRing. We use the
 // fact that var++k matches val if and only if var matches val--k.
-func (p Successor) Unify(net *Net, v *Value, venv VEnv) int {
+func (p Successor) Unify(net *Net, v *Value, venv VEnv) (int, error) {
 	vv := net.Next(-p.Incr, v)
 	return p.Var.Unify(net, vv, venv)
 }
@@ -516,8 +516,12 @@ func (p Numberof) Eval(net *Net, venv VEnv) []Atom {
 }
 
 // We can return a negative number of
-func (p Numberof) Unify(net *Net, v *Value, venv VEnv) int {
-	return p.Mult * p.Expression.Unify(net, v, venv)
+func (p Numberof) Unify(net *Net, v *Value, venv VEnv) (int, error) {
+	val, err := p.Expression.Unify(net, v, venv)
+	if err != nil {
+		return -1, err
+	}
+	return p.Mult * val, nil
 }
 
 // ----------------------------------------------------------------------

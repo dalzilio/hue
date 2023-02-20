@@ -14,7 +14,7 @@ func (s *Stepper) EvaluateQueries(q formula.Query) formula.Bool {
 	case formula.BooleanConstant:
 		return formula.NewBool(bool(f))
 	default:
-		v, ok := s.Reached(f).Value()
+		v, ok := s.HasReached(f).Value()
 		if ok && q.IsEF && v {
 			return formula.TRUE
 		}
@@ -28,22 +28,22 @@ func (s *Stepper) EvaluateQueries(q formula.Query) formula.Bool {
 // EvaluateAndTestSimplify checks whether the formula in a query evaluates to
 // the same result than its simplification on marking m.
 func (s *Stepper) EvaluateAndTestSimplify(q formula.Query) bool {
-	return formula.BoolCompatible(s.Reached(q.Original), s.Reached(q.Formula))
+	return formula.BoolCompatible(s.HasReached(q.Original), s.HasReached(q.Formula))
 }
 
-// Reached reports if formula f is true for the current marking m
-func (s *Stepper) Reached(f formula.Formula) formula.Bool {
+// HasReached reports if formula f is true for the current marking m
+func (s *Stepper) HasReached(f formula.Formula) formula.Bool {
 	switch f := f.(type) {
 	case formula.BooleanConstant:
 		return formula.NewBool(bool(f))
 	case formula.Negation:
-		return formula.BoolNot(s.Reached(f.Formula))
+		return formula.BoolNot(s.HasReached(f.Formula))
 	case formula.Disjunction:
-		return formula.FoldOr(func(x formula.Formula) formula.Bool { return s.Reached(x) }, f)
+		return formula.FoldOr(func(x formula.Formula) formula.Bool { return s.HasReached(x) }, f)
 	case formula.Conjunction:
-		return formula.FoldAnd(func(x formula.Formula) formula.Bool { return s.Reached(x) }, f)
+		return formula.FoldAnd(func(x formula.Formula) formula.Bool { return s.HasReached(x) }, f)
 	case formula.IntegerLe:
-		return formula.NewBool(s.Compute(f.Left) <= s.Compute(f.Right))
+		return formula.NewBool(s.ComputeIntegerConstant(f.Left) <= s.ComputeIntegerConstant(f.Right))
 	case formula.IsFireable:
 		return formula.FoldOr(func(x string) formula.Bool { return s.isfireable(x) }, f)
 	default:
@@ -51,8 +51,8 @@ func (s *Stepper) Reached(f formula.Formula) formula.Bool {
 	}
 }
 
-// Compute returns the value of an integer formula
-func (s *Stepper) Compute(f formula.Formula) int {
+// ComputeIntegerConstant returns the value of an integer formula
+func (s *Stepper) ComputeIntegerConstant(f formula.Formula) int {
 	switch f := f.(type) {
 	case formula.IntegerConstant:
 		return int(f)

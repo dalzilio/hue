@@ -33,7 +33,6 @@ var gitversion string = "v0"
 type qflags struct {
 	showqueries   *bool
 	testfsimplify *bool
-	hidetrivial   *bool
 	hideundef     *bool
 	showwitness   *bool
 }
@@ -65,7 +64,6 @@ func main() {
 	flag.IntSliceVar(&selectQueries, "select-queries", []int{}, "comma separated list of queries id")
 
 	rflags := qflags{}
-	rflags.hidetrivial = flag.Bool("hide-trivial", false, "hide results for trivial queries")
 	rflags.hideundef = flag.Bool("hide-undef", false, "hide queries with UNDEF result")
 	rflags.showwitness = flag.Bool("show-witness", false, "print witness for enabled transitions")
 	rflags.showqueries = flag.Bool("show-queries", false, "print queries on standard output")
@@ -81,6 +79,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "   outfile: output is always on stdout\n")
 		fmt.Fprintf(os.Stderr, "   errorfile: error are always printed on stderr\n")
 	}
+
+	// ----------------------------------------------------------------------
+	// Managing options
 
 	flag.Parse()
 
@@ -134,6 +135,9 @@ func main() {
 	// 		os.Exit(1)
 	// 	}
 	// }()
+
+	// ----------------------------------------------------------------------
+	// Parsing model
 
 	var xmlFile *os.File
 	var err error
@@ -190,19 +194,18 @@ func main() {
 		return
 	}
 
-	// we need fireability information with options -f and --show-witness
+	// ----------------------------------------------------------------------
+	// Building Stepper anf computing initial marking. We compute  fireability
+	// information with options -f and --show-witness
 	s := hlnet.NewStepper(hl, *flagfire || *rflags.showwitness)
 
-	if *flagstat {
-		elapsed := time.Since(start)
-		fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
-		fmt.Fprintf(os.Stdout, "%s\n", hl)
-		fmt.Fprintf(os.Stdout, "%s\n", s)
-	}
-
 	if *rflags.showwitness {
+		fmt.Println(s.PrintEnabled())
 		s.PrintWitnesses()
 	}
+
+	// ----------------------------------------------------------------------
+	// Parsing formulas
 
 	if *flagfire || *flagreach {
 		switch {
@@ -247,16 +250,30 @@ func main() {
 			}
 		}
 
-		checkquery(s, queries, rflags)
+		for i := 0; i < 100; i++ {
+			checkquery(s, queries, rflags)
+			s.FireAtRandom()
+		}
+	}
+
+	if *flagstat {
+		elapsed := time.Since(start)
+		fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
+		fmt.Fprintf(os.Stdout, "%s\n", hl)
+		fmt.Fprintf(os.Stdout, "%s\n", s)
 	}
 }
 
+// ----------------------------------------------------------------------
+
 func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags) {
-	for _, q := range queries {
+	for k, q := range queries {
 		if q.Skip {
 			continue
 		}
+
 		v := s.EvaluateQueries(q)
+
 		if *flags.testfsimplify {
 			if !s.EvaluateAndTestSimplify(q) {
 				fmt.Println("----------------------------------")
@@ -266,16 +283,23 @@ func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags) {
 				fmt.Println("----------------------------------")
 			}
 		}
+
 		if !*flags.hideundef || (*flags.hideundef && (v != formula.UNDEF)) {
-			if !*flags.hidetrivial || (*flags.hidetrivial && !q.IsTrivial()) {
-				if *flags.showqueries {
-					fmt.Fprint(os.Stdout, q.String())
-					fmt.Fprintf(os.Stdout, "VERDICT\t%s\n", v)
-					fmt.Println("----------------------------------")
-				} else {
-					fmt.Fprintf(os.Stdout, "FORMULA %s %s\n", q.ID, v)
-				}
+			if *flags.showqueries {
+				fmt.Fprint(os.Stdout, q.String())
+				fmt.Println("----------------------------------")
+				fmt.Fprintf(os.Stdout, "VERDICT\t%s\n", v)
+				fmt.Fprintf(os.Stdout, "%s\n", s.PrintCOL(s.COL))
+				fmt.Fprintf(os.Stdout, "%s\n", s.PrintEnabled())
+				fmt.Println("----------------------------------")
+			} else {
+				fmt.Fprintf(os.Stdout, "FORMULA %s %s\n", q.ID, v)
 			}
+		}
+
+		if v != formula.UNDEF {
+			// We can skip this query now.
+			queries[k].Skip = true
 		}
 	}
 }

@@ -61,25 +61,6 @@ type Witness struct {
 	Assoc  pnml.VEnv       // values for the variables
 }
 
-// ShowWitness returns a colored marking corresponding to a witness. Marking m
-// should be equivalent (or larger) than the marking that was used to
-// instantiate the witness
-func (w *Witness) ShowWitness(m pnml.Marking) pnml.Marking {
-	res := make(pnml.Marking, len(m))
-	for i, pl := range w.Places {
-		h := m[pl]
-		hh := make(pnml.Hue, len(w.Pre[i]))
-		for k := range w.Pre[i] {
-			hh[k] = pnml.Atom{
-				Value: h[w.Pre[i][k].pos].Value,
-				Mult:  w.Pre[i][k].mult,
-			}
-		}
-		res[pl] = hh
-	}
-	return res
-}
-
 // ApplyPreconditions returns a marking where we removed the necessary tokens.
 // We assume m is equal or larger than the marking used to instantiate the
 // witness. We do not compact the marking to eliminate  atoms with multiplicity

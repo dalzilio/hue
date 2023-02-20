@@ -5,6 +5,7 @@ package hlnet
 
 import (
 	"fmt"
+	"math/rand"
 	"sort"
 
 	"github.com/dalzilio/hue/pkg/pnml"
@@ -15,6 +16,7 @@ import (
 type Stepper struct {
 	*Net
 	State
+	m0            pnml.Marking        //copy of the initial marking
 	iter          []Iterator          // we keep iterators for each transitions in the net
 	lpn           int                 // length of the longest place name, for pretty printing markings
 	forbidFiring  map[int]struct{}    // index of transitions we should never fire
@@ -42,6 +44,7 @@ func NewStepper(n *Net, needfireable bool) *Stepper {
 	s := Stepper{
 		Net:           n,
 		State:         m0,
+		m0:            m0.COL.Clone(),
 		iter:          nil,
 		lpn:           lpn,
 		forbidFiring:  make(map[int]struct{}),
@@ -64,9 +67,9 @@ func NewStepper(n *Net, needfireable bool) *Stepper {
 func (s *Stepper) String() string {
 	res := s.printMarkingAligned(s.State, s.lpn, 90)
 	if len(s.iter) != 0 {
-		res += "\nFireable: " + s.PrintEnabled()
+		res += "Fireable: " + s.PrintEnabled()
 	}
-	return res + "\n"
+	return res
 }
 
 func (s *Stepper) PrintCOL(m pnml.Marking) string {
@@ -90,13 +93,20 @@ func (s *Stepper) PrintCOLShort(m pnml.Marking) string {
 
 // ExistMatch reports if there is a set of values that match the condition of
 // the transition with index t.
-func (s *Stepper) ExistMatch(t int) bool {
+func (s *Stepper) ExistMatch(t int) (bool, error) {
 	s.iter[t].Reset()
-	if w, ok := s.iter[t].Check(s.COL); ok {
-		s.State.Witnesses[t] = w
-		return true
+
+	w, ok, err := s.iter[t].Check(s.COL)
+
+	if err != nil {
+		return false, err
 	}
-	return false
+
+	if ok {
+		s.State.Witnesses[t] = w
+		return true, nil
+	}
+	return false, nil
 }
 
 func (s *Stepper) PrintWitnesses() {
@@ -117,13 +127,31 @@ func (s *Stepper) PrintWitness(t int) {
 	if !s.Enabled[s.Trans[t].Name] {
 		return
 	}
-	w := s.Witnesses[t]
 	fmt.Println("----------------------------------")
 	fmt.Printf("%s enabled\n", s.Trans[t].Name)
 	fmt.Println("witness:")
-	fmt.Print(s.PrintCOLShort(w.ShowWitness(s.COL)))
+	fmt.Print(s.PrintCOLShort(s.showWitness(t)))
 	fmt.Println(s.iter[t].PrintVEnv(s.Net))
 	fmt.Println("----------------------------------")
+}
+
+// showWitness returns a colored marking corresponding to a witness for
+// transition with index t.
+func (s *Stepper) showWitness(t int) pnml.Marking {
+	res := make(pnml.Marking, len(s.COL))
+	w := s.Witnesses[t]
+	for i := range w.Places {
+		h := s.COL[i]
+		hh := make(pnml.Hue, len(w.Pre[i]))
+		for k, match := range w.Pre[i] {
+			hh[k] = pnml.Atom{
+				Value: h[match.pos].Value,
+				Mult:  match.mult,
+			}
+		}
+		res[i] = hh
+	}
+	return res
 }
 
 // Enabled returns the set of transition (a slice of ordered indexes in n.Trans)
@@ -139,10 +167,40 @@ func (s *Stepper) ComputeEnabled() {
 		if _, ok := s.forbidEnabled[k]; ok {
 			continue
 		}
-		if s.ExistMatch(k) {
+		ok, err := s.ExistMatch(k)
+
+		if err != nil {
+			s.forbidEnabled[k] = struct{}{}
+			s.forbidden[t.Name] = struct{}{}
+			continue
+		}
+
+		if ok {
 			s.Enabled[t.Name] = true
 		}
 	}
+}
+
+// FireAtRandom chooses one of the enabled transitions and fires it. If we have
+// no transitions to fire, we start again from the initial marking.
+func (s *Stepper) FireAtRandom() error {
+	choose := []string{}
+	for k, v := range s.Enabled {
+		if v {
+			choose = append(choose, k)
+		}
+	}
+
+	if len(choose) == 0 {
+		// return fmt.Errorf("nothing to fire")
+		s.update(s.m0)
+		return fmt.Errorf("nothing to fire; restarting")
+	}
+
+	tname := choose[rand.Intn(len(choose))]
+
+	s.Fire(s.TPosition[tname])
+	return nil
 }
 
 // Fire updates the stepper with the result of firing transition t. If there are
@@ -154,13 +212,27 @@ func (s *Stepper) Fire(t int) {
 	if s.Witnesses[t] == nil {
 		s.ComputeEnabled()
 	}
-	if !s.Enabled[s.iter[t].Name] {
+	if !s.Enabled[s.Trans[t].Name] {
 		return
 	}
-	s.fire(t)
+	s.update(s.fire(t))
+	s.ComputeEnabled()
+	// fmt.Println("----------------------------------")
+	// fmt.Printf("[firing: %s]\n", s.Trans[t].Name)
+	// fmt.Println(s.PrintCOL(s.COL))
+	// fmt.Println(s.PrintEnabled())
+	// fmt.Println("----------------------------------")
 }
 
-func (s *Stepper) fire(t int) {
+// update changes the marking to m in the stepper
+func (s *Stepper) update(m pnml.Marking) {
+	s.COL = m
+	for k, v := range s.Places {
+		s.PT[v.Name] = m[k].Sum()
+	}
+}
+
+func (s *Stepper) fire(t int) pnml.Marking {
 	w := s.Witnesses[t]
 	m1 := w.ApplyPreconditions(s.COL)
 	tr := s.Trans[t]
@@ -191,4 +263,5 @@ func (s *Stepper) fire(t int) {
 		}
 		m1[k] = h[:len(m1[k])-removed]
 	}
+	return m1
 }

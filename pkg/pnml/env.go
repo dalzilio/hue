@@ -33,3 +33,9 @@ func (venv VEnv) Copy(venv2 VEnv) {
 		venv[k] = v
 	}
 }
+
+func (venv VEnv) Reset() {
+	for k := range venv {
+		venv[k] = nil
+	}
+}

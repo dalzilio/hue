@@ -133,6 +133,9 @@ func (iter *Iterator) Reset() {
 	for k := range iter.arcs {
 		iter.ResetOneArc(k)
 	}
+	// for k := range iter.checkpoints {
+	// 	iter.checkpoints[k].Reset()
+	// }
 }
 
 // ResetOneArc is used when we need to reset only one arcIterator.
@@ -145,6 +148,9 @@ func (iter *Iterator) ResetOneArc(i int) {
 	p.match = p.match[:0]
 	p.idx = 0
 	p.finished = false
+	// for k := range p.checkpoints {
+	// 	p.checkpoints[k].Reset()
+	// }
 }
 
 // ----------------------------------------------------------------------
@@ -155,17 +161,18 @@ func (iter *Iterator) Step(m pnml.Marking) bool {
 		return false
 	}
 	for {
-		if !iter.StepOneArc(iter.idx, m) {
-			// the current arcIterator has finished
-			if iter.idx == 0 {
-				iter.finished = true
-				return false
-			}
-			iter.ResetOneArc(iter.idx)
-			iter.idx--
-			continue
+		if iter.StepOneArc(iter.idx, m) {
+			iter.idx = 0
+			return true
 		}
-		return true
+		// the current arcIterator has finished
+		if iter.idx == len(iter.arcs)-1 {
+			iter.finished = true
+			return false
+		}
+		iter.ResetOneArc(iter.idx)
+		iter.idx++
+		continue
 	}
 }
 
@@ -179,18 +186,19 @@ func (iter *Iterator) StepOneArc(i int, m pnml.Marking) bool {
 		return false
 	}
 	for {
-		if a.pos[a.idx] == len(h)-1 {
-			if a.idx == 0 {
-				a.finished = true
-				return false
-			}
-			a.pos[a.idx] = 0
-			a.mults[a.idx] = 0
-			a.idx--
-			continue
+		if a.pos[a.idx] < len(h)-1 {
+			a.pos[a.idx]++
+			a.idx = 0
+			return true
 		}
-		a.pos[a.idx]++
-		return true
+		if a.idx == len(a.pos)-1 {
+			a.finished = true
+			return false
+		}
+		a.pos[a.idx] = 0
+		a.mults[a.idx] = 0
+		a.idx++
+		continue
 	}
 }
 
@@ -199,98 +207,119 @@ func (iter *Iterator) StepOneArc(i int, m pnml.Marking) bool {
 // Check computes the next possible assignment (VEnv) that matches all the arc
 // patterns and also the condition (Operation). It returns false if it is not
 // possible. The first return value is a witness: a sub marking of m that
-// corresponds to the preconiditions of the transition.
-func (iter *Iterator) Check(m pnml.Marking) (*Witness, bool) {
+// corresponds to the preconditions of the transition.
+func (iter *Iterator) Check(m pnml.Marking) (*Witness, bool, error) {
 	iter.Reset()
+	i := 0
 	for {
 		if iter.finished {
-			return nil, false
+			return nil, false, nil
 		}
 
-		if !iter.CheckOneArc(iter.idx, m) {
-			if !iter.Step(m) {
-				// there is no more possibilities
-				iter.finished = true
-				return nil, false
-			}
-			continue
-		}
-
-		if iter.idx == len(iter.arcs)-1 {
+		if i == len(iter.arcs) {
 			// If we have a match for all the input places, we have a possible
 			// match. We need to check that it is a solution for the condition
 			// in the transition
-			if !iter.Operation.OK(iter.Net.Net, iter.Venv()) {
-				// it is not a match, we need to start iterating to the next
-				// potential candidate
-				if !iter.Step(m) {
-					return nil, false
-				}
+			if iter.Operation.OK(iter.Net.Net, iter.Venv()) {
+				return iter.GetWitness(m), true, nil
+			}
+			// it is not a match, we need to start iterating to the next
+			// potential candidate
+			if iter.Step(m) {
+				i = 0
 				continue
 			}
-			return iter.GetWitness(m), true
+			iter.finished = true
+			return nil, false, nil
 		}
-		iter.idx++
+
+		b, err := iter.CheckOneArc(i, m)
+
+		if err != nil {
+			return nil, false, err
+		}
+
+		if !b {
+			if iter.Step(m) {
+				i = 0
+				continue
+			}
+			// there is no more possibilities
+			iter.finished = true
+			return nil, false, nil
+		}
+
+		i++
 	}
 }
 
 // CheckOneArc computes the next possible assignment for the set of arc patterns
 // associated with the same input place. We return false if there are no match.
 // Otherwise  the potential match for the current place is stored in a.match.
-func (iter *Iterator) CheckOneArc(i int, m pnml.Marking) bool {
+func (iter *Iterator) CheckOneArc(i int, m pnml.Marking) (bool, error) {
 	a := iter.arcs[i]
 	h := m[a.pl]
-
-	// there is nothing to match if the place marking is empty or if we finished
-	if len(h) == 0 || a.finished {
-		return false
-	}
-
-	// Otherwise check if we can unify the arc conditions with the values at the
-	// given position. We also need to collect the multiplicities to make sure
-	// that we have enough tokens of the right value in h. The index of the
-	// current subpattern we are testing is the value of a.idx. We keep a copy
-	// of the current VEnv in case we need to backtrack changes made during a
-	// failed unification.
+	var err error
 
 	// We zero a.mults
 	for i := range a.mults {
 		a.mults[i] = 0
 	}
+
+	// there is nothing to match if the place marking is empty or if we finished
+	if len(h) == 0 || a.finished {
+		return false, nil
+	}
+
+	// Otherwise check if we can unify the arc conditions with the values at the
+	// given position. We also need to collect the multiplicities to make sure
+	// that we have enough tokens of the right value in h. We keep a copy of the
+	// current VEnv in case we need to backtrack changes made during a failed
+	// unification.
+	j := 0
 	for {
-		// we restore the VEnv and reset mult
-		if a.idx == 0 {
-			a.checkpoints[a.idx].Copy(iter.checkpoints[i])
-		} else {
-			a.checkpoints[a.idx].Copy(a.checkpoints[a.idx-1])
-		}
-		a.mults[a.idx] = a.pre[a.idx].Unify(iter.Net.Net, h[a.pos[a.idx]].Value, a.checkpoints[a.idx])
-		if a.mults[a.idx] == 0 {
-			// Unification failed. We need to change the position.
-			if !iter.StepOneArc(i, m) {
-				// we finished exploring for this arc
-				return false
-			}
-			continue
-		}
-		if a.idx == len(a.pre)-1 {
+		if j == len(a.pre) {
 			// We matched the last arc pattern, so we have a possible match ! We
 			// need to check the multiplicities to make sure that we have enough
 			// of them in the marking
-			if !a.testCapacity(h) {
-				// This is not a real match. We need to step to the next
-				// possible match.
-				if !iter.StepOneArc(i, m) {
-					return false
-				}
+			if a.testCapacity(h) {
+				// We have found a match.
+				iter.checkpoints[i+1].Copy(a.checkpoints[len(a.pre)-1])
+				return true, nil
+			}
+			// This is not a real match. We need to step to the next
+			// possible match.
+			if iter.StepOneArc(i, m) {
+				j = 0
 				continue
 			}
-			// We have found a match.
-			iter.checkpoints[i+1].Copy(a.checkpoints[a.idx])
-			a.idx = 0
-			return true
+			return false, nil
 		}
-		a.idx++
+
+		// we restore the VEnv and reset mult
+		if j == 0 {
+			a.checkpoints[j].Copy(iter.checkpoints[i])
+		} else {
+			a.checkpoints[j].Copy(a.checkpoints[j-1])
+		}
+
+		a.mults[j], err = a.pre[j].Unify(iter.Net.Net, h[a.pos[j]].Value, a.checkpoints[j])
+
+		if err != nil {
+			return true, err
+		}
+
+		if a.mults[j] == 0 {
+			// Unification failed. We need to change the position.
+			if iter.StepOneArc(i, m) {
+				j = 0
+				continue
+			}
+			// otherwise we finished exploring this arc
+			return false, nil
+		}
+
+		j++
 	}
 }
 
