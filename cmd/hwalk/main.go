@@ -197,7 +197,7 @@ func main() {
 	// ----------------------------------------------------------------------
 	// Building Stepper anf computing initial marking. We compute  fireability
 	// information with options -f and --show-witness
-	s := hlnet.NewStepper(hl, *flagfire || *rflags.showwitness)
+	s := hlnet.NewStepper(hl)
 
 	if *rflags.showwitness {
 		fmt.Println(s.PrintEnabled())

@@ -26,7 +26,7 @@ type Stepper struct {
 }
 
 // NewStepper returns a fresh Stepper starting with the initial marking of n
-func NewStepper(n *Net, needfireable bool) *Stepper {
+func NewStepper(n *Net) *Stepper {
 	m0 := State{
 		COL:       make(pnml.Marking, len(n.Places)),
 		PT:        make(map[string]int),
@@ -52,14 +52,12 @@ func NewStepper(n *Net, needfireable bool) *Stepper {
 		forbidden:     make(map[string]struct{}),
 	}
 
-	if needfireable {
-		s.iter = make([]Iterator, len(n.Trans))
-		// we should compute enabled after testing reachability queries on the initial marking.
-		for k := range s.Trans {
-			s.iter[k] = s.newIterator(k)
-		}
-		s.ComputeEnabled()
+	s.iter = make([]Iterator, len(n.Trans))
+	// we should compute enabled after testing reachability queries on the initial marking.
+	for k := range s.Trans {
+		s.iter[k] = s.newIterator(k)
 	}
+	s.ComputeEnabled()
 
 	return &s
 }
@@ -194,6 +192,7 @@ func (s *Stepper) FireAtRandom() error {
 	if len(choose) == 0 {
 		// return fmt.Errorf("nothing to fire")
 		s.update(s.m0)
+		s.ComputeEnabled()
 		return fmt.Errorf("nothing to fire; restarting")
 	}
 
