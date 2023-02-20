@@ -4,93 +4,69 @@
 
 package hlnet
 
-import "github.com/dalzilio/hue/pkg/pnml"
+import (
+	"sort"
 
-// IteratorMatch is a slice of (mult x position) that can be used to reconstruct
-// the tokens that have been match by an iterator on a place marking
-type IteratorMatch []struct {
-	pos  int
-	mult int
-}
-
-// insert a match point keeping as an invariant that values are sorted in order
-// of position.
-func insertMatchPoint(m IteratorMatch, pos int, mult int) IteratorMatch {
-	for k := range m {
-		if m[k].pos == pos {
-			m[k].mult += mult
-			return m
-		}
-		if m[k].pos > pos {
-			// insert a new element at position k
-			return append(m[:k], append(IteratorMatch{{pos: pos, mult: mult}}, m[k:]...)...)
-		}
-	}
-	return append(m, struct {
-		pos  int
-		mult int
-	}{pos: pos, mult: mult})
-}
+	"github.com/dalzilio/hue/pkg/pnml"
+)
 
 // testCapacity takes the sum of multiplicities of tokens at the same positions
 // (given by a.pos) and check if it is less than the multiplicy found in h. If
 // so we have a valid IteratorMatch.
 func (a *arcIterator) testCapacity(h pnml.Hue) bool {
-	a.match = a.match[:0]
+	z := make(map[int]int)
+	// we start by merging duplicates (same pos) in the matched values
 	for i := range a.pos {
-		a.match = insertMatchPoint(a.match, a.pos[i], a.mults[i])
+		z[a.pos[i]] = z[a.pos[i]] + a.mults[i]
 	}
-	for k := range a.match {
-		if a.match[k].mult > h[a.match[k].pos].Mult {
-			a.match = a.match[:0]
+	for k, v := range z {
+		if h[k].Mult < v {
 			return false
 		}
 	}
 	return true
 }
 
-// ----------------------------------------------------------------------
+// getWitness returns a witness for the current match on transition k.
+func (s *Stepper) getWitness(k int) pnml.Marking {
+	m1 := s.COL.Clone()
+	it := s.iter[k]
+	tr := s.Trans[k]
 
-// Witness are values that can be used to prove that a transition is enabled and
-// to compute a marking after firing a transition
-type Witness struct {
-	*Iterator
-	Tr     int             // index of arc in the iterator
-	Places []int           // list of input places
-	Pre    []IteratorMatch // tokens for the pre-condition
-	Assoc  pnml.VEnv       // values for the variables
-}
-
-// ApplyPreconditions returns a marking where we removed the necessary tokens.
-// We assume m is equal or larger than the marking used to instantiate the
-// witness. We do not compact the marking to eliminate  atoms with multiplicity
-// 0 since it will be done after we add the post.
-func (w *Witness) ApplyPreconditions(m pnml.Marking) pnml.Marking {
-	m1 := m.Clone()
-	for k, pl := range w.Places {
-		// we remove the Pre.
-		if pre := w.Pre[k]; len(pre) != 0 {
-			for _, p := range pre {
-				m1[pl][p.pos].Mult -= p.mult
-			}
+	// We start by removing the Pre.
+	for _, a := range it.arcs {
+		for j, p := range a.pos {
+			m1[a.pl][p].Mult -= a.mults[j]
 		}
 	}
-	return m1
-}
 
-// GetWitness returns a witness for the current match. The function should be
-// used right after a call to Check. We return nil if iter did not match.
-func (iter *Iterator) GetWitness(m pnml.Marking) *Witness {
-	res := Witness{
-		Iterator: iter,
-		Places:   make([]int, len(iter.arcs)),
-		Pre:      make([]IteratorMatch, len(iter.arcs)),
-		Assoc:    iter.Venv(),
+	// We add the Post.
+	for _, a := range tr.Outs {
+		for _, e := range a.Pattern {
+			m1[a.Place] = append(m1[a.Place], e.Eval(s.Net.Net, it.Environment())...)
+		}
 	}
-	for i, a := range iter.arcs {
-		res.Places[i] = a.pl
-		res.Pre[i] = make(IteratorMatch, len(a.match))
-		copy(res.Pre[i], a.match)
+
+	// We need to shorten the marking but also to remove duplicates. We
+	// start to sort the slice to simplify the logic.
+	for pl, h := range m1 {
+		sort.Slice(h, func(a, b int) bool { return pnml.AtomIsLess(h[a], h[b]) })
+		removed := 0
+		j := 0
+		for i := 0; i < len(h); i++ {
+			if h[i].Mult == 0 {
+				removed++
+				continue
+			}
+			if (j != 0) && (h[i].Value == h[j-1].Value) {
+				removed++
+				h[j-1].Mult += h[i].Mult
+				continue
+			}
+			h[j] = h[i]
+			j++
+		}
+		m1[pl] = h[:len(m1[pl])-removed]
 	}
-	return &res
+	return m1
 }

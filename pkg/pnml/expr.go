@@ -349,7 +349,8 @@ func (p Constant) Eval(net *Net, venv VEnv) []Atom {
 }
 
 func (p Constant) Unify(net *Net, v *Value, venv VEnv) (int, error) {
-	// The two values should be equal. We do not expect to find a type constant in
+	// The two values should be equal. We do not expect to find a type constant
+	// in p.
 	pval, found := net.order[string(p)]
 	if !found {
 		return -1, fmt.Errorf("bad identifier " + string(p) + " in constant unification")
@@ -387,7 +388,7 @@ func (p FIRConstant) Unify(net *Net, v *Value, venv VEnv) (int, error) {
 	// The two values should be equal. We do not expect to find a type constant in
 	pval, found := net.order[p.stringify()]
 	if !found {
-		return -1, fmt.Errorf("FIRconstant " + p.stringify() + " not found in net.order")
+		return -1, fmt.Errorf("FIRconstant " + p.stringify() + " not found")
 	}
 	if pval.Head == v.Head {
 		return 1, nil
@@ -419,7 +420,10 @@ func (p Var) Unify(net *Net, v *Value, venv VEnv) (int, error) {
 	}
 	vv, ok := venv[string(p)]
 	// if variable p is not set in venv, we add it
-	if !ok || vv == nil {
+	if !ok {
+		panic("you did a bad job in <Var>.Unify!")
+	}
+	if vv == nil {
 		venv[string(p)] = v
 		return 1, nil
 	}

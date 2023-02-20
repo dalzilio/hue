@@ -13,9 +13,9 @@ import (
 func (p Query) String() string {
 	s := fmt.Sprintf("Property %s\n", p.ID)
 	if p.IsEF {
-		s += fmt.Sprintf("EF %v\n", p.Formula)
+		s += fmt.Sprintf("EF %v", p.Formula)
 	} else {
-		s += fmt.Sprintf("AG %v\n", p.Formula)
+		s += fmt.Sprintf("AG %v", p.Formula)
 	}
 	return s
 }

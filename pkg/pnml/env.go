@@ -34,6 +34,14 @@ func (venv VEnv) Copy(venv2 VEnv) {
 	}
 }
 
+func (venv VEnv) Clone() VEnv {
+	venv2 := make(map[string]*Value)
+	for k, v := range venv {
+		venv2[k] = v
+	}
+	return venv2
+}
+
 func (venv VEnv) Reset() {
 	for k := range venv {
 		venv[k] = nil

@@ -31,10 +31,8 @@ var builddate string = "2020/01/01"
 var gitversion string = "v0"
 
 type qflags struct {
-	showqueries   *bool
 	testfsimplify *bool
-	hideundef     *bool
-	showwitness   *bool
+	verbose       *bool
 }
 
 func main() {
@@ -49,12 +47,11 @@ func main() {
 	//   UtilityControlRoom ; and PhilosophersDyn (already forbidden)
 
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
-	var flagstat = flag.BoolP("stat", "s", false, "print statistics information")
 	var flagversion = flag.Bool("version", false, "print version number and generation date then quit")
 
 	var netfile = flag.StringP("net", "n", "", "path to PNML file (see option -d if absent)")
 	var propfile = flag.String("xml", "", "path to XML file with the Reachability formulas")
-	var dirfile = flag.StringP("directory", "d", "", "path to folder containing model.pnml and XML formulas (DEFAULT)")
+	var dirfile = flag.StringP("directory", "d", "", "path to folder containing model.pnml and XML formulas")
 
 	var flagreach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
 	var flagfire = flag.BoolP("fireability", "f", false, "check ReachabilityFireability.xml file")
@@ -63,10 +60,12 @@ func main() {
 	var selectQueries []int
 	flag.IntSliceVar(&selectQueries, "select-queries", []int{}, "comma separated list of queries id")
 
+	var flagcountlimit = flag.IntP("limit-count", "c", 0, "limit on length of exploration path")
+	// var flagtimelimit = flag.IntP("limit-time", "t", 0, "limit on time of exploration (0 means none)")
+
 	rflags := qflags{}
-	rflags.hideundef = flag.Bool("hide-undef", false, "hide queries with UNDEF result")
-	rflags.showwitness = flag.Bool("show-witness", false, "print witness for enabled transitions")
-	rflags.showqueries = flag.Bool("show-queries", false, "print queries on standard output")
+	rflags.verbose = flag.BoolP("verbose", "v", false, "print witness for enabled transitions")
+	var showqueries = flag.Bool("show-queries", false, "print queries on standard output")
 	rflags.testfsimplify = flag.Bool("test-simplify", false, "print warning if formulas before and after simplification give different results")
 
 	flag.CommandLine.SortFlags = false
@@ -89,7 +88,7 @@ func main() {
 
 	switch {
 	case *flagversion:
-		fmt.Printf("hue version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
+		fmt.Printf("uwalk version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
 		os.Exit(1)
 	case *flaghelp:
 		flag.Usage()
@@ -195,13 +194,18 @@ func main() {
 	}
 
 	// ----------------------------------------------------------------------
-	// Building Stepper anf computing initial marking. We compute  fireability
-	// information with options -f and --show-witness
+	// Building Stepper and computing initial marking. We compute fireability
+	// information after we get the chance to check cardinality information on
+	// th einitial marking
 	s := hlnet.NewStepper(hl)
 
-	if *rflags.showwitness {
-		fmt.Println(s.PrintEnabled())
-		s.PrintWitnesses()
+	if *rflags.verbose {
+		s.InitializeEnabled()
+		elapsed := time.Since(start)
+		fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
+		fmt.Fprintf(os.Stdout, "%s\n", hl)
+		fmt.Fprintf(os.Stdout, "%s\n", s)
+		fmt.Println("")
 	}
 
 	// ----------------------------------------------------------------------
@@ -240,33 +244,70 @@ func main() {
 			return
 		}
 
+		queriesleft := len(queries)
+
 		if len(selectQueries) != 0 {
 			// we mark the queries that need to be skip
 			for k := range queries {
 				queries[k].Skip = true
 			}
+			queriesleft = 0
 			for _, k := range selectQueries {
 				queries[k].Skip = false
+				queriesleft++
 			}
 		}
 
-		for i := 0; i < 100; i++ {
-			checkquery(s, queries, rflags)
-			s.FireAtRandom()
+		if *showqueries {
+			fmt.Println("\n----------------------------------")
+			for _, q := range queries {
+				fmt.Println(q.String())
+				fmt.Println("----------------------------------")
+			}
+			fmt.Println("")
+		}
+
+		if *flagfire || *flagcountlimit > 0 {
+			// we will need the fireability information
+			s.InitializeEnabled()
+		}
+
+		count := 0
+		for {
+			checkquery(s, queries, rflags, &queriesleft)
+			if queriesleft == 0 || count == *flagcountlimit {
+				return
+			}
+			count++
+			s.FireAtRandom(*rflags.verbose)
 		}
 	}
 
-	if *flagstat {
-		elapsed := time.Since(start)
-		fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
-		fmt.Fprintf(os.Stdout, "%s\n", hl)
-		fmt.Fprintf(os.Stdout, "%s\n", s)
+	// ----------------------------------------------------------------------
+	// If we do not parse formula we can still use the walker
+	count := 0
+	if *rflags.verbose {
+		fmt.Fprintf(os.Stdout, "%s", s)
+	}
+	for {
+		if count >= *flagcountlimit {
+			return
+		}
+		count++
+		s.FireAtRandom(*rflags.verbose)
+		if *rflags.verbose {
+			fmt.Fprintf(os.Stdout, "%s", s)
+		}
 	}
 }
 
 // ----------------------------------------------------------------------
 
-func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags) {
+func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags, queriesleft *int) {
+	if *flags.verbose {
+		fmt.Fprintf(os.Stdout, "%s", s)
+	}
+
 	for k, q := range queries {
 		if q.Skip {
 			continue
@@ -284,20 +325,12 @@ func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags) {
 			}
 		}
 
-		if !*flags.hideundef || (*flags.hideundef && (v != formula.UNDEF)) {
-			if *flags.showqueries {
-				fmt.Fprint(os.Stdout, q.String())
-				fmt.Println("----------------------------------")
-				fmt.Fprintf(os.Stdout, "VERDICT\t%s\n", v)
-				fmt.Fprintf(os.Stdout, "%s\n", s.PrintCOL(s.COL))
-				fmt.Fprintf(os.Stdout, "%s\n", s.PrintEnabled())
-				fmt.Println("----------------------------------")
-			} else {
-				fmt.Fprintf(os.Stdout, "FORMULA %s %s\n", q.ID, v)
-			}
-		}
-
 		if v != formula.UNDEF {
+			if *flags.verbose {
+				fmt.Println("")
+			}
+			fmt.Fprintf(os.Stdout, "FORMULA %s %s\n", q.ID, v)
+			*queriesleft--
 			// We can skip this query now.
 			queries[k].Skip = true
 		}
