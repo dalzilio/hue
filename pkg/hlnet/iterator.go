@@ -89,12 +89,14 @@ func (s *Stepper) newIterator(k int) *Iterator {
 		iter.arcs[i] = &arcIterator{
 			pl:             pls[i],
 			pre:            pats[i],
-			arccheckpoints: []pnml.Env{},
+			arccheckpoints: make([]pnml.Env, len(pats[i])),
 			pos:            make([]int, len(pats[i])),
 			mults:          make([]int, len(pats[i])),
 		}
-		for _, p := range pats[i] {
-			iter.arcs[i].arccheckpoints = append(iter.arcs[i].arccheckpoints, insEnv.Extra(p.AddEnv(nil)))
+		for j, p := range pats[i] {
+			extra := insEnv.Extra(p.AddEnv(nil))
+			iter.arcs[i].arccheckpoints[j] = extra
+			insEnv = append(insEnv, extra...)
 		}
 	}
 
@@ -115,6 +117,7 @@ func (s *Stepper) reset(k int) {
 	s.iter[k].venv.ResetAll()
 	for _, a := range s.iter[k].arcs {
 		a.arcidx = 0
+		a.finished = false
 		for j := range a.pos {
 			a.pos[j] = 0
 			a.mults[j] = 0

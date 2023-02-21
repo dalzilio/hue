@@ -24,10 +24,11 @@ func (p Env) String() string {
 // Extra returns a list of varnames that are in p2 but not in p
 func (p Env) Extra(p2 Env) Env {
 	q := Env{}
+Outer:
 	for _, varname := range p2 {
-		for _, v := range q {
+		for _, v := range p {
 			if v == varname {
-				break
+				continue Outer
 			}
 		}
 		q = append(q, varname)
