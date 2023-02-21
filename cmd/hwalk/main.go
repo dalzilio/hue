@@ -261,8 +261,10 @@ func main() {
 		if *showqueries {
 			fmt.Println("\n----------------------------------")
 			for _, q := range queries {
-				fmt.Println(q.String())
-				fmt.Println("----------------------------------")
+				if !q.Skip {
+					fmt.Println(q.String())
+					fmt.Println("----------------------------------")
+				}
 			}
 			fmt.Println("")
 		}

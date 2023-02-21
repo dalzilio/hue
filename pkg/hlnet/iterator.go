@@ -6,33 +6,33 @@ package hlnet
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/dalzilio/hue/pkg/internal/util"
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
-// iterator is a structure which allows us to iterate through all the possible
-// valid associations between variables (in a transition Env) and values (in the
-// marking of places). We need to keep track of one position for each "split"
-// pattern in the input arc of a transition.
+// iterator is a structure used to iterate through all the possible valid
+// associations between variables (in a transition Env) and values (in the
+// marking of places).
 type Iterator struct {
 	*Net
 	tid            int            // index of the transition in the net
+	idx            int            // index of the arc we are currently iterating
 	pnml.Operation                // condition associated with the transition
-	idx            int            // index of the arc we are currently trying to match
-	checkpoints    []pnml.VEnv    // copy of Venv used when backtracking
+	checkpoints    []pnml.Env     // keep track of which variable to update when backtracking
+	venv           pnml.VEnv      // current environment
 	arcs           []*arcIterator // sub-iterator for each input place
-	finished       bool           // report that we exhausted the search
 }
 
 type arcIterator struct {
-	pre         []pnml.Expression
-	pl          int         // index of the related place in the net
-	pos         []int       // current position in the multiset of values
-	mults       []int       // current multiplicities
-	idx         int         // index of the exps we are currently trying to match
-	checkpoints []pnml.VEnv // copy of Venv when backtarcking over exprs
-	finished    bool        // report that we exhausted the search
+	pl             int               // index of the related place in the net
+	arcidx         int               // index of the subarc we are currently iterating
+	finished       bool              // to indicate we finished the exploration
+	pre            []pnml.Expression // patterm related to place pl
+	arccheckpoints []pnml.Env        // keep track of which variable to update when backtracking
+	pos            []int             // current position in the multiset of values
+	mults          []int             // current multiplicities
 }
 
 // ----------------------------------------------------------------------
@@ -49,24 +49,24 @@ func (s *Stepper) newIterator(k int) *Iterator {
 	// We compute the environment of patterns in the input arcs to detect the
 	// case where we have extra variables (see DatabaseWithMutex)
 	pats := [][]pnml.Expression{}
-	pl := []int{}
+	pls := []int{}
+	iter.checkpoints = []pnml.Env{}
 	insEnv := pnml.Env{}
+
 	for _, a := range s.Trans[k].Ins {
 		pats = append(pats, a.Pattern)
-		pl = append(pl, a.Place)
-		for _, e := range a.Pattern {
-			insEnv = e.AddEnv(insEnv)
-		}
+		pls = append(pls, a.Place)
+		extra := insEnv.Extra(a.Env)
+		iter.checkpoints = append(iter.checkpoints, extra)
+		insEnv = append(insEnv, extra...)
 	}
 
 	// We test that all the variables in the condition are in the input arcs;
-	// otherwise we may miss constraints during  unification and cannot decide
-	// if a transition is enabled. This is the case with model PhilosopherDyn
-	// for example.
-	//
-	// We also have the case where there are variables in the out arcs not
-	// appearing in the inputs. They should be associated with an <all> on all
-	// the values with the type of the place. The only knwown case is
+	// otherwise we may miss constraints during unification and cannot decide if
+	// a transition is enabled. This is the case with model PhilosopherDyn for
+	// example. We also have the case where there are variables in the out arcs
+	// not appearing in the inputs. They should be associated with an <all> on
+	// all the values with the type of the place. The only knwown case is
 	// DatabaseWithMutex.
 	if !util.StringListIncludes(insEnv, s.Trans[k].Cond.AddEnv(nil)) {
 		s.forbidFiring[k] = struct{}{}
@@ -75,125 +75,100 @@ func (s *Stepper) newIterator(k int) *Iterator {
 		return iter
 	}
 
-	// if we have extra variables, we must prevent the stepper from firing this
-	// transition.
+	iter.venv = pnml.NewVEnv(insEnv)
+
+	// If we have extra variables, we must prevent the stepper from firing this
+	// transition. But we may may still want to test if it is enabled.
 	if len(s.Trans[k].Env) > len(insEnv) {
 		s.forbidFiring[k] = struct{}{}
 	}
 
-	iter.checkpoints = make([]pnml.VEnv, len(pl)+1)
-	iter.arcs = make([]*arcIterator, len(pl))
-
-	// We compute again the set of variables that are matched by the patterns.
-	// We use the fact that the order in which we unify VEnv is deterministic,
-	// which means that we know wich variables may already have been set. The
-	// first checkpoint is always empty and is used only to reset the VEnv.
-	insEnv = make(pnml.Env, 0)
-	iter.checkpoints[0] = make(pnml.VEnv)
-	for i := range pats {
+	iter.arcs = make([]*arcIterator, len(pls))
+	insEnv = pnml.Env{}
+	for i := range pls {
 		iter.arcs[i] = &arcIterator{
-			pre:         pats[i],
-			pl:          pl[i],
-			pos:         make([]int, len(pats[i])),
-			mults:       make([]int, len(pats[i])),
-			checkpoints: make([]pnml.VEnv, len(pats[i])),
+			pl:             pls[i],
+			pre:            pats[i],
+			arccheckpoints: []pnml.Env{},
+			pos:            make([]int, len(pats[i])),
+			mults:          make([]int, len(pats[i])),
 		}
-		for j, p := range pats[i] {
-			insEnv = p.AddEnv(insEnv)
-			iter.arcs[i].checkpoints[j] = newVenv(insEnv)
+		for _, p := range pats[i] {
+			iter.arcs[i].arccheckpoints = append(iter.arcs[i].arccheckpoints, insEnv.Extra(p.AddEnv(nil)))
 		}
-		iter.checkpoints[i+1] = newVenv(insEnv)
 	}
 
 	return iter
 }
 
-// Environment returns the VEnv association related to the last match. It can be
-// found in the last checkpoint of the iterator.
+// Environment returns the VEnv association related to a match.
 func (iter *Iterator) Environment() pnml.VEnv {
-	return iter.checkpoints[len(iter.arcs)].Clone()
-}
-
-func newVenv(env pnml.Env) pnml.VEnv {
-	res := make(pnml.VEnv)
-	for _, s := range env {
-		res[s] = nil
-	}
-	return res
+	return iter.venv.Clone()
 }
 
 // ----------------------------------------------------------------------
 
-// Reset is used when we need to iterate over a new marking.
-func (iter *Iterator) Reset() {
-	iter.idx = 0
-	iter.finished = false
-	for k := range iter.checkpoints {
-		iter.checkpoints[k].Reset()
-	}
-	for k := range iter.arcs {
-		iter.ResetOneArc(k)
-	}
-}
-
-// ResetOneArc is used when we need to reset only one arcIterator.
-func (iter *Iterator) ResetOneArc(i int) {
-	for k := range iter.arcs[i].pos {
-		iter.arcs[i].pos[k] = 0
-		iter.arcs[i].mults[k] = 0
-	}
-	iter.arcs[i].idx = 0
-	iter.arcs[i].finished = false
-	for k := range iter.arcs[i].checkpoints {
-		iter.arcs[i].checkpoints[k].Reset()
+// reset is used when we need to iterate over a new marking.
+func (s *Stepper) reset(k int) {
+	s.After[k] = nil
+	s.iter[k].idx = 0
+	s.iter[k].venv.ResetAll()
+	for _, a := range s.iter[k].arcs {
+		a.arcidx = 0
+		for j := range a.pos {
+			a.pos[j] = 0
+			a.mults[j] = 0
+		}
 	}
 }
 
 // ----------------------------------------------------------------------
 
-// Step increments the search. We return false if we finished.
-func (iter *Iterator) Step(m pnml.Marking) bool {
-	if iter.finished {
-		return false
-	}
+// step tries to increment the search and updates idx with the arc we need to
+// start looking next. We return false if we have no more choices.
+func (s *Stepper) step(k int) bool {
+	a := s.iter[k].arcs[s.iter[k].idx]
 	for {
-		if iter.StepOneArc(iter.idx, m) {
-			iter.idx = 0
+		if a.finished {
+			if s.iter[k].idx == 0 {
+				// there are no matches
+				return false
+			}
+			a.finished = false
+			s.iter[k].idx--
+			a = s.iter[k].arcs[s.iter[k].idx]
+			continue
+		}
+		if s.stepCurrentPlace(k) {
 			return true
 		}
-		// the current arcIterator has finished
-		if iter.idx == len(iter.arcs)-1 {
-			iter.finished = true
-			return false
-		}
-		iter.ResetOneArc(iter.idx)
-		iter.idx++
-		continue
 	}
 }
 
-// StepOneArc increments the position for the arcIterator at position i. it
-// returns false if we finished.
-func (iter *Iterator) StepOneArc(i int, m pnml.Marking) bool {
-	a := iter.arcs[i]
-	// there is nothing to match if the place marking is empty or if we finished
-	if len(m[a.pl]) == 0 || a.finished {
-		return false
+// stepCurrentPlace increments the position for the arcIterator at position
+// [idx][arcidx] in the iterator for transition k. We update arcidx and return
+// false if we are no more choices.
+func (s *Stepper) stepCurrentPlace(k int) bool {
+	a := s.iter[k].arcs[s.iter[k].idx]
+	if a.arcidx == len(a.pos) {
+		// it means we found a possible marking at this place before
+		a.arcidx--
 	}
 	for {
-		if a.pos[a.idx] < len(m[a.pl])-1 {
-			a.pos[a.idx]++
-			a.idx = 0
+		if a.pos[a.arcidx] < len(s.COL[a.pl])-1 {
+			s.iter[k].venv.Reset(a.arccheckpoints[a.arcidx])
+			a.pos[a.arcidx]++
+			a.mults[a.arcidx] = 0
 			return true
 		}
-		if a.idx == len(a.pos)-1 {
+		a.pos[a.arcidx] = 0
+		a.mults[a.arcidx] = 0
+		s.iter[k].venv.Reset(a.arccheckpoints[a.arcidx])
+		if a.arcidx == 0 {
 			a.finished = true
 			return false
 		}
-		a.pos[a.idx] = 0
-		a.mults[a.idx] = 0
-		a.idx++
-		continue
+		a.arcidx--
 	}
 }
 
@@ -201,124 +176,101 @@ func (iter *Iterator) StepOneArc(i int, m pnml.Marking) bool {
 
 // check computes the next possible assignment (VEnv) that matches all the arc
 // patterns and also the condition (Operation). It returns false if we do not
-// find a witness.
+// find a witness. It can also return an error if we find a problem while
+// unifying an arc pattern (for instance if the arc contains an <All>
+// expression, like with model DatabaseWithMutex).
 func (s *Stepper) check(k int) (bool, error) {
 	it := s.iter[k]
-	it.Reset()
-	i := 0
-	for {
-		if it.finished {
+	s.reset(k)
+
+	// There is nothing to match if one of the input place marking is empty
+	for _, a := range it.arcs {
+		if len(s.COL[a.pl]) == 0 {
 			return false, nil
 		}
+	}
 
-		if i == len(it.arcs) {
-			// If we have a match for all the input places, we have a possible
-			// match. We need to check that it is a solution for the condition
-			// in the transition
-			if it.Operation.OK(s.Net.Net, it.Environment()) {
+	for {
+		// if it.idx < len(it.arcs) {
+		// 	fmt.Printf("-[%s(place %s) with %s\n", s.Trans[k].Name, s.Places[it.arcs[it.idx].pl].Name, it.PrintVEnv(s.Net))
+		// } else {
+		// 	fmt.Printf("--[testing %s with %s\n", s.Trans[k].Name, it.PrintVEnv(s.Net))
+		// }
+		if it.idx == len(it.arcs) {
+			// We have a potential match. We need to check that it is a solution
+			// for the condition in the transition
+			if it.Operation.OK(s.Net.Net, it.venv) {
 				// we should not compute the result of forbidden transitions
-				if _, ok := s.forbidFiring[k]; ok {
-					return true, nil
+				if _, ok := s.forbidFiring[k]; !ok {
+					s.After[k] = s.getWitness(k)
 				}
-				s.Next[k] = s.getWitness(k)
 				return true, nil
 			}
-			// it is not a match, we need to start iterating to the next
+
+			// It is not a match, we need to start iterating to the next
 			// potential candidate
-			if it.Step(s.COL) {
-				i = 0
-				continue
+			s.iter[k].idx--
+			if !s.step(k) {
+				return false, nil
 			}
-			it.finished = true
-			return false, nil
 		}
 
-		b, err := it.CheckOneArc(i, s.COL)
+		b, err := s.checkCurrentPlace(k)
 
 		if err != nil {
 			return false, err
 		}
 
 		if !b {
-			if it.Step(s.COL) {
-				i = 0
-				continue
+			if !s.step(k) {
+				return false, nil
 			}
-			// there is no more possibilities
-			it.finished = true
-			return false, nil
+			continue
 		}
 
-		i++
+		it.idx++
 	}
 }
 
-// CheckOneArc computes the next possible assignment for the set of arc patterns
-// associated with the same input place. We return false if there are no match.
-// Otherwise  the potential match for the current place is stored in a.match.
-func (iter *Iterator) CheckOneArc(i int, m pnml.Marking) (bool, error) {
-	a := iter.arcs[i]
+// checkCurrentPlace computes the next possible assignment for the patterns
+// associated with arc[idx] of transition[k]. We return false if there are no
+// match.
+func (s *Stepper) checkCurrentPlace(k int) (bool, error) {
+	i := s.iter[k].idx
+	a := s.iter[k].arcs[i]
+	s.iter[k].venv.Reset(s.iter[k].checkpoints[i])
+	a.arcidx = 0
 	var err error
-
-	// We zero a.mults
-	for i := range a.mults {
-		a.mults[i] = 0
-	}
-
-	// there is nothing to match if the place marking is empty or if we finished
-	if len(m[a.pl]) == 0 || a.finished {
-		return false, nil
-	}
-
-	// Otherwise check if we can unify the arc conditions with the values at the
-	// given position. We also need to collect the multiplicities to make sure
-	// that we have enough tokens of the right value in h. We keep a copy of the
-	// current VEnv in case we need to backtrack changes made during a failed
-	// unification.
-	j := 0
 	for {
-		if j == len(a.pre) {
+		if a.arcidx == len(a.pre) {
 			// We matched the last arc pattern, so we have a possible match ! We
 			// need to check the multiplicities to make sure that we have enough
 			// of them in the marking
-			if a.testCapacity(m[a.pl]) {
+			if a.testCapacity(s.COL[a.pl]) {
 				// We have found a match.
-				iter.checkpoints[i+1].Copy(a.checkpoints[len(a.pre)-1])
 				return true, nil
 			}
-			// This is not a real match. We need to step to the next
-			// possible match.
-			if iter.StepOneArc(i, m) {
-				j = 0
-				continue
+			// This is not a real match. We need to step to the next possible
+			// match.
+			if !s.stepCurrentPlace(k) {
+				return false, nil
 			}
-			return false, nil
 		}
 
-		// we restore the VEnv and reset mult
-		if j == 0 {
-			a.checkpoints[j].Copy(iter.checkpoints[i])
-		} else {
-			a.checkpoints[j].Copy(a.checkpoints[j-1])
-		}
-
-		a.mults[j], err = a.pre[j].Unify(iter.Net.Net, m[a.pl][a.pos[j]].Value, a.checkpoints[j])
+		a.mults[a.arcidx], err = a.pre[a.arcidx].Unify(s.Net.Net, s.COL[a.pl][a.pos[a.arcidx]].Value, s.iter[k].venv)
 
 		if err != nil {
 			return false, err
 		}
 
-		if a.mults[j] == 0 {
-			// Unification failed. We need to change the position.
-			if iter.StepOneArc(i, m) {
-				j = 0
-				continue
+		if a.mults[a.arcidx] == 0 {
+			if !s.stepCurrentPlace(k) {
+				return false, nil
 			}
-			// otherwise we finished exploring this arc
-			return false, nil
+			continue
 		}
 
-		j++
+		a.arcidx++
 	}
 }
 
@@ -327,5 +279,6 @@ func (iter *Iterator) PrintVEnv(net *Net) string {
 	for vname, val := range iter.Environment() {
 		res = append(res, fmt.Sprintf("%s : %s", vname, net.PrintValue(val)))
 	}
+	sort.Strings(res)
 	return util.ZipString(res, "(", ")", ", ")
 }

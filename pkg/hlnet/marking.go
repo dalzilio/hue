@@ -22,7 +22,7 @@ type State struct {
 	COL     pnml.Marking    // Colored marking
 	PT      map[string]int  // Compound P/T marking
 	Enabled map[string]bool // list of enabled transition (after ComputeEnabled)
-	Next    []pnml.Marking
+	After   []pnml.Marking
 }
 
 // ----------------------------------------------------------------------

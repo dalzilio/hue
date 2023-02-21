@@ -21,6 +21,20 @@ func (p Env) String() string {
 	return s + "]"
 }
 
+// Extra returns a list of varnames that are in p2 but not in p
+func (p Env) Extra(p2 Env) Env {
+	q := Env{}
+	for _, varname := range p2 {
+		for _, v := range q {
+			if v == varname {
+				break
+			}
+		}
+		q = append(q, varname)
+	}
+	return q
+}
+
 // VEnv is the type of association lists between environment variables and
 // values.
 type VEnv map[string]*Value
@@ -42,8 +56,22 @@ func (venv VEnv) Clone() VEnv {
 	return venv2
 }
 
-func (venv VEnv) Reset() {
+func (venv VEnv) ResetAll() {
 	for k := range venv {
 		venv[k] = nil
 	}
+}
+
+func (venv VEnv) Reset(env Env) {
+	for _, v := range env {
+		venv[v] = nil
+	}
+}
+
+func NewVEnv(env Env) VEnv {
+	venv := make(VEnv)
+	for _, v := range env {
+		venv[v] = nil
+	}
+	return venv
 }

@@ -6,6 +6,8 @@ package pnml
 
 import (
 	"fmt"
+
+	"github.com/dalzilio/hue/pkg/internal/util"
 )
 
 // Value provides a more efficient representation for values
@@ -44,11 +46,11 @@ func (net *Net) PrintHue(pm Hue) string {
 	if len(pm) == 0 {
 		return "-"
 	}
-	s := ""
+	res := []string{}
 	for _, v := range pm {
-		s += fmt.Sprintf("%d'%s ", v.Mult, net.PrintValue(v.Value))
+		res = append(res, fmt.Sprintf("%d'%s", v.Mult, net.PrintValue(v.Value)))
 	}
-	return s
+	return util.ZipString(res, "", "", " ")
 }
 
 func (m0 Marking) Clone() Marking {
@@ -95,6 +97,9 @@ func AtomIsLess(ai, aj Atom) bool {
 
 // PrintValue returns a readable description of a Value
 func (net *Net) PrintValue(val *Value) string {
+	if val == nil {
+		return "(nil)"
+	}
 	if val.Tail == nil {
 		return net.printHeadValue(val.Head)
 	}

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/dalzilio/hue/pkg/internal/util"
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
@@ -30,7 +31,7 @@ func NewStepper(n *Net) *Stepper {
 		COL:     make(pnml.Marking, len(n.Places)),
 		PT:      make(map[string]int),
 		Enabled: nil,
-		Next:    make([]pnml.Marking, len(n.Trans)),
+		After:   make([]pnml.Marking, len(n.Trans)),
 	}
 	lpn := 0
 	for k, v := range n.Places {
@@ -86,14 +87,14 @@ func (s *Stepper) PrintCOL(m pnml.Marking) string {
 }
 
 func (s *Stepper) PrintCOLShort(m pnml.Marking) string {
-	res := ""
+	res := []string{}
 	for k, v := range s.Places {
 		if len(m[k]) == 0 {
 			continue
 		}
-		res += fmt.Sprintf("%s : %s\n", v.Name, s.PrintHue(m[k]))
+		res = append(res, fmt.Sprintf("%s: %s", v.Name, s.PrintHue(m[k])))
 	}
-	return res
+	return util.ZipString(res, "[", "]", ", ")
 }
 
 // Enabled returns the set of transitions which are enabled at the current
@@ -167,7 +168,7 @@ func (s *Stepper) Fire(k int, verbose bool) {
 	if _, ok := s.forbidFiring[k]; ok {
 		return
 	}
-	if s.Next[k] == nil {
+	if s.After[k] == nil {
 		s.computeEnabled()
 	}
 	if !s.Enabled[s.Trans[k].Name] {
@@ -178,7 +179,7 @@ func (s *Stepper) Fire(k int, verbose bool) {
 		fmt.Printf("%s %s\n", s.Trans[k].Name, s.iter[k].PrintVEnv(s.Net))
 		fmt.Println("----------------------------------")
 	}
-	s.update(s.Next[k])
+	s.update(s.After[k])
 }
 
 // update changes the marking to m in the stepper

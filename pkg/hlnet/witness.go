@@ -43,7 +43,7 @@ func (s *Stepper) getWitness(k int) pnml.Marking {
 	// We add the Post.
 	for _, a := range tr.Outs {
 		for _, e := range a.Pattern {
-			m1[a.Place] = append(m1[a.Place], e.Eval(s.Net.Net, it.Environment())...)
+			m1[a.Place] = append(m1[a.Place], e.Eval(s.Net.Net, it.venv)...)
 		}
 	}
 
