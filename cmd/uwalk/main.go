@@ -33,6 +33,8 @@ var gitversion string = "v0"
 type qflags struct {
 	testfsimplify *bool
 	verbose       *bool
+	flagreach     *bool
+	flagfire      *bool
 }
 
 func main() {
@@ -43,35 +45,35 @@ func main() {
 	//   variable in the output arcs
 	// * cannot check fireability on model PhilosophersDyn; more variables on
 	//   the transition condition than on the input arc + some arcs have an <All>
-	//   expression in their pattern. Same with VehicularWifi-COL-none ;
-	//   UtilityControlRoom ; and PhilosophersDyn (already forbidden)
+	//   expression in their pattern. Same with VehicularWifi-COL-none
+
+	rflags := qflags{}
 
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
 	var flagversion = flag.Bool("version", false, "print version number and generation date then quit")
+	rflags.verbose = flag.BoolP("verbose", "v", false, "print witness for enabled transitions")
 
 	var netfile = flag.StringP("net", "n", "", "path to PNML file (see option -d if absent)")
 	var propfile = flag.String("xml", "", "path to XML file with the Reachability formulas")
 	var dirfile = flag.StringP("directory", "d", "", "path to folder containing model.pnml and XML formulas")
 
-	var flagreach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
-	var flagfire = flag.BoolP("fireability", "f", false, "check ReachabilityFireability.xml file")
+	rflags.flagreach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
+	rflags.flagfire = flag.BoolP("fireability", "f", false, "check ReachabilityFireability.xml file")
 
 	// to support calls like "--select-queries 12,14"
 	var selectQueries []int
 	flag.IntSliceVar(&selectQueries, "select-queries", []int{}, "comma separated list of queries id")
 
-	var flagcountlimit = flag.IntP("limit-count", "c", 0, "limit on length of exploration path")
+	var flagcountlimit = flag.IntP("limit-count", "c", 1, "limit on length of exploration path (0 means none)")
 	// var flagtimelimit = flag.IntP("limit-time", "t", 0, "limit on time of exploration (0 means none)")
 
-	rflags := qflags{}
-	rflags.verbose = flag.BoolP("verbose", "v", false, "print witness for enabled transitions")
-	var showqueries = flag.Bool("show-queries", false, "print queries on standard output")
 	rflags.testfsimplify = flag.Bool("test-simplify", false, "print warning if formulas before and after simplification give different results")
+	var showqueries = flag.Bool("show-queries", false, "print queries on standard output")
 
 	flag.CommandLine.SortFlags = false
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "hwalk version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
+		fmt.Fprintf(os.Stderr, "uwalk version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nfiles:\n")
@@ -97,7 +99,7 @@ func main() {
 		fmt.Println("cannot use option --xml without --net")
 		flag.Usage()
 		os.Exit(0)
-	case *propfile != "" && !*flagreach && !*flagfire:
+	case *propfile != "" && !*rflags.flagreach && !*rflags.flagfire:
 		fmt.Println("cannot use option --xml without -r or -f")
 		flag.Usage()
 		os.Exit(0)
@@ -105,11 +107,11 @@ func main() {
 		fmt.Println("cannot use options --net and --directory together")
 		flag.Usage()
 		os.Exit(0)
-	case *flagfire && *flagreach:
+	case *rflags.flagfire && *rflags.flagreach:
 		fmt.Println("cannot use options -f and -r together")
 		flag.Usage()
 		os.Exit(0)
-	case (*flagfire || *flagreach) && *propfile == "" && *dirfile == "" && N != 1:
+	case (*rflags.flagfire || *rflags.flagreach) && *propfile == "" && *dirfile == "" && N != 1:
 		fmt.Println("cannot use -f and -r without a property file")
 		flag.Usage()
 		os.Exit(0)
@@ -196,7 +198,7 @@ func main() {
 	// ----------------------------------------------------------------------
 	// Building Stepper and computing initial marking. We compute fireability
 	// information after we get the chance to check cardinality information on
-	// th einitial marking
+	// the initial marking
 	s := hlnet.NewStepper(hl)
 
 	if *rflags.verbose {
@@ -211,15 +213,15 @@ func main() {
 	// ----------------------------------------------------------------------
 	// Parsing formulas
 
-	if *flagfire || *flagreach {
+	if *rflags.flagfire || *rflags.flagreach {
 		switch {
 		case *propfile != "":
 			xmlFile, err = os.Open(*propfile)
 		case *dirfile != "":
-			if *flagreach {
+			if *rflags.flagreach {
 				xmlFile, err = os.Open(filepath.Join(*dirfile, "ReachabilityCardinality.xml"))
 			}
-			if *flagfire {
+			if *rflags.flagfire {
 				xmlFile, err = os.Open(filepath.Join(*dirfile, "ReachabilityFireability.xml"))
 			}
 		default:
@@ -269,18 +271,20 @@ func main() {
 			fmt.Println("")
 		}
 
-		if *flagfire || *flagcountlimit > 0 {
+		if *rflags.flagfire || *flagcountlimit > 0 {
 			// we will need the fireability information
 			s.InitializeEnabled()
 		}
 
-		count := 0
+		count := 1
 		for {
 			checkquery(s, queries, rflags, &queriesleft)
 			if queriesleft == 0 || count == *flagcountlimit {
 				return
 			}
-			count++
+			if *flagcountlimit != 0 {
+				count++
+			}
 			s.FireAtRandom(*rflags.verbose)
 		}
 	}
@@ -310,12 +314,18 @@ func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags, queries
 		fmt.Fprintf(os.Stdout, "%s", s)
 	}
 
+	var v formula.Bool
+
 	for k, q := range queries {
 		if q.Skip {
 			continue
 		}
 
-		v := s.EvaluateQueries(q)
+		if *flags.flagreach {
+			v = s.EvaluateCardinalityQueries(q)
+		} else {
+			v = s.EvaluateFireabilityQueries(q)
+		}
 
 		if *flags.testfsimplify {
 			if !s.EvaluateAndTestSimplify(q) {

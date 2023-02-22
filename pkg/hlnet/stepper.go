@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/dalzilio/hue/pkg/formula"
 	"github.com/dalzilio/hue/pkg/internal/util"
 	"github.com/dalzilio/hue/pkg/pnml"
 )
@@ -66,7 +67,7 @@ func (s *Stepper) InitializeEnabled() {
 	if s.Enabled != nil {
 		return
 	}
-	s.Enabled = make(map[string]bool)
+	s.Enabled = make(map[string]formula.Bool)
 	s.computeEnabled()
 }
 
@@ -104,7 +105,10 @@ func (s *Stepper) computeEnabled() {
 	// We could be more clever and only update the transition whose input places
 	// have been modified.
 	for tname := range s.TPosition {
-		s.Enabled[tname] = false
+		s.Enabled[tname] = formula.FALSE
+	}
+	for tname := range s.forbidden {
+		s.Enabled[tname] = formula.UNDEF
 	}
 	for k, t := range s.Trans {
 		if _, ok := s.forbidEnabled[k]; ok {
@@ -118,7 +122,7 @@ func (s *Stepper) computeEnabled() {
 		}
 
 		if ok {
-			s.Enabled[t.Name] = true
+			s.Enabled[t.Name] = formula.TRUE
 		}
 	}
 }
@@ -127,13 +131,13 @@ func (s *Stepper) computeEnabled() {
 // no transitions to fire, we start again from the initial marking.
 func (s *Stepper) FireAtRandom(verbose bool) error {
 	if s.Enabled == nil {
-		s.Enabled = make(map[string]bool)
+		s.Enabled = make(map[string]formula.Bool)
 		s.computeEnabled()
 	}
 
 	choose := []string{}
 	for k, v := range s.Enabled {
-		if v {
+		if v.IsTrue() {
 			// we also need to check that we can fire the transition
 			if _, ok := s.forbidFiring[s.TPosition[k]]; !ok {
 				choose = append(choose, k)
@@ -171,7 +175,7 @@ func (s *Stepper) Fire(k int, verbose bool) {
 	if s.After[k] == nil {
 		s.computeEnabled()
 	}
-	if !s.Enabled[s.Trans[k].Name] {
+	if !s.Enabled[s.Trans[k].Name].IsTrue() {
 		return
 	}
 	if verbose {
@@ -182,7 +186,7 @@ func (s *Stepper) Fire(k int, verbose bool) {
 	s.update(s.After[k])
 }
 
-// update changes the marking to m in the stepper
+// update changes the marking to m in the stepper.
 func (s *Stepper) update(m pnml.Marking) {
 	s.COL = m
 	for k, v := range s.Places {

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/dalzilio/hue/pkg/formula"
 	"github.com/dalzilio/hue/pkg/pnml"
 )
 
@@ -19,10 +20,23 @@ import (
 // that a transition is enabled, we keep the result of firing this transition in
 // Next.
 type State struct {
-	COL     pnml.Marking    // Colored marking
-	PT      map[string]int  // Compound P/T marking
-	Enabled map[string]bool // list of enabled transition (after ComputeEnabled)
+	COL     pnml.Marking            // Colored marking
+	PT      map[string]int          // Compound P/T marking
+	Enabled map[string]formula.Bool // list of enabled transition (after ComputeEnabled)
 	After   []pnml.Marking
+}
+
+// NewState returns a fresh State value whose colored marking is m, but without
+// any information on enabled transitions.
+func (s *Stepper) newState(m pnml.Marking) *State {
+	res := State{
+		COL: m,
+		PT:  make(map[string]int),
+	}
+	for k, v := range s.Places {
+		res.PT[v.Name] = m[k].Sum()
+	}
+	return &res
 }
 
 // ----------------------------------------------------------------------
@@ -37,11 +51,7 @@ func (s *Stepper) PrintEnabled() string {
 			res += fmt.Sprintf("%s(?) ", t.Name)
 			continue
 		}
-		if v := s.Enabled[t.Name]; v {
-			res += fmt.Sprintf("%s(+) ", t.Name)
-		} else {
-			res += fmt.Sprintf("%s(-) ", t.Name)
-		}
+		res += fmt.Sprintf("%s(%s) ", t.Name, s.Enabled[t.Name].PrintShort())
 	}
 	return res + "\n"
 }

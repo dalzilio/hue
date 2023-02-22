@@ -4,13 +4,14 @@
 
 package formula
 
-// Bool is the type of ternary Boolean values (True, False, Undef).
+// Bool is the type of ternary Boolean values (True, False, Undef). By
+// construction, the zero value of a Bool is UNDEF.
 type Bool int
 
 const (
-	UNDEF Bool = iota
-	FALSE
-	TRUE
+	UNDEF Bool = 0
+	FALSE Bool = 1
+	TRUE  Bool = 2
 )
 
 func (b Bool) String() string {
@@ -21,6 +22,19 @@ func (b Bool) String() string {
 		return "TRUE"
 	case UNDEF:
 		return "UNDEF"
+	default:
+		panic("wrong Bool value. It should not happen")
+	}
+}
+
+func (b Bool) PrintShort() string {
+	switch b {
+	case FALSE:
+		return "F"
+	case TRUE:
+		return "T"
+	case UNDEF:
+		return "?"
 	default:
 		panic("wrong Bool value. It should not happen")
 	}
@@ -45,6 +59,24 @@ func (b Bool) Value() (bool, bool) {
 	default:
 		panic("wrong Bool value. It should not happen")
 	}
+}
+
+func (b Bool) EqualTo(b2 bool) bool {
+	if b == UNDEF {
+		return false
+	}
+	if b == TRUE {
+		return b2
+	}
+	return !b2
+}
+
+func (b Bool) IsTrue() bool {
+	return b == TRUE
+}
+
+func (b Bool) IsFalse() bool {
+	return b == FALSE
 }
 
 // Negation
