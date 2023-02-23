@@ -66,6 +66,7 @@ func main() {
 
 	var flagcountlimit = flag.IntP("limit-count", "c", 1, "limit on length of exploration path (0 means none)")
 	// var flagtimelimit = flag.IntP("limit-time", "t", 0, "limit on time of exploration (0 means none)")
+	var flagcountrepeat = flag.Int("repeat-limit", 0, "restart exploration after path reach the given limit (0 means none)")
 
 	rflags.testfsimplify = flag.Bool("test-simplify", false, "print warning if formulas before and after simplification give different results")
 	var showqueries = flag.Bool("show-queries", false, "print queries on standard output")
@@ -277,13 +278,23 @@ func main() {
 		}
 
 		count := 1
+		recount := 1
 		for {
 			checkquery(s, queries, rflags, &queriesleft)
-			if queriesleft == 0 || count == *flagcountlimit {
+			if queriesleft == 0 {
 				return
 			}
 			if *flagcountlimit != 0 {
 				count++
+				if count >= *flagcountlimit {
+					return
+				}
+			}
+			if *flagcountrepeat != 0 {
+				if recount%*flagcountrepeat == 0 {
+					s.Restart(*rflags.verbose)
+				}
+				recount++
 			}
 			s.FireAtRandom(*rflags.verbose)
 		}
@@ -291,15 +302,25 @@ func main() {
 
 	// ----------------------------------------------------------------------
 	// If we do not parse formula we can still use the walker
-	count := 0
+
 	if *rflags.verbose {
 		fmt.Fprintf(os.Stdout, "%s", s)
 	}
+	count := 1
+	recount := 1
 	for {
-		if count >= *flagcountlimit {
-			return
+		if *flagcountlimit != 0 {
+			count++
+			if count >= *flagcountlimit {
+				return
+			}
 		}
-		count++
+		if *flagcountrepeat != 0 {
+			if recount%*flagcountrepeat == 0 {
+				s.Restart(*rflags.verbose)
+			}
+			recount++
+		}
 		s.FireAtRandom(*rflags.verbose)
 		if *rflags.verbose {
 			fmt.Fprintf(os.Stdout, "%s", s)

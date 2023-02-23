@@ -146,8 +146,7 @@ func (s *Stepper) FireAtRandom(verbose bool) error {
 	}
 
 	if len(choose) == 0 {
-		s.update(s.m0)
-		s.computeEnabled()
+		s.Restart(false)
 		if verbose {
 			fmt.Println("----------------------------------")
 			if len(s.Enabled) == 0 {
@@ -164,6 +163,17 @@ func (s *Stepper) FireAtRandom(verbose bool) error {
 
 	s.Fire(s.TPosition[tname], verbose)
 	return nil
+}
+
+// Restart starts exploration again from the initial marking
+func (s *Stepper) Restart(verbose bool) {
+	s.update(s.m0)
+	s.computeEnabled()
+	if verbose {
+		fmt.Println("----------------------------------")
+		fmt.Println("[ repeat-limit ; restarting ]")
+		fmt.Println("----------------------------------")
+	}
 }
 
 // Fire updates the stepper with the result of firing transition t. If there are

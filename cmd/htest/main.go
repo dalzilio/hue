@@ -71,11 +71,13 @@ func main() {
 	keys := []string{}
 	resultScanner := bufio.NewScanner(resultfile)
 	for resultScanner.Scan() {
-		line := strings.Split(resultScanner.Text(), " ")
-
-		if len(line) < 3 || line[0] != "FORMULA" {
-			log.Panicf("parsing %s: found %s\n", flag.Arg(1), ZipString(line, "", "", " "))
+		// We changed the behavior to accept lines that do not start with the
+		// keyword 'FORMULA'
+		if !strings.HasPrefix(resultScanner.Text(), "FORMULA") {
+			continue
 		}
+
+		line := strings.Split(resultScanner.Text(), " ")
 		keys = append(keys, line[1])
 		if line[2] == "TRUE" {
 			results[line[1]] = true
@@ -85,14 +87,12 @@ func main() {
 			results[line[1]] = false
 			continue
 		}
+		log.Panicf("parsing %s: found %s\n", resultfile.Name(), ZipString(line, "", "", " "))
 	}
+
 	sort.Strings(keys)
 
-	if *flagcompare {
-		fmt.Printf("file %s (A): %d distinct results\n", resultfile.Name(), len(results))
-	} else {
-		fmt.Printf("file %s: %d distinct results\n", resultfile.Name(), len(results))
-	}
+	fmt.Printf("file %s: %d results\n", resultfile.Name(), len(results))
 
 	// ----------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ func main() {
 		}
 		defer comparefile.Close()
 
-		compare(results, keys, *flaglist, comparefile)
+		compare(results, keys, *flaglist, comparefile, resultfile.Name())
 		return
 	}
 
@@ -159,38 +159,35 @@ func main() {
 
 // ----------------------------------------------------------------------
 
-func compare(results map[string]bool, keys []string, flaglist bool, comparefile *os.File) {
+func compare(fileA map[string]bool, keys []string, flaglist bool, comparefile *os.File, rsfilename string) {
 	// We compare files A and B
-
 	newresA := []string{}
 	newresB := []string{}
 	differences := []string{}
 
-	oracle := make(map[string]bool)
+	fileB := make(map[string]bool)
 	resultScanner := bufio.NewScanner(comparefile)
 	for resultScanner.Scan() {
 		line := strings.Split(resultScanner.Text(), " ")
-
-		if len(line) < 3 || line[0] != "FORMULA" {
-			log.Panicf("parsing %s: found %s\n", comparefile.Name(), ZipString(line, "", "", " "))
-			os.Exit(1)
-			return
+		if !strings.HasPrefix(resultScanner.Text(), "FORMULA") {
+			continue
 		}
 		if line[2] == "TRUE" {
-			oracle[line[1]] = true
+			fileB[line[1]] = true
 			continue
 		}
 		if line[2] == "FALSE" {
-			oracle[line[1]] = false
+			fileB[line[1]] = false
 			continue
 		}
+		log.Panicf("parsing %s: found %s\n", comparefile.Name(), ZipString(line, "", "", " "))
 	}
 
-	fmt.Printf("file %s (B): %d distinct results\n", comparefile.Name(), len(results))
+	fmt.Printf("file %s: %d results\n", comparefile.Name(), len(fileA))
 
 	for _, q := range keys {
-		res := results[q]
-		answ, ok := oracle[q]
+		res := fileA[q]
+		answ, ok := fileB[q]
 		if !ok {
 			newresA = append(newresA, q)
 			continue
@@ -198,14 +195,14 @@ func compare(results map[string]bool, keys []string, flaglist bool, comparefile 
 		if answ != res {
 			differences = append(differences, q)
 			if answ {
-				fmt.Println("FORMULA " + q + " FALSE TRUE")
+				fmt.Println("FORMULA " + q + " TRUE")
 			}
-			fmt.Println("FORMULA " + q + " TRUE FALSE")
+			fmt.Println("FORMULA " + q + " FALSE")
 		}
 	}
 
-	for q := range oracle {
-		_, ok := results[q]
+	for q := range fileB {
+		_, ok := fileA[q]
 		if !ok {
 			newresB = append(newresB, q)
 		}
@@ -213,8 +210,8 @@ func compare(results map[string]bool, keys []string, flaglist bool, comparefile 
 	sort.Strings(newresB)
 
 	fmt.Printf("%d differences\n", len(differences))
-	fmt.Printf("file (A) %d unique results\n", len(newresA))
-	fmt.Printf("file (B) %d unique results\n", len(newresB))
+	fmt.Printf("file %s: %d unique results\n", rsfilename, len(newresA))
+	fmt.Printf("file %s: %d unique results\n", comparefile.Name(), len(newresB))
 
 	if flaglist {
 		for _, q := range newresA {
