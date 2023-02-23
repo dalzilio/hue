@@ -129,13 +129,13 @@ func main() {
 
 	sort.Ints(selectQueries)
 
-	// // we capture panics
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		log.Fatal("error in generation: cannot compute")
-	// 		os.Exit(1)
-	// 	}
-	// }()
+	// we capture panics
+	defer func() {
+		if r := recover(); r != nil {
+			log.Fatal("error in generation: cannot compute")
+			os.Exit(1)
+		}
+	}()
 
 	// ----------------------------------------------------------------------
 	// Parsing model
