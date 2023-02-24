@@ -13,14 +13,18 @@ import (
 // evaluate the formula on both the current marking, but also all the ones
 // stored in After (list of marking reachable when firing an enabled
 // transition).
-func (s *Stepper) EvaluateCardinalityQueries(q formula.Query) formula.Bool {
-	if b, ok := s.State.evaluateQ(q).Value(); ok {
+func (w *Worker) EvaluateCardinalityQueries(q formula.Query) formula.Bool {
+	if b, ok := evaluateQ(w.PT, w.Enabled, q).Value(); ok {
 		return formula.NewBool(b)
 	}
-	for k, m := range s.After {
-		if s.Enabled[s.Trans[k].Name].IsTrue() {
-			if _, ok := s.forbidFiring[k]; !ok {
-				v := s.newState(m).evaluateQ(q)
+	for k, m := range w.After {
+		if w.Enabled[w.Trans[k].Name].IsTrue() {
+			if _, ok := w.forbidFiring[k]; !ok {
+				pt := make(map[string]int)
+				for k, v := range w.Places {
+					pt[v.Name] = m[k].Sum()
+				}
+				v := evaluateQ(pt, nil, q)
 				if _, ok := v.Value(); ok {
 					return v
 				}
@@ -30,17 +34,17 @@ func (s *Stepper) EvaluateCardinalityQueries(q formula.Query) formula.Bool {
 	return formula.UNDEF
 }
 
-func (s *Stepper) EvaluateFireabilityQueries(q formula.Query) formula.Bool {
-	return s.evaluateQ(q)
+func (w *Worker) EvaluateFireabilityQueries(q formula.Query) formula.Bool {
+	return evaluateQ(nil, w.Enabled, q)
 }
 
 // evaluateQ reports whether a query is true, false, or still undefined
-func (s State) evaluateQ(q formula.Query) formula.Bool {
+func evaluateQ(tokenability map[string]int, fireability map[string]formula.Bool, q formula.Query) formula.Bool {
 	switch f := q.Formula.(type) {
 	case formula.BooleanConstant:
 		return formula.NewBool(bool(f))
 	default:
-		v, ok := s.HasReached(f).Value()
+		v, ok := hasReached(tokenability, fireability, f).Value()
 		if ok && q.IsEF && v {
 			return formula.TRUE
 		}
@@ -54,38 +58,39 @@ func (s State) evaluateQ(q formula.Query) formula.Bool {
 // EvaluateAndTestSimplify checks whether the formula in a query evaluates to
 // the same result than its simplification on marking m.
 func (s *State) EvaluateAndTestSimplify(q formula.Query) bool {
-	return formula.BoolCompatible(s.HasReached(q.Original), s.HasReached(q.Formula))
+	return formula.BoolCompatible(hasReached(s.PT, s.Enabled, q.Original),
+		hasReached(s.PT, s.Enabled, q.Formula))
 }
 
-// HasReached reports if formula f is true for the current marking m
-func (s *State) HasReached(f formula.Formula) formula.Bool {
+// hasReached reports if formula f is true for the current marking m
+func hasReached(tokenability map[string]int, fireability map[string]formula.Bool, f formula.Formula) formula.Bool {
 	switch f := f.(type) {
 	case formula.BooleanConstant:
 		return formula.NewBool(bool(f))
 	case formula.Negation:
-		return formula.BoolNot(s.HasReached(f.Formula))
+		return formula.BoolNot(hasReached(tokenability, fireability, f.Formula))
 	case formula.Disjunction:
-		return formula.FoldOr(func(x formula.Formula) formula.Bool { return s.HasReached(x) }, f)
+		return formula.FoldOr(func(x formula.Formula) formula.Bool { return hasReached(tokenability, fireability, x) }, f)
 	case formula.Conjunction:
-		return formula.FoldAnd(func(x formula.Formula) formula.Bool { return s.HasReached(x) }, f)
+		return formula.FoldAnd(func(x formula.Formula) formula.Bool { return hasReached(tokenability, fireability, x) }, f)
 	case formula.IntegerLe:
-		return formula.NewBool(s.ComputeIntegerConstant(f.Left) <= s.ComputeIntegerConstant(f.Right))
+		return formula.NewBool(ComputeIntegerConstant(tokenability, f.Left) <= ComputeIntegerConstant(tokenability, f.Right))
 	case formula.IsFireable:
-		return formula.FoldOr(func(x string) formula.Bool { return s.Enabled[x] }, f)
+		return formula.FoldOr(func(x string) formula.Bool { return fireability[x] }, f)
 	default:
 		panic("wrong formula type in Reached")
 	}
 }
 
 // ComputeIntegerConstant returns the value of an integer formula
-func (s *State) ComputeIntegerConstant(f formula.Formula) int {
+func ComputeIntegerConstant(tokenability map[string]int, f formula.Formula) int {
 	switch f := f.(type) {
 	case formula.IntegerConstant:
 		return int(f)
 	case formula.TokensCount:
 		res := 0
 		for _, pname := range f {
-			res += s.PT[pname]
+			res += tokenability[pname]
 		}
 		return res
 	default:

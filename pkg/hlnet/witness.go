@@ -28,10 +28,10 @@ func (a *arcIterator) testCapacity(h pnml.Hue) bool {
 }
 
 // getWitness returns a witness for the current match on transition k.
-func (s *Stepper) getWitness(k int) pnml.Marking {
-	m1 := s.COL.Clone()
-	it := s.iter[k]
-	tr := s.Trans[k]
+func (w *Worker) getWitness(k int) pnml.Marking {
+	m1 := w.COL.Clone()
+	it := w.iter[k]
+	tr := w.Trans[k]
 
 	// We start by removing the Pre.
 	for _, a := range it.arcs {
@@ -43,7 +43,7 @@ func (s *Stepper) getWitness(k int) pnml.Marking {
 	// We add the Post.
 	for _, a := range tr.Outs {
 		for _, e := range a.Pattern {
-			m1[a.Place] = append(m1[a.Place], e.Eval(s.Net.Net, it.venv)...)
+			m1[a.Place] = append(m1[a.Place], e.Eval(w.Net.Net, it.venv)...)
 		}
 	}
 

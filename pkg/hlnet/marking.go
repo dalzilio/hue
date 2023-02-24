@@ -26,37 +26,42 @@ type State struct {
 	After   []pnml.Marking
 }
 
-// NewState returns a fresh State value whose colored marking is m, but without
-// any information on enabled transitions.
-func (s *Stepper) newState(m pnml.Marking) *State {
+// Clone returns a fresh copy of  State s.
+func (s *State) Clone() *State {
 	res := State{
-		COL: m,
+		COL: s.COL.Clone(),
 		PT:  make(map[string]int),
 	}
-	for k, v := range s.Places {
-		res.PT[v.Name] = m[k].Sum()
+	for k, v := range s.PT {
+		res.PT[k] = v
 	}
+	if s.Enabled != nil {
+		res.Enabled = make(map[string]formula.Bool)
+		for k, v := range s.Enabled {
+			res.Enabled[k] = v
+		}
+	}
+	res.After = make([]pnml.Marking, len(s.After))
+	copy(res.After, s.After)
 	return &res
 }
 
-// ----------------------------------------------------------------------
-
-func (s *Stepper) PrintEnabled() string {
-	if s.Enabled == nil {
+func (w *Worker) PrintEnabled() string {
+	if w.Enabled == nil {
 		return "(unknown)"
 	}
 	res := ""
-	for k, t := range s.Trans {
-		if _, ok := s.forbidEnabled[k]; ok {
+	for k, t := range w.Trans {
+		if _, ok := w.forbidEnabled[k]; ok {
 			res += fmt.Sprintf("%s(?) ", t.Name)
 			continue
 		}
-		res += fmt.Sprintf("%s(%s) ", t.Name, s.Enabled[t.Name].PrintShort())
+		res += fmt.Sprintf("%s(%s) ", t.Name, w.Enabled[t.Name].PrintShort())
 	}
 	return res + "\n"
 }
 
-func (net *Net) printMarkingAligned(m State, left int, trunca, truncb int) string {
+func (net *Net) printMarkingAligned(m *State, left int, trunca, truncb int) string {
 	s := ""
 	for k, v := range net.Places {
 		mm := []rune(net.PrintHue(m.COL[k]))

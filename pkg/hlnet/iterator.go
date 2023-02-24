@@ -111,11 +111,11 @@ func (iter *Iterator) Environment() pnml.VEnv {
 // ----------------------------------------------------------------------
 
 // reset is used when we need to iterate over a new marking.
-func (s *Stepper) reset(k int) {
-	s.After[k] = nil
-	s.iter[k].idx = 0
-	s.iter[k].venv.ResetAll()
-	for _, a := range s.iter[k].arcs {
+func (w *Worker) reset(k int) {
+	w.After[k] = nil
+	w.iter[k].idx = 0
+	w.iter[k].venv.ResetAll()
+	for _, a := range w.iter[k].arcs {
 		a.arcidx = 0
 		a.finished = false
 		for j := range a.pos {
@@ -129,20 +129,20 @@ func (s *Stepper) reset(k int) {
 
 // step tries to increment the search and updates idx with the arc we need to
 // start looking next. We return false if we have no more choices.
-func (s *Stepper) step(k int) bool {
-	a := s.iter[k].arcs[s.iter[k].idx]
+func (w *Worker) step(k int) bool {
+	a := w.iter[k].arcs[w.iter[k].idx]
 	for {
 		if a.finished {
-			if s.iter[k].idx == 0 {
+			if w.iter[k].idx == 0 {
 				// there are no matches
 				return false
 			}
 			a.finished = false
-			s.iter[k].idx--
-			a = s.iter[k].arcs[s.iter[k].idx]
+			w.iter[k].idx--
+			a = w.iter[k].arcs[w.iter[k].idx]
 			continue
 		}
-		if s.stepCurrentPlace(k) {
+		if w.stepCurrentPlace(k) {
 			return true
 		}
 	}
@@ -151,22 +151,22 @@ func (s *Stepper) step(k int) bool {
 // stepCurrentPlace increments the position for the arcIterator at position
 // [idx][arcidx] in the iterator for transition k. We update arcidx and return
 // false if we are no more choices.
-func (s *Stepper) stepCurrentPlace(k int) bool {
-	a := s.iter[k].arcs[s.iter[k].idx]
+func (w *Worker) stepCurrentPlace(k int) bool {
+	a := w.iter[k].arcs[w.iter[k].idx]
 	if a.arcidx == len(a.pos) {
 		// it means we found a possible marking at this place before
 		a.arcidx--
 	}
 	for {
-		if a.pos[a.arcidx] < len(s.COL[a.pl])-1 {
-			s.iter[k].venv.Reset(a.arccheckpoints[a.arcidx])
+		if a.pos[a.arcidx] < len(w.COL[a.pl])-1 {
+			w.iter[k].venv.Reset(a.arccheckpoints[a.arcidx])
 			a.pos[a.arcidx]++
 			a.mults[a.arcidx] = 0
 			return true
 		}
 		a.pos[a.arcidx] = 0
 		a.mults[a.arcidx] = 0
-		s.iter[k].venv.Reset(a.arccheckpoints[a.arcidx])
+		w.iter[k].venv.Reset(a.arccheckpoints[a.arcidx])
 		if a.arcidx == 0 {
 			a.finished = true
 			return false
@@ -182,13 +182,13 @@ func (s *Stepper) stepCurrentPlace(k int) bool {
 // find a witness. It can also return an error if we find a problem while
 // unifying an arc pattern (for instance if the arc contains an <All>
 // expression, like with model DatabaseWithMutex).
-func (s *Stepper) check(k int) (bool, error) {
-	it := s.iter[k]
-	s.reset(k)
+func (w *Worker) check(k int) (bool, error) {
+	it := w.iter[k]
+	w.reset(k)
 
 	// There is nothing to match if one of the input place marking is empty
 	for _, a := range it.arcs {
-		if len(s.COL[a.pl]) == 0 {
+		if len(w.COL[a.pl]) == 0 {
 			return false, nil
 		}
 	}
@@ -202,30 +202,30 @@ func (s *Stepper) check(k int) (bool, error) {
 		if it.idx == len(it.arcs) {
 			// We have a potential match. We need to check that it is a solution
 			// for the condition in the transition
-			if it.Operation.OK(s.Net.Net, it.venv) {
+			if it.Operation.OK(w.Net.Net, it.venv) {
 				// we should not compute the result of forbidden transitions
-				if _, ok := s.forbidFiring[k]; !ok {
-					s.After[k] = s.getWitness(k)
+				if _, ok := w.forbidFiring[k]; !ok {
+					w.After[k] = w.getWitness(k)
 				}
 				return true, nil
 			}
 
 			// It is not a match, we need to start iterating to the next
 			// potential candidate
-			s.iter[k].idx--
-			if !s.step(k) {
+			w.iter[k].idx--
+			if !w.step(k) {
 				return false, nil
 			}
 		}
 
-		b, err := s.checkCurrentPlace(k)
+		b, err := w.checkCurrentPlace(k)
 
 		if err != nil {
 			return false, err
 		}
 
 		if !b {
-			if !s.step(k) {
+			if !w.step(k) {
 				return false, nil
 			}
 			continue
@@ -238,10 +238,10 @@ func (s *Stepper) check(k int) (bool, error) {
 // checkCurrentPlace computes the next possible assignment for the patterns
 // associated with arc[idx] of transition[k]. We return false if there are no
 // match.
-func (s *Stepper) checkCurrentPlace(k int) (bool, error) {
-	i := s.iter[k].idx
-	a := s.iter[k].arcs[i]
-	s.iter[k].venv.Reset(s.iter[k].checkpoints[i])
+func (w *Worker) checkCurrentPlace(k int) (bool, error) {
+	i := w.iter[k].idx
+	a := w.iter[k].arcs[i]
+	w.iter[k].venv.Reset(w.iter[k].checkpoints[i])
 	a.arcidx = 0
 	var err error
 	for {
@@ -249,25 +249,25 @@ func (s *Stepper) checkCurrentPlace(k int) (bool, error) {
 			// We matched the last arc pattern, so we have a possible match ! We
 			// need to check the multiplicities to make sure that we have enough
 			// of them in the marking
-			if a.testCapacity(s.COL[a.pl]) {
+			if a.testCapacity(w.COL[a.pl]) {
 				// We have found a match.
 				return true, nil
 			}
 			// This is not a real match. We need to step to the next possible
 			// match.
-			if !s.stepCurrentPlace(k) {
+			if !w.stepCurrentPlace(k) {
 				return false, nil
 			}
 		}
 
-		a.mults[a.arcidx], err = a.pre[a.arcidx].Unify(s.Net.Net, s.COL[a.pl][a.pos[a.arcidx]].Value, s.iter[k].venv)
+		a.mults[a.arcidx], err = a.pre[a.arcidx].Unify(w.Net.Net, w.COL[a.pl][a.pos[a.arcidx]].Value, w.iter[k].venv)
 
 		if err != nil {
 			return false, err
 		}
 
 		if a.mults[a.arcidx] == 0 {
-			if !s.stepCurrentPlace(k) {
+			if !w.stepCurrentPlace(k) {
 				return false, nil
 			}
 			continue

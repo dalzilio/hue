@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"sync"
 	"time"
 
 	"github.com/dalzilio/hue/pkg/formula"
@@ -30,11 +31,27 @@ var builddate string = "2020/01/01"
 //	git describe --tags --dirty --always
 var gitversion string = "v0"
 
+// qflags are used to pass the values of commandline flags around
 type qflags struct {
-	testfsimplify *bool
-	verbose       *bool
-	flagreach     *bool
-	flagfire      *bool
+	testfsimplify bool
+	verbose       bool
+	reach         bool
+	fire          bool
+	countlimit    int
+}
+
+// qlist is a concurrency-safe list of query ids that still need to be
+// evaluated.
+type qlist struct {
+	mu              sync.Mutex
+	queries         []formula.Query
+	queriesactive   []bool
+	nbactivequeries int // number of values set to true in queriesleft
+}
+
+type qmessage struct {
+	id      int
+	verdict formula.Bool
 }
 
 func main() {
@@ -46,29 +63,28 @@ func main() {
 	// * cannot check fireability on model PhilosophersDyn; more variables on
 	//   the transition condition than on the input arc + some arcs have an <All>
 	//   expression in their pattern. Same with VehicularWifi-COL-none
-
-	rflags := qflags{}
-
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
 	var flagversion = flag.Bool("version", false, "print version number and generation date then quit")
-	rflags.verbose = flag.BoolP("verbose", "v", false, "print witness for enabled transitions")
+
+	var verbose = flag.BoolP("verbose", "v", false, "print witness for enabled transitions")
+	var flagquiet = flag.BoolP("quiet", "q", true, "set output to a minimum (use -q=false to print logs)")
 
 	var netfile = flag.StringP("net", "n", "", "path to PNML file (see option -d if absent)")
 	var propfile = flag.String("xml", "", "path to XML file with the Reachability formulas")
 	var dirfile = flag.StringP("directory", "d", "", "path to folder containing model.pnml and XML formulas")
 
-	rflags.flagreach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
-	rflags.flagfire = flag.BoolP("fireability", "f", false, "check ReachabilityFireability.xml file")
+	var reach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
+	var fire = flag.BoolP("fireability", "f", false, "check ReachabilityFireability.xml file")
 
 	// to support calls like "--select-queries 12,14"
 	var selectQueries []int
 	flag.IntSliceVar(&selectQueries, "select-queries", []int{}, "comma separated list of queries id")
 
-	var flagcountlimit = flag.IntP("limit-count", "c", 1, "limit on length of exploration path (0 means none)")
+	var countlimit = flag.IntP("limit-count", "c", 1, "limit on length of exploration path (0 means none)")
 	// var flagtimelimit = flag.IntP("limit-time", "t", 0, "limit on time of exploration (0 means none)")
-	var flagcountrepeat = flag.Int("repeat-limit", 0, "restart exploration after path reach the given limit (0 means none)")
+	var flagparallel = flag.IntP("parallel", "p", 4, "number of walkers operating in parallel")
 
-	rflags.testfsimplify = flag.Bool("test-simplify", false, "print warning if formulas before and after simplification give different results")
+	var testfsimplify = flag.Bool("test-simplify", false, "print warning if formulas before and after simplification give different results")
 	var showqueries = flag.Bool("show-queries", false, "print queries on standard output")
 
 	flag.CommandLine.SortFlags = false
@@ -82,10 +98,18 @@ func main() {
 		fmt.Fprintf(os.Stderr, "   errorfile: error are always printed on stderr\n")
 	}
 
+	flag.Parse()
+
 	// ----------------------------------------------------------------------
 	// Managing options
 
-	flag.Parse()
+	rflags := qflags{
+		testfsimplify: *testfsimplify,
+		verbose:       *verbose,
+		reach:         *reach,
+		fire:          *fire,
+		countlimit:    *countlimit,
+	}
 
 	N := len(flag.Args())
 
@@ -100,7 +124,7 @@ func main() {
 		fmt.Println("cannot use option --xml without --net")
 		flag.Usage()
 		os.Exit(0)
-	case *propfile != "" && !*rflags.flagreach && !*rflags.flagfire:
+	case *propfile != "" && !rflags.reach && !rflags.fire:
 		fmt.Println("cannot use option --xml without -r or -f")
 		flag.Usage()
 		os.Exit(0)
@@ -108,11 +132,11 @@ func main() {
 		fmt.Println("cannot use options --net and --directory together")
 		flag.Usage()
 		os.Exit(0)
-	case *rflags.flagfire && *rflags.flagreach:
+	case rflags.fire && rflags.reach:
 		fmt.Println("cannot use options -f and -r together")
 		flag.Usage()
 		os.Exit(0)
-	case (*rflags.flagfire || *rflags.flagreach) && *propfile == "" && *dirfile == "" && N != 1:
+	case (rflags.fire || rflags.reach) && *propfile == "" && *dirfile == "" && N != 1:
 		fmt.Println("cannot use -f and -r without a property file")
 		flag.Usage()
 		os.Exit(0)
@@ -130,13 +154,15 @@ func main() {
 
 	sort.Ints(selectQueries)
 
-	// we capture panics
-	defer func() {
-		if r := recover(); r != nil {
-			log.Fatal("error in generation: cannot compute")
-			os.Exit(1)
-		}
-	}()
+	// we capture panics when in quiet/competition mode
+	if *flagquiet {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Fatal("error in generation: cannot compute")
+				os.Exit(1)
+			}
+		}()
+	}
 
 	// ----------------------------------------------------------------------
 	// Parsing model
@@ -197,175 +223,260 @@ func main() {
 	}
 
 	// ----------------------------------------------------------------------
-	// Building Stepper and computing initial marking. We compute fireability
-	// information after we get the chance to check cardinality information on
-	// the initial marking
+	// Building Stepper and computing initial marking. We could wait before
+	// computing fireability information that we check cardinality information
+	// on the initial marking, but this is not useful in practice.
+
 	s := hlnet.NewStepper(hl)
 
-	if *rflags.verbose {
-		s.InitializeEnabled()
+	if rflags.verbose {
 		elapsed := time.Since(start)
 		fmt.Fprintf(os.Stdout, "# net %s, %d place(s), %d transition(s), %.3fs\n", hl.Name, len(hl.Places), len(hl.Trans), elapsed.Seconds())
 		fmt.Fprintf(os.Stdout, "%s\n", hl)
-		fmt.Fprintf(os.Stdout, "%s\n", s)
 		fmt.Println("")
+	}
+
+	// -------------------------------------------------------------------------
+	// In the absence of queries: we do not parse formula and we simply execute
+	// one walker.
+
+	if !rflags.fire && !rflags.reach {
+		w := hlnet.NewWorker(s)
+		if rflags.verbose {
+			fmt.Print(w)
+		}
+		count := 0
+		for {
+			count++
+			if rflags.countlimit != 0 {
+				if count >= rflags.countlimit {
+					return
+				}
+			}
+			w.FireAtRandom(rflags.verbose)
+			if rflags.verbose {
+				fmt.Print(w)
+			}
+		}
 	}
 
 	// ----------------------------------------------------------------------
 	// Parsing formulas
 
-	if *rflags.flagfire || *rflags.flagreach {
-		switch {
-		case *propfile != "":
-			xmlFile, err = os.Open(*propfile)
-		case *dirfile != "":
-			if *rflags.flagreach {
-				xmlFile, err = os.Open(filepath.Join(*dirfile, "ReachabilityCardinality.xml"))
-			}
-			if *rflags.flagfire {
-				xmlFile, err = os.Open(filepath.Join(*dirfile, "ReachabilityFireability.xml"))
-			}
-		default:
-			fmt.Println("bad command line, missing XML properties")
-			flag.Usage()
-			os.Exit(1)
+	switch {
+	case *propfile != "":
+		xmlFile, err = os.Open(*propfile)
+	case *dirfile != "":
+		if rflags.reach {
+			xmlFile, err = os.Open(filepath.Join(*dirfile, "ReachabilityCardinality.xml"))
 		}
-
-		if err != nil {
-			log.Fatal("Error opening file:", err)
-			os.Exit(1)
-			return
+		if rflags.fire {
+			xmlFile, err = os.Open(filepath.Join(*dirfile, "ReachabilityFireability.xml"))
 		}
+	default:
+		fmt.Println("bad command line, missing XML properties")
+		flag.Usage()
+		os.Exit(1)
+	}
 
-		defer xmlFile.Close()
+	if err != nil {
+		log.Fatal("Error opening file:", err)
+		os.Exit(1)
+		return
+	}
 
-		decoder := formula.NewDecoder(xmlFile)
-		queries, err := decoder.Build()
-		if err != nil {
-			log.Fatal("Error decoding Formula file:", err)
-			os.Exit(1)
-			return
+	defer xmlFile.Close()
+
+	fdecoder := formula.NewDecoder(xmlFile)
+
+	var worklist qlist
+
+	worklist.queries, err = fdecoder.Build()
+	if err != nil {
+		log.Fatal("Error decoding Formula file:", err)
+		os.Exit(1)
+		return
+	}
+
+	// We maintain a slice of queries that need to be evaluated. This is a slice
+	// of bool such that queriesleft[i] true when queries[i] still needs to be
+	// evaluated.
+	worklist.queriesactive = make([]bool, len(worklist.queries))
+	if len(selectQueries) == 0 {
+		// This is the default. We need to include all the queries.
+		for k := range worklist.queries {
+			worklist.queriesactive[k] = true
 		}
-
-		queriesleft := len(queries)
-
-		if len(selectQueries) != 0 {
-			// we mark the queries that need to be skip
-			for k := range queries {
-				queries[k].Skip = true
-			}
-			queriesleft = 0
-			for _, k := range selectQueries {
-				queries[k].Skip = false
-				queriesleft++
-			}
-		}
-
-		if *showqueries {
-			fmt.Println("\n----------------------------------")
-			for _, q := range queries {
-				if !q.Skip {
-					fmt.Println(q.String())
-					fmt.Println("----------------------------------")
-				}
-			}
-			fmt.Println("")
-		}
-
-		if *rflags.flagfire || *flagcountlimit > 0 {
-			// we will need the fireability information
-			s.InitializeEnabled()
-		}
-
-		count := 1
-		recount := 1
-		for {
-			checkquery(s, queries, rflags, &queriesleft)
-			if queriesleft == 0 {
-				return
-			}
-			if *flagcountlimit != 0 {
-				count++
-				if count >= *flagcountlimit {
-					return
-				}
-			}
-			if *flagcountrepeat != 0 {
-				if recount%*flagcountrepeat == 0 {
-					s.Restart(*rflags.verbose)
-				}
-				recount++
-			}
-			s.FireAtRandom(*rflags.verbose)
+		worklist.nbactivequeries = len(worklist.queries)
+	} else {
+		for _, k := range selectQueries {
+			worklist.queriesactive[k] = true
+			worklist.nbactivequeries++
 		}
 	}
 
-	// ----------------------------------------------------------------------
-	// If we do not parse formula we can still use the walker
+	if *showqueries {
+		fmt.Println("\n----------------------------------")
+		for k, b := range worklist.queriesactive {
+			if b {
+				fmt.Println(worklist.queries[k].String())
+				fmt.Println("----------------------------------")
+			}
+		}
+		fmt.Println("")
+	}
 
-	if *rflags.verbose {
-		fmt.Fprintf(os.Stdout, "%s", s)
+	// We can receive messages from all the workers at the same time. We expect
+	// a pair of the query index and its verdict.
+	msgmain := make(chan qmessage, *flagparallel*len(worklist.queries))
+	// We use msgend to signal the end of processing to the main function
+	msgend := make(chan bool, 1)
+	// We also use a WaitGroup to detect when all the workers have finished
+	// (typically, when they have reached their count limit)
+	var wg sync.WaitGroup
+	wg.Add(*flagparallel)
+	// We have a channel for each worker, used to receive information about
+	// query verdicts
+	msgworkers := make([]chan bool, *flagparallel)
+	for i := 0; i < *flagparallel; i++ {
+		// We should not send more than len(queries) messages to each worker on this channel.
+		msgworkers[i] = make(chan bool, len(worklist.queries))
 	}
-	count := 1
-	recount := 1
-	for {
-		if *flagcountlimit != 0 {
-			count++
-			if count >= *flagcountlimit {
-				return
-			}
-		}
-		if *flagcountrepeat != 0 {
-			if recount%*flagcountrepeat == 0 {
-				s.Restart(*rflags.verbose)
-			}
-			recount++
-		}
-		s.FireAtRandom(*rflags.verbose)
-		if *rflags.verbose {
-			fmt.Fprintf(os.Stdout, "%s", s)
-		}
+
+	go querycoordinator(&worklist, rflags,
+		&wg, msgend, msgmain, msgworkers)
+
+	for i := 0; i < *flagparallel; i++ {
+		// queries is only used for read access, so we can share it between
+		// workers.
+		go queryworker(i, hlnet.NewWorker(s), worklist.queries, &worklist, rflags,
+			&wg, msgmain, msgworkers[i])
 	}
+
+	// We wait from querycoordinator to send an end event.
+	<-msgend
 }
 
 // ----------------------------------------------------------------------
 
-func checkquery(s *hlnet.Stepper, queries []formula.Query, flags qflags, queriesleft *int) {
-	if *flags.verbose {
-		fmt.Fprintf(os.Stdout, "%s", s)
-	}
+// querycoordinator manages the queue of query identifiers that should be
+// checked. It is in charge of printing the result to the standard output. It
+// receives information form workers when a verdict has been found and broadcast
+// the information to all the workers.
+func querycoordinator(worklist *qlist, flags qflags,
+	wg *sync.WaitGroup, msgend chan<- bool, msgmain <-chan qmessage, msgworkers []chan bool) {
 
-	var v formula.Bool
+	go func() {
+		// if all the workers have finished, we signal the main program
+		wg.Wait()
+		msgend <- true
+	}()
 
-	for k, q := range queries {
-		if q.Skip {
-			continue
-		}
-
-		if *flags.flagreach {
-			v = s.EvaluateCardinalityQueries(q)
-		} else {
-			v = s.EvaluateFireabilityQueries(q)
-		}
-
-		if *flags.testfsimplify {
-			if !s.EvaluateAndTestSimplify(q) {
-				fmt.Println("----------------------------------")
-				fmt.Printf("SIMPLIFY ERROR in formula %s\n", q.ID)
-				fmt.Fprintf(os.Stdout, "ORIGINAL: %s\n", q.Original.String())
-				fmt.Fprintf(os.Stdout, "SIMPLIFY: %s\n", q.Formula.String())
-				fmt.Println("----------------------------------")
-			}
-		}
-
-		if v != formula.UNDEF {
-			if *flags.verbose {
+	for qm := range msgmain {
+		// we receive a result for query qm.id
+		if worklist.queriesactive[qm.id] {
+			// we update the info and print the result
+			if flags.verbose {
 				fmt.Println("")
 			}
-			fmt.Fprintf(os.Stdout, "FORMULA %s %s\n", q.ID, v)
-			*queriesleft--
-			// We can skip this query now.
-			queries[k].Skip = true
+			worklist.mu.Lock()
+			fmt.Printf("FORMULA %s %s\n", worklist.queries[qm.id].ID, qm.verdict)
+			worklist.queriesactive[qm.id] = false
+			worklist.nbactivequeries--
+			worklist.mu.Unlock()
+			if worklist.nbactivequeries == 0 {
+				msgend <- true
+				return
+			}
+			// we warn the workers that the list has been updated
+			for _, c := range msgworkers {
+				c <- true
+			}
+		}
+	}
+}
+
+// queryworker manages a walker working in parallel with the others. It sends a
+// message to msgmain when it has found a verdict and awaits messages on msgin
+// (non blocking) to know if it needs to update its copy of queriesleft.
+func queryworker(id int, w *hlnet.Worker, queries []formula.Query, worklist *qlist, flags qflags,
+	wg *sync.WaitGroup, msgmain chan<- qmessage, msgin <-chan bool) {
+	count := 0
+	// We keep a local copy of the list of active queries
+	queriesactive := make([]bool, len(queries))
+	nbactivequeries := 0
+	worklist.mu.Lock()
+	for k, b := range worklist.queriesactive {
+		if b {
+			nbactivequeries++
+			queriesactive[k] = true
+		}
+	}
+	worklist.mu.Unlock()
+	for {
+		if nbactivequeries == 0 {
+			wg.Done()
+			return
+		}
+		if flags.countlimit != 0 {
+			if count >= flags.countlimit {
+				wg.Done()
+				return
+			}
+			count++
+		}
+
+		w.FireAtRandom(flags.verbose)
+
+		for k, b := range queriesactive {
+			if !b {
+				continue
+			}
+			var v formula.Bool
+
+			if flags.reach {
+				v = w.EvaluateCardinalityQueries(queries[k])
+			} else {
+				v = w.EvaluateFireabilityQueries(queries[k])
+			}
+
+			if flags.testfsimplify {
+				if !w.EvaluateAndTestSimplify(queries[k]) {
+					fmt.Println("----------------------------------")
+					fmt.Printf("SIMPLIFY ERROR in formula %s\n", queries[k].ID)
+					fmt.Fprintf(os.Stdout, "ORIGINAL: %s\n", queries[k].Original.String())
+					fmt.Fprintf(os.Stdout, "SIMPLIFY: %s\n", queries[k].Formula.String())
+					fmt.Println("----------------------------------")
+				}
+			}
+
+			if _, ok := v.Value(); ok {
+				// We have a new verdict. We send it to the coordinator.
+				msgmain <- qmessage{k, v}
+				// We can skip this query from now.
+				queriesactive[k] = false
+				nbactivequeries--
+			}
+		}
+
+		// We listen to the coordinator to find if another worker has found a
+		// verdict.
+		select {
+		case <-msgin:
+			// We should check the list of active queries. BEWARE: we could know
+			// the verdict of a query before the coordinator (because our
+			// message is still not processed)
+			worklist.mu.Lock()
+			for k, b := range worklist.queriesactive {
+				if !b && queriesactive[k] {
+					// someone else found the result for this query
+					queriesactive[k] = false
+					nbactivequeries--
+				}
+			}
+			worklist.mu.Unlock()
+		default:
+			// we should not block waiting
 		}
 	}
 }

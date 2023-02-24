@@ -15,11 +15,9 @@ import (
 // phi is true. Conversely, when IsEF is false, the query is (AG phi), meaning
 // we report false if (not phi) is reachable.
 type Query struct {
-	ID             string
-	IsEF           bool
-	IsReachability bool
-	Skip           bool    // whether we should skip evaluating this formula
-	Original       Formula // formula before simplification. For debugging purpose
+	ID       string
+	IsEF     bool    // true if we have a formula of the form (EF phi)
+	Original Formula // formula before simplification. For debugging purpose
 	Formula
 }
 
