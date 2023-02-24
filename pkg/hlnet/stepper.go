@@ -70,10 +70,10 @@ func NewStepper(n *Net) *Stepper {
 func NewWorker(s *Stepper) *Worker {
 	w := Worker{Stepper: s}
 	w.iter = make([]*Iterator, len(s.Trans))
+	s.steppermut.Lock()
 	for k := range s.Trans {
 		w.iter[k] = s.newIterator(k)
 	}
-	s.steppermut.Lock()
 	w.State = w.m0.Clone()
 	// if we never computed the enabledness relation before
 	if w.m0.Enabled == nil {

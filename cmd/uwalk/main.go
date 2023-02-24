@@ -338,9 +338,12 @@ func main() {
 	// We have a channel for each worker, used to receive information about
 	// query verdicts
 	msgworkers := make([]chan bool, *flagparallel)
+	workers := make([]*hlnet.Worker, *flagparallel)
 	for i := 0; i < *flagparallel; i++ {
 		// We should not send more than len(queries) messages to each worker on this channel.
 		msgworkers[i] = make(chan bool, len(worklist.queries))
+		workers[i] = hlnet.NewWorker(s)
+
 	}
 
 	go querycoordinator(&worklist, rflags,
@@ -349,7 +352,7 @@ func main() {
 	for i := 0; i < *flagparallel; i++ {
 		// queries is only used for read access, so we can share it between
 		// workers.
-		go queryworker(i, hlnet.NewWorker(s), worklist.queries, &worklist, rflags,
+		go queryworker(i, workers[i], worklist.queries, &worklist, rflags,
 			&wg, msgmain, msgworkers[i])
 	}
 
