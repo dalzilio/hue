@@ -111,6 +111,24 @@ func ComputeIntegerConstant(tokenability map[string]int, f formula.Formula) int 
 			res += tokenability[pname]
 		}
 		return res
+	case formula.IntegerSum:
+		res := 0
+		for _, ef := range f {
+			res += ComputeIntegerConstant(tokenability, ef)
+		}
+		return res
+	case formula.IntegerDifference:
+		if len(f) == 0 {
+			return 0
+		}
+		res := ComputeIntegerConstant(tokenability, f[0])
+		if len(f) == 1 {
+			return res
+		}
+		for i := 1; i < len(f); i++ {
+			res = res - ComputeIntegerConstant(tokenability, f[i])
+		}
+		return res
 	default:
 		panic("wrong formula type in Compute")
 	}

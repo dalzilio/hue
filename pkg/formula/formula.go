@@ -151,36 +151,37 @@ func (f IntegerConstant) String() string {
 	return fmt.Sprintf("%d", f)
 }
 
-// // ----------------------------------------------------------------------
-// //
-// // The following elements are not used in practice
-// //
-// // ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
+//
+// The following elements are not used in practice
+//
+// ----------------------------------------------------------------------
 
-// // IntegerSum defines the sum between two or more integer expressions. We
-// // assume, but do not check beforehand, that all the Formula in IntegerSum are
-// // integer expressions.
-// type IntegerSum []Formula
+// IntegerSum defines the sum between two or more integer expressions. We
+// assume, but do not check beforehand, that all the Formula in IntegerSum are
+// integer expressions.
+type IntegerSum []Formula
 
-// func (f IntegerSum) String() string {
-// 	s := f[0].String()
-// 	for k := 1; k < len(f); k++ {
-// 		s += "," + f[k].String()
-// 	}
-// 	return "sum(" + s + ")"
-// }
+func (f IntegerSum) String() string {
+	res := []string{}
+	for k := range f {
+		res = append(res, "("+f[k].String()+")")
+	}
+	return util.ZipString(res, "(+ ", ")", " ")
+}
 
-// // ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
 
-// // IntegerDifference defines the difference between two or more integer
-// // expressions. We assume, but do not check beforehand, that all the Formula in
-// // IntegerDifference are integer expressions.
-// type IntegerDifference []Formula
+// IntegerDifference defines the difference between two integer expressions (we
+// consider more to be safe, with the semantics a0 - a1 - a2 - ...). We assume,
+// but do not check beforehand, that all the Formula in IntegerDifference are
+// integer expressions.
+type IntegerDifference []Formula
 
-// func (f IntegerDifference) String() string {
-// 	s := f[0].String()
-// 	for k := 1; k < len(f); k++ {
-// 		s += "," + f[k].String()
-// 	}
-// 	return "diff(" + s + ")"
-// }
+func (f IntegerDifference) String() string {
+	res := []string{}
+	for k := range f {
+		res = append(res, "("+f[k].String()+")")
+	}
+	return util.ZipString(res, "(- ", ")", " ")
+}

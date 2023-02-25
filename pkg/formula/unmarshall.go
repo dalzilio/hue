@@ -132,19 +132,37 @@ func parseElement(decoder *xml.Decoder) (Formula, error) {
 			if err != nil {
 				return nil, err
 			}
-			if len(ee) < 2 {
-				return nil, errors.New("malformed Formula: disjunction expect at least two sub-formulas")
-			}
+			// if len(ee) < 2 {
+			// 	return nil, errors.New("malformed Formula: disjunction expect at least two sub-formulas")
+			// }
 			return Disjunction(ee), nil
 		case "conjunction":
 			ee, err := parseMult(decoder, nil)
 			if err != nil {
 				return nil, err
 			}
-			if len(ee) < 2 {
-				return nil, errors.New("malformed Formula: conjunction expect at least two sub-formulas")
-			}
+			// if len(ee) < 2 {
+			// 	return nil, errors.New("malformed Formula: conjunction expect at least two sub-formulas")
+			// }
 			return Conjunction(ee), nil
+		case "integer-sum":
+			ee, err := parseMult(decoder, nil)
+			if err != nil {
+				return nil, err
+			}
+			// if len(ee) < 2 {
+			// 	return nil, errors.New("malformed Formula: integer-sum expect at least two sub-formulas")
+			// }
+			return IntegerSum(ee), nil
+		case "integer-difference":
+			ee, err := parseMult(decoder, nil)
+			if err != nil {
+				return nil, err
+			}
+			// if len(ee) < 2 {
+			// 	return nil, errors.New("malformed Formula: integer-sum expect at least two sub-formulas")
+			// }
+			return IntegerDifference(ee), nil
 		case "integer-le":
 			ee, err := parseMult(decoder, nil)
 			if err != nil {
