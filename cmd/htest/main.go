@@ -183,7 +183,7 @@ func compare(fileA map[string]bool, keys []string, flaglist bool, comparefile *o
 		log.Panicf("parsing %s: found %s\n", comparefile.Name(), ZipString(line, "", "", " "))
 	}
 
-	fmt.Printf("file %s: %d results\n", comparefile.Name(), len(fileA))
+	fmt.Printf("file %s: %d results\n", comparefile.Name(), len(fileB))
 
 	for _, q := range keys {
 		res := fileA[q]
