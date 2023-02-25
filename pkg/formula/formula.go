@@ -29,9 +29,29 @@ type Formula interface {
 	String() string
 }
 
+// At the moment we have:
+//
+// - BooleanConstant
+//
+// - Negation
+//
+// - Disjunction
+//
+// - Conjunction
+//
+// - TokensCount
+//
+// - IntegerLe
+//
+// - IntegerConstant
+//
+// - IsFireable
+//
+
 // ----------------------------------------------------------------------
 
-// BooleanConstant defines a constant True or False.
+// BooleanConstant defines a constant True or False. Not part of the MCC
+// formulas but useful when simplifying them.
 type BooleanConstant bool
 
 func (f BooleanConstant) String() string {
@@ -40,6 +60,19 @@ func (f BooleanConstant) String() string {
 	}
 	return "false"
 }
+
+// ----------------------------------------------------------------------
+
+// // ITE is the equivalent of an if-then-else expression.
+// type ITE struct {
+// 	Condition Formula
+// 	Then      Formula
+// 	Else      Formula
+// }
+
+// func (f ITE) String() string {
+// 	return "(ite (" + f.Condition.String() + ") (" + f.Then.String() + ") (" + f.Else.String() + "))"
+// }
 
 // ----------------------------------------------------------------------
 
@@ -118,11 +151,11 @@ func (f IntegerConstant) String() string {
 	return fmt.Sprintf("%d", f)
 }
 
-// ----------------------------------------------------------------------
-//
-// The following elements are not used in practice
-//
-// ----------------------------------------------------------------------
+// // ----------------------------------------------------------------------
+// //
+// // The following elements are not used in practice
+// //
+// // ----------------------------------------------------------------------
 
 // // IntegerSum defines the sum between two or more integer expressions. We
 // // assume, but do not check beforehand, that all the Formula in IntegerSum are

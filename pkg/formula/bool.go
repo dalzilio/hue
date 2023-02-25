@@ -40,7 +40,7 @@ func (b Bool) PrintShort() string {
 	}
 }
 
-func NewBool(b bool) Bool {
+func From(b bool) Bool {
 	if b {
 		return TRUE
 	}

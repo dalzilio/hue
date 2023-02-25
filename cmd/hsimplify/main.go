@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 
 	"github.com/dalzilio/hue/pkg/formula"
 	flag "github.com/spf13/pflag"
@@ -30,6 +31,16 @@ func main() {
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
 	var flagversion = flag.Bool("version", false, "print version number and generation date of hsimplify")
 
+	var propfile = flag.String("xml", "", "path to XML file with the Reachability formulas")
+	var dirfile = flag.StringP("directory", "d", "", "path to folder containing XML formulas")
+
+	var reach = flag.BoolP("reachability", "r", false, "check ReachabilityCardinality.xml file")
+	var fire = flag.BoolP("fireability", "f", false, "check ReachabilityFireability.xml file")
+
+	var selectQueries []int
+
+	flag.IntSliceVar(&selectQueries, "select-queries", []int{}, "comma separated list of queries id")
+
 	flag.CommandLine.SortFlags = false
 
 	flag.Usage = func() {
@@ -42,33 +53,56 @@ func main() {
 	}
 
 	flag.Parse()
+
 	N := len(flag.Args())
 
-	if *flaghelp {
+	switch {
+	case *flagversion:
+		fmt.Printf("usimplify version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
+		os.Exit(0)
+	case *flaghelp:
 		flag.Usage()
 		os.Exit(0)
-	}
-
-	if *flagversion {
-		fmt.Printf("hsimplify version %s -- %s -- LAAS/CNRS\n", gitversion, builddate)
-	}
-
-	switch {
-	case N != 1:
-		fmt.Println("should have exactly one XML formula file")
+	case !*reach && !*fire:
+		fmt.Println("you should use either option -r or -f")
+		flag.Usage()
+		os.Exit(1)
+	case *propfile != "" && *dirfile != "":
+		fmt.Println("cannot use options --xml and --directory together")
+		flag.Usage()
+		os.Exit(1)
+	case *fire && *reach:
+		fmt.Println("cannot use options -f and -r together")
+		flag.Usage()
+		os.Exit(1)
+	case N != 0:
+		fmt.Println("bad command line, too many files")
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	// we capture panics
-	defer func() {
-		if r := recover(); r != nil {
-			log.Fatal("Error in generation: cannot compute")
-			os.Exit(1)
-		}
-	}()
+	sort.Ints(selectQueries)
 
-	formulafile := flag.Arg(0)
+	// // we capture panics
+	// defer func() {
+	// 	if r := recover(); r != nil {
+	// 		log.Fatal("Error in generation: cannot compute")
+	// 		os.Exit(1)
+	// 	}
+	// }()
+
+	var formulafile string
+	if *propfile != "" {
+		formulafile = *propfile
+	}
+	if *dirfile != "" {
+		if *reach {
+			formulafile = filepath.Join(*dirfile, "ReachabilityCardinality.xml")
+		}
+		if *fire {
+			formulafile = filepath.Join(*dirfile, "ReachabilityFireability.xml")
+		}
+	}
 
 	if filepath.Ext(formulafile) != ".xml" {
 		log.Fatal("Wrong file extension!")
@@ -90,6 +124,30 @@ func main() {
 		os.Exit(1)
 		return
 	}
-	fmt.Fprintf(os.Stdout, "# %d formulas\n", len(queries))
-	fmt.Fprint(os.Stdout, formula.PrintQueries(queries))
+
+	selection := make([]bool, len(queries))
+	if len(selectQueries) != 0 {
+		for _, k := range selectQueries {
+			selection[k] = true
+		}
+	} else {
+		for i := 0; i < len(queries); i++ {
+			selection[i] = true
+		}
+	}
+
+	fmt.Printf("# %d formulas\n", len(queries))
+	fmt.Println("=========================================")
+
+	for k, q := range queries {
+		if selection[k] {
+			fmt.Println(q)
+			if *fire {
+				fmt.Println("-----")
+				g, _ := formula.BddFireabilitySimplify(q.Original)
+				fmt.Println(g.String())
+			}
+			fmt.Println("=========================================")
+		}
+	}
 }

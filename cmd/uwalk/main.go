@@ -315,6 +315,20 @@ func main() {
 		}
 	}
 
+	// If we check fireability queries we can use an even better simplification
+	// algorithm
+	if rflags.fire {
+		for k, b := range worklist.queriesactive {
+			if b {
+				g, err := formula.BddFireabilitySimplify(worklist.queries[k].Formula)
+				if err != nil {
+					g = worklist.queries[k].Formula
+				}
+				worklist.queries[k].Formula = g
+			}
+		}
+	}
+
 	if *showqueries {
 		fmt.Println("\n----------------------------------")
 		for k, b := range worklist.queriesactive {

@@ -15,7 +15,7 @@ import (
 // transition).
 func (w *Worker) EvaluateCardinalityQueries(q formula.Query) formula.Bool {
 	if b, ok := evaluateQ(w.PT, w.Enabled, q).Value(); ok {
-		return formula.NewBool(b)
+		return formula.From(b)
 	}
 	for k, m := range w.After {
 		if w.Enabled[w.Trans[k].Name].IsTrue() {
@@ -42,7 +42,7 @@ func (w *Worker) EvaluateFireabilityQueries(q formula.Query) formula.Bool {
 func evaluateQ(tokenability map[string]int, fireability map[string]formula.Bool, q formula.Query) formula.Bool {
 	switch f := q.Formula.(type) {
 	case formula.BooleanConstant:
-		return formula.NewBool(bool(f))
+		return formula.From(bool(f))
 	default:
 		v, ok := hasReached(tokenability, fireability, f).Value()
 		if ok && q.IsEF && v {
@@ -66,7 +66,7 @@ func (s *State) EvaluateAndTestSimplify(q formula.Query) bool {
 func hasReached(tokenability map[string]int, fireability map[string]formula.Bool, f formula.Formula) formula.Bool {
 	switch f := f.(type) {
 	case formula.BooleanConstant:
-		return formula.NewBool(bool(f))
+		return formula.From(bool(f))
 	case formula.Negation:
 		return formula.BoolNot(hasReached(tokenability, fireability, f.Formula))
 	case formula.Disjunction:
@@ -74,9 +74,27 @@ func hasReached(tokenability map[string]int, fireability map[string]formula.Bool
 	case formula.Conjunction:
 		return formula.FoldAnd(func(x formula.Formula) formula.Bool { return hasReached(tokenability, fireability, x) }, f)
 	case formula.IntegerLe:
-		return formula.NewBool(ComputeIntegerConstant(tokenability, f.Left) <= ComputeIntegerConstant(tokenability, f.Right))
+		return formula.From(ComputeIntegerConstant(tokenability, f.Left) <= ComputeIntegerConstant(tokenability, f.Right))
 	case formula.IsFireable:
 		return formula.FoldOr(func(x string) formula.Bool { return fireability[x] }, f)
+	// case formula.ITE:
+	// 	cond := hasReached(tokenability, fireability, f.Condition)
+	// 	if b, ok := cond.Value(); ok {
+	// 		if b {
+	// 			return hasReached(tokenability, fireability, f.Then)
+	// 		}
+	// 		return hasReached(tokenability, fireability, f.Else)
+	// 	}
+	// 	left, ok := hasReached(tokenability, fireability, f.Then).Value()
+	// 	if ok {
+	// 		right, ok := hasReached(tokenability, fireability, f.Else).Value()
+	// 		if ok {
+	// 			if left == right {
+	// 				return formula.From(left)
+	// 			}
+	// 		}
+	// 	}
+	// 	return formula.UNDEF
 	default:
 		panic("wrong formula type in Reached")
 	}
