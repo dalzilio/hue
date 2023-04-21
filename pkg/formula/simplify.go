@@ -275,3 +275,26 @@ func stringSlicesEqual(a1, a2 []string) bool {
 	}
 	return true
 }
+
+// Size returns the number of operators and atomic propositions in f
+func Size(f Formula) int {
+	acc := new(int)
+	accSize(f, acc)
+	return *acc
+}
+
+func accSize(f Formula, acc *int) {
+	switch f := f.(type) {
+	case Negation:
+		accSize(f.Formula, acc)
+	case Disjunction:
+		for _, v := range f {
+			accSize(v, acc)
+		}
+	case Conjunction:
+		for _, v := range f {
+			accSize(v, acc)
+		}
+	}
+	*acc = *acc + 1
+}
