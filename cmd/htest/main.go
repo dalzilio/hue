@@ -17,14 +17,18 @@ import (
 	_ "embed"
 )
 
-//go:embed total.txt
-var oracleFile string
+//go:embed oracle_reach2023.txt
+var oracleFile2023 string
+
+//go:embed oracle_reach2022.txt
+var oracleFile2022 string
 
 func main() {
 	var flaghelp = flag.BoolP("help", "h", false, "print this message")
 
 	var flagcompare = flag.BoolP("compare", "c", false, "compare two different result files")
 	var flaglist = flag.BoolP("list", "l", false, "list the new results or the differences (with --compare)")
+	var mcc2022 = flag.Bool("mcc2022", false, "use oracle for the MCC 2022 edition (default is MCC 2023)")
 
 	flag.CommandLine.SortFlags = false
 
@@ -116,18 +120,27 @@ func main() {
 	errors := []string{}
 
 	// we test against the oracle
-	oracleScanner := bufio.NewScanner(strings.NewReader(oracleFile))
+	var oracleScanner *bufio.Scanner
+	if *mcc2022 {
+		oracleScanner = bufio.NewScanner(strings.NewReader(oracleFile2022))
+	} else {
+		oracleScanner = bufio.NewScanner(strings.NewReader(oracleFile2023))
+	}
+
 	for oracleScanner.Scan() {
-		line := strings.Split(oracleScanner.Text(), " ")
-		if line[2] == "TRUE" {
-			oracle[line[1]] = true
+		line := strings.Split(oracleScanner.Text(), "\t")
+		if len(line) < 6 {
+			log.Panicf("parsing oracle, found (length %d): %s\n", len(line), ZipString(line, "", "", " "))
+		}
+		entry := strings.Join(line[:5], "-")
+		if line[5] == "TRUE" {
+			oracle[entry] = true
 			continue
 		}
-		if line[2] == "FALSE" {
-			oracle[line[1]] = false
+		if line[5] == "FALSE" {
+			oracle[entry] = false
 			continue
 		}
-		log.Panicf("parsing oracle: found %s\n", ZipString(line, "", "", " "))
 	}
 
 	fmt.Printf("oracle: %d results\n", len(oracle))
