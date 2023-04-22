@@ -1,4 +1,4 @@
-Model	Type	Instance	Competition	Id	Verdict	Answered	Modality	CEX	Trivial	Size
+Model	Type	Instance	Competition	Id  Verdict Answered	Modality	CEX Trivial Size
 AirplaneLD	COL	10	ReachabilityCardinality	0	FALSE	9.99	EF	FAUX	COMPLEX	85
 AirplaneLD	COL	10	ReachabilityCardinality	1	TRUE	9.99	AG	FAUX	COMPLEX	2
 AirplaneLD	COL	10	ReachabilityCardinality	2	FALSE	9.99	EF	FAUX	COMPLEX	42
