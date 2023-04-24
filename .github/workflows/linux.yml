@@ -1,0 +1,26 @@
+name: Linux Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    
+    steps:
+    - name: Checkout repository and submodules
+      uses: actions/checkout@v3
+    - name: go packages install
+      run: wget  --progress=dot:mega  https://dl.google.com/go/go1.20.3.linux-amd64.tar.gz ; sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.3.linux-amd64.tar.gz ;
+    - name: Build Octant
+      run:  export PATH=$PATH:/usr/local/go/bin ; export GOBIN=$PWD/bin ; make
+    - name: copy
+      run: mkdir -p website/ ; cp bin/* website/
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4.4.1
+      with:
+          branch: linux # The branch the action should deploy to.
+          folder: website/ # The folder the action should deploy.
+          clean: true # Automatically remove deleted files from the deploy branch 
+          single-commit: true
