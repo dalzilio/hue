@@ -12,7 +12,7 @@ jobs:
     - name: Checkout repository and submodules
       uses: actions/checkout@v3
     - name: go packages install
-      run: wget  https://dl.google.com/go/go1.20.3.linux-amd64.tar.gz ; sudo rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.3.linux-amd64.tar.gz ;
+      run: wget  --progress=dot:mega  https://dl.google.com/go/go1.20.3.linux-amd64.tar.gz ; sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.3.linux-amd64.tar.gz ;
     - name: Build Octant
       run:  export PATH=$PATH:/usr/local/go/bin ; export GOBIN=$PWD/bin ; make
     - name: copy
