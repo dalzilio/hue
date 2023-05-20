@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	resultfile, err := os.Open("reach2023.txt")
+	resultfile, err := os.Open(os.Args[1])
 	if err != nil {
 		log.Fatal("Error opening file:", err)
 		os.Exit(1)
@@ -25,32 +25,18 @@ func main() {
 			log.Fatal("line is too short")
 		}
 		rez := []rune(line[1])
-		for i := 0; i < 10; i++ {
+		for i := 0; i < 16; i++ {
 			switch rez[i] {
 			case '?':
-				fmt.Printf("%s-0%d %s %s\n", line[0], i, "UNKNOWN", line[i+2])
+				fmt.Printf("%s-%02d %s %s\n", line[0], i, "UNKNOWN", line[i+2])
 			case 'T':
-				fmt.Printf("%s-0%d %s %s\n", line[0], i, "TRUE", line[i+2])
+				fmt.Printf("%s-%02d %s %s\n", line[0], i, "TRUE", line[i+2])
 			case 'F':
-				fmt.Printf("%s-0%d %s %s\n", line[0], i, "FALSE", line[i+2])
+				fmt.Printf("%s-%02d %s %s\n", line[0], i, "FALSE", line[i+2])
 			case 'P':
-				fmt.Printf("%s-0%d %s %s\n", line[0], i, "POSSIBLE", line[i+2])
+				fmt.Printf("%s-%02d %s %s\n", line[0], i, "POSSIBLE", line[i+2])
 			case 'U':
-				fmt.Printf("%s-0%d %s %s\n", line[0], i, "UNLIKELY", line[i+2])
-			}
-		}
-		for i := 10; i < 16; i++ {
-			switch rez[i] {
-			case '?':
-				fmt.Printf("%s-%d %s %s\n", line[0], i, "UNKNOWN", line[i+2])
-			case 'T':
-				fmt.Printf("%s-%d %s %s\n", line[0], i, "TRUE", line[i+2])
-			case 'F':
-				fmt.Printf("%s-%d %s %s\n", line[0], i, "FALSE", line[i+2])
-			case 'P':
-				fmt.Printf("%s-%d %s %s\n", line[0], i, "POSSIBLE", line[i+2])
-			case 'U':
-				fmt.Printf("%s-%d %s %s\n", line[0], i, "UNLIKELY", line[i+2])
+				fmt.Printf("%s-%02d %s %s\n", line[0], i, "UNLIKELY", line[i+2])
 			}
 		}
 	}
