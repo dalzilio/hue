@@ -1,2 +1,6 @@
 hwalk.exe
 ReachabilityCardinality.xml
+.vscode/launch.json
+.gitignore
+cmd/horacle/forms/forms.exe
+cmd/horacle/conv/conv.exe
