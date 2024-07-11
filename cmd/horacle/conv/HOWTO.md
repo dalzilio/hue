@@ -20,6 +20,35 @@
 * __Remark:__ there are formulas for model DotAndBoxes in 2020 but no summary
   results.
 
+## Other modifications
+
+Some verdicts may have been corrected after the end of the contest, after manual
+reviews from the tool developers. Curated answers are found in the GitHub
+projects maintained by Yann Thierry-Mieg, see e.g.
+<https://github.com/yanntm/pnmcc-models-2022/blob/master/install_inputs.sh> for
+the 2022 data.
+
+### Corrections for 2020, see <https://github.com/yanntm/pnmcc-models-2020/blob/master/install_inputs.sh>
+
+* Due to ITS-Tools in 2020 believing NuPN implies one-safe, there was some
+errors on the RERS17* examinations. We keep the expected results reported in the
+MCC website when Tapaal answers.
+
+* Oracles for instances of model Sudoku-COL are deemed unreliable.
+
+### Corrections for 2021, see <https://github.com/yanntm/pnmcc-models-2021/blob/master/install_inputs.sh>
+
+No corrections found
+
+### Corrections for 2022, see <https://github.com/yanntm/pnmcc-models-2022/blob/master/install_inputs.sh#L52-L82>
+
+```
+sed -i -e "s/StigmergyCommit-PT-11a-ReachabilityCardinality-06 TRUE/StigmergyCommit-PT-11a-ReachabilityCardinality-06 FALSE/" oracle_reach2022.txt
+sed -i -e "s/StigmergyCommit-PT-11a-ReachabilityCardinality-13 FALSE/StigmergyCommit-PT-11a-ReachabilityCardinality-13 TRUE/" oracle_reach2022.txt
+sed -i -e "s/StigmergyCommit-PT-11a-ReachabilityCardinality-14 TRUE/StigmergyCommit-PT-11a-ReachabilityCardinality-14 FALSE/" oracle_reach2022.txt
+sed -i -e "s/StigmergyCommit-PT-11a-ReachabilityCardinality-15 FALSE/StigmergyCommit-PT-11a-ReachabilityCardinality-15 TRUE/" oracle_reach2022.txt
+```
+
 ## Files format
 
 All data files are space separated values. We use both csv and txt for the file
